@@ -1,4 +1,3 @@
-import { Button } from "@/components/ui/button";
 import { House, ShoppingBag02Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import Link from "next/link";
@@ -13,15 +12,15 @@ export default function AuthLayout({children} : {children : React.ReactNode}) {
                 <div className="flex flex-col items-center space-y-6">
                     <HugeiconsIcon icon={ShoppingBag02Icon} size={160} color="white" />
 
-                    <div className="text-center uppercase space-y-2">
+                    <div className="text-center uppercase space-y-4">
                         <h1 className="text-5xl text-white font-bold">Foods Order</h1>
 
-                        <Button asChild variant={"outline"}>
-                            <Link href={'/'}>
-                                <HugeiconsIcon icon={House} />
-                                Go Home
-                            </Link>
-                        </Button>
+                        <Link href={'/'}>
+                            <div className="flex items-center justify-center space-x-2">
+                                <HugeiconsIcon icon={House} color="white" />
+                                <span className="text-xl text-white font-semibold">HOME</span>
+                            </div>
+                        </Link>
                     </div>
                 </div>
             </header>

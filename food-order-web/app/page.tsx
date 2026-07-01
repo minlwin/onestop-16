@@ -1,12 +1,13 @@
 import WelcomeServiceLink from "@/components/widgets/welcome-service-link"
-import { Search01FreeIcons, ShoppingBag02FreeIcons, User02FreeIcons } from "@hugeicons/core-free-icons"
+import { CookingPot, Search01FreeIcons, ShoppingBag02FreeIcons, User02FreeIcons } from "@hugeicons/core-free-icons"
+import { HugeiconsIcon } from "@hugeicons/react"
 
 export default function WelcomePage() {
   return (
     <main className="h-screen">
 
       {/* Hero Section */}
-      <section className="bg-orange-400 h-2/3 py-20 px-40">
+      <section className="bg-linear-to-br from-orange-600 to-orange-300  h-2/3 py-20 px-40 ">
         <div className="grid grid-cols-5 gap-4 h-full">
           <CharWrapper value="f" />
           <CharWrapper value="o" />
@@ -32,7 +33,7 @@ export default function WelcomePage() {
           bgColor="bg-orange-500" 
           textColor="white"
           icon={Search01FreeIcons} 
-          title="Check Order" subTitle="Check your ourder status." route="/check" />
+          title="Check Status" subTitle="Check your ourder status." route="/check" />
 
         <WelcomeServiceLink 
           bgColor="bg-orange-700" 
