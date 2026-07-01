@@ -1,6 +1,5 @@
 import WelcomeServiceLink from "@/components/widgets/welcome-service-link"
-import { CookingPot, Search01FreeIcons, ShoppingBag02FreeIcons, User02FreeIcons } from "@hugeicons/core-free-icons"
-import { HugeiconsIcon } from "@hugeicons/react"
+import { Search01FreeIcons, ShoppingBag02FreeIcons, User02FreeIcons } from "@hugeicons/core-free-icons"
 
 export default function WelcomePage() {
   return (
@@ -48,7 +47,7 @@ export default function WelcomePage() {
 
 function CharWrapper({value} : {value : string}) {
   return (
-    <div className="border-white border-2 flex items-center justify-center">
+    <div className="border-white border-2 flex items-center justify-center hover:bg-orange-500">
       <span className="text-white text-6xl uppercase">{value}</span>
     </div>
   )

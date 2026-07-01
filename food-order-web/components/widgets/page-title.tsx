@@ -1,12 +1,12 @@
-import { ShoppingBag02Icon } from "@hugeicons/core-free-icons";
+import { ChefFreeIcons, ChefHatFreeIcons, ShoppingBag02Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import Link from "next/link";
 
 export default function PageTitle({title} : {title:string}) {
     return (
-        <header className="px-20 py-8 flex gap-x-8">
+        <header className="px-20 py-8 flex gap-x-6">
             <div className="flex items-center justify-center">
-                <HugeiconsIcon icon={ShoppingBag02Icon} size={60} />
+                <HugeiconsIcon icon={ChefHatFreeIcons} size={60} />
             </div>
             <div>
                 <Link href={'/'} className="uppercase text-4xl">Food Order</Link>

@@ -1,4 +1,4 @@
-import { House, ShoppingBag02Icon } from "@hugeicons/core-free-icons";
+import { ChefHatFreeIcons, House, ShoppingBag02Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import Link from "next/link";
 import React from "react";
@@ -10,7 +10,7 @@ export default function AuthLayout({children} : {children : React.ReactNode}) {
 
             <header className="bg-orange-400 flex justify-center items-center">
                 <div className="flex flex-col items-center space-y-6">
-                    <HugeiconsIcon icon={ShoppingBag02Icon} size={160} color="white" />
+                    <HugeiconsIcon icon={ChefHatFreeIcons} size={160} color="white" />
 
                     <div className="text-center uppercase space-y-4">
                         <h1 className="text-5xl text-white font-bold">Foods Order</h1>
