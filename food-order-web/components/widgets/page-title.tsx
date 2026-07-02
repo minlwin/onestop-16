@@ -1,4 +1,4 @@
-import { ChefFreeIcons, ChefHatFreeIcons, ShoppingBag02Icon } from "@hugeicons/core-free-icons";
+import { ChefHatFreeIcons } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import Link from "next/link";
 

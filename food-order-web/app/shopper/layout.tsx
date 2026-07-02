@@ -1,6 +1,5 @@
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import React from "react";
-import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { SignOut } from "@hugeicons/core-free-icons";

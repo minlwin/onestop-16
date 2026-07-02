@@ -1,5 +1,5 @@
 import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar";
-import { ChefHatFreeIcons, ClockAlertIcon, Dish02FreeIcons, ShoppingBag02Icon, Tag02FreeIcons, TruckDeliveryFreeIcons, UserAiFreeIcons, UserCheck02FreeIcons, Wallet02FreeIcons } from "@hugeicons/core-free-icons";
+import { Calendar02FreeIcons, ChefHatFreeIcons, ClockAlertIcon, Dish02FreeIcons, ShoppingBag02Icon, Tag02FreeIcons, TruckDeliveryFreeIcons, UserAiFreeIcons, UserCheck02FreeIcons, Wallet02FreeIcons } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon, IconSvgElement } from "@hugeicons/react";
 import Link from "next/link";
 
@@ -26,7 +26,7 @@ export function ManagementMenu() {
                                 {group.menus.map((item, itemIndex) => 
                                     <SidebarMenuItem key={`${index}-${itemIndex}`}>
                                         <SidebarMenuButton asChild>
-                                            <Link href={item.link}>
+                                            <Link href={`/shopper/${item.link}`}>
                                                 <HugeiconsIcon icon={item.icon} /> {item.name}
                                             </Link>
                                         </SidebarMenuButton>
@@ -60,14 +60,18 @@ const MENUS : MenuGroup[] = [
             {
                 name : 'Order Management',
                 icon : ShoppingBag02Icon,
-                link: ''
+                link: 'orders'
             },
             {
                 name : 'Delivery Management',
                 icon : TruckDeliveryFreeIcons,
-                link: ''
-            }
-
+                link: 'delivery'
+            },
+            {
+                name : 'Invoice History',
+                icon : Calendar02FreeIcons,
+                link: 'invoices'
+            },
         ]
     },
     {
@@ -76,25 +80,23 @@ const MENUS : MenuGroup[] = [
             {
                 name : 'Category Master',
                 icon : Tag02FreeIcons,
-                link: ''
+                link: 'category'
             },
             {
                 name : 'Cuisine Master',
                 icon : Dish02FreeIcons,
-                link: ''
+                link: 'cuisine'
             },
             {
                 name : 'Delevery Times',
                 icon : ClockAlertIcon,
-                link: ''
+                link: 'delivery-time'
             },
             {
                 name : 'Payment Information',
                 icon : Wallet02FreeIcons,
-                link: ''
+                link: 'payment'
             }
-
-
         ]
     },    {
         name: "Accounts",
@@ -102,15 +104,14 @@ const MENUS : MenuGroup[] = [
             {
                 name : 'Customers',
                 icon : UserAiFreeIcons,
-                link: ''
+                link: 'customers'
             },
             {
                 name : 'Employee',
                 icon : UserCheck02FreeIcons,
-                link: ''
+                link: 'employees'
             }
 
         ]
     },
-
 ];
