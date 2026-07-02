@@ -8,9 +8,15 @@ type FormsSelectProps<T extends FieldValues> = {
     label?: string
     placeholder?: string
     className?: string
+    options: SelectOption[]
 }
 
-export default function FormsSelect<T extends FieldValues>({control, path, label, placeholder, className} : FormsSelectProps<T>) {
+type SelectOption = {
+    value: string
+    label: string
+}
+
+export default function FormsSelect<T extends FieldValues>({control, path, options, label, placeholder, className} : FormsSelectProps<T>) {
     return (
         <Controller control={control} name={path} render={({field, fieldState}) => 
             <Field className={className}>
@@ -19,6 +25,9 @@ export default function FormsSelect<T extends FieldValues>({control, path, label
                 }
                 <NativeSelect {...field} >
                     <NativeSelectOption value="">{placeholder || `Select ${label || 'one'}`}</NativeSelectOption>
+                    {options.map(item => 
+                        <NativeSelectOption key={item.value} value={item.value}>{item.label}</NativeSelectOption>
+                    )}
                 </NativeSelect> 
 
                 {fieldState.invalid &&

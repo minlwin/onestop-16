@@ -4,28 +4,28 @@ import { Button } from "@/components/ui/button";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { SignOut } from "@hugeicons/core-free-icons";
 import { ManagementMenu } from "./_widgets/management-menu";
+import { Metadata } from "next";
+import ManagementHeader from "./_widgets/management-header";
+import { PageTitleContextProvider } from "./_states/page-title-provider";
+
+export const metadata: Metadata = {
+  title: "Foods Order | Management",
+  description: "Foods Order Management System",
+};
 
 export default function ShopLayout({children} : {children : React.ReactNode}) {
 
     return (
         <SidebarProvider>
-            <ManagementMenu />
-            <div className="w-full">
-                <header className="flex justify-between items-center px-8 py-4">
-                    <div className="flex items-center">
-                        <SidebarTrigger size={"lg"} />
-                        <h1 className="uppercase">Food Order</h1>
-                    </div>
-
-                    <Button variant={'ghost'}>
-                        <HugeiconsIcon icon={SignOut} />
-                        <span>Sign Out</span>
-                    </Button>
-                </header>
-                <main>
-                    {children}
-                </main>
-            </div>
+            <PageTitleContextProvider>
+                <ManagementMenu />
+                <div className="w-full">
+                    <ManagementHeader />
+                    <main className="px-8">
+                        {children}
+                    </main>
+                </div>
+            </PageTitleContextProvider>
         </SidebarProvider>
     )
 }
