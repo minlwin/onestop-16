@@ -38,7 +38,7 @@ export default function WelcomePage() {
           bgColor="bg-orange-700" 
           textColor="white"
           icon={User02FreeIcons} 
-          title="Be a member" subTitle="Sign Up to be a member." route="/signin" />
+          title="Be a member" subTitle="Sign Up to be a member." route="/signup" />
       </section>
 
     </main>

@@ -1,7 +1,45 @@
-import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar";
-import { ChefHatFreeIcons, Clock02FreeIcons, Clock04Icon, ClockAlertIcon, Dish02FreeIcons, ShippingCenterIcon, ShoppingBag02Icon, Tag02FreeIcons, TruckDeliveryFreeIcons, User02FreeIcons, User03FreeIcons, UserAccountFreeIcons, UserAiFreeIcons, UserCheck02FreeIcons, UserFreeIcons, UserLove02FreeIcons, Wallet02FreeIcons } from "@hugeicons/core-free-icons";
+import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar";
+import { ChefHatFreeIcons, ClockAlertIcon, Dish02FreeIcons, ShoppingBag02Icon, Tag02FreeIcons, TruckDeliveryFreeIcons, UserAiFreeIcons, UserCheck02FreeIcons, Wallet02FreeIcons } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon, IconSvgElement } from "@hugeicons/react";
 import Link from "next/link";
+
+export function ManagementMenu() {
+    return (
+        <Sidebar variant="sidebar">
+            <SidebarHeader>
+                <div className="flex gap-2 mt-2">
+                    <div className="flex items-center justify-center bg-orange-400 rounded-xl px-4">
+                        <HugeiconsIcon icon={ChefHatFreeIcons} color="white" />
+                    </div>
+                    <div>
+                        <h1 className="text-2xl">Welcome</h1>
+                        <h3>Management User</h3>
+                    </div>
+                </div>
+            </SidebarHeader>
+            <SidebarContent>
+                {MENUS.map((group, index) => 
+                    <SidebarGroup key={index}>
+                        <SidebarGroupLabel>{group.name}</SidebarGroupLabel>
+                        <SidebarGroupContent>
+                            <SidebarMenu>
+                                {group.menus.map((item, itemIndex) => 
+                                    <SidebarMenuItem key={`${index}-${itemIndex}`}>
+                                        <SidebarMenuButton asChild>
+                                            <Link href={item.link}>
+                                                <HugeiconsIcon icon={item.icon} /> {item.name}
+                                            </Link>
+                                        </SidebarMenuButton>
+                                    </SidebarMenuItem>
+                                )}
+                            </SidebarMenu>
+                        </SidebarGroupContent>
+                    </SidebarGroup>
+                )}
+            </SidebarContent>
+        </Sidebar>
+    )
+}
 
 
 type MenuGroup = {
@@ -76,44 +114,3 @@ const MENUS : MenuGroup[] = [
     },
 
 ];
-
-export function ManagementMenu() {
-    return (
-        <Sidebar variant="sidebar">
-            <SidebarHeader>
-                <div className="flex gap-2 mt-2">
-                    <div className="flex items-center justify-center bg-orange-400 rounded-xl px-4">
-                        <HugeiconsIcon icon={ChefHatFreeIcons} color="white" />
-                    </div>
-                    <div>
-                        <h1 className="text-2xl">Welcome</h1>
-                        <h3>Management User</h3>
-                    </div>
-                </div>
-            </SidebarHeader>
-            <SidebarContent>
-                {MENUS.map((group, index) => 
-                    <SidebarGroup key={index}>
-                        <SidebarGroupLabel>{group.name}</SidebarGroupLabel>
-                        <SidebarGroupContent>
-                            <SidebarMenu>
-                                {group.menus.map((item, itemIndex) => 
-                                    <SidebarMenuItem key={`${index}-${itemIndex}`}>
-                                        <SidebarMenuButton asChild>
-                                            <Link href={item.link}>
-                                                <HugeiconsIcon icon={item.icon} /> {item.name}
-                                            </Link>
-                                        </SidebarMenuButton>
-                                    </SidebarMenuItem>
-                                )}
-                            </SidebarMenu>
-                        </SidebarGroupContent>
-                    </SidebarGroup>
-                )}
-            </SidebarContent>
-            <SidebarFooter>
-
-            </SidebarFooter>
-        </Sidebar>
-    )
-}
