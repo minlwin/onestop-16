@@ -5,6 +5,13 @@ import { usePageTitle } from "../../_states/page-title-provider"
 import Section from "@/components/widgets/section"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import DetailsLink from "@/components/widgets/details-link"
+import { useForm } from "react-hook-form"
+import { DeliSearchForm, DeliSearchSchema } from "@/lib/model/form/management.schema"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { Button } from "@/components/ui/button"
+import { HugeiconsIcon } from "@hugeicons/react"
+import { Search } from "@hugeicons/core-free-icons"
+import FormsInput from "@/components/widgets/forms/forms-input"
 
 export default function DeliveryManagementPage() {
 
@@ -23,9 +30,33 @@ export default function DeliveryManagementPage() {
 }
 
 function SearchForm() {
+    const form = useForm<DeliSearchForm>({
+        resolver: zodResolver(DeliSearchSchema),
+        defaultValues: {
+            from: "",
+            to: "",
+            keyword: ""
+        }
+    })
+
+    const search = (form: DeliSearchForm) => {
+
+    }
+
     return (
         <Section>
-            <form action=""></form>
+            <form onSubmit={form.handleSubmit(search)} className="flex gap-4">
+
+                <FormsInput control={form.control} path="from" label="Date From" type="date" className="flex-1" />
+                <FormsInput control={form.control} path="to" label="Date To" type="date" className="flex-1" />
+                <FormsInput control={form.control} path="keyword" label="Keyword" className="flex-2" />
+
+                <div className="flex-2 flex items-end">
+                    <Button type="submit">
+                        <HugeiconsIcon icon={Search} /> Search
+                    </Button>
+                </div>
+            </form>
         </Section>
     )
 }

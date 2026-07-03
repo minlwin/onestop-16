@@ -48,8 +48,8 @@ function SearchForm() {
     return (
         <Section>
             <form onSubmit={form.handleSubmit(search)} className="flex gap-4">
-                <FormsSelect control={form.control} path="status" label="Status" options={MASTER_STATUS} className="flex-1" />
-                <FormsInput control={form.control} path="time" label="Time" className="flex-1" />
+                <FormsSelect control={form.control} path="status" label="Status" options={MASTER_STATUS} className="flex-2" />
+                <FormsInput control={form.control} path="time" label="Time" className="flex-3" />
 
                 <div className="flex-4 flex gap-2 items-end">
                     <Button type="submit">
