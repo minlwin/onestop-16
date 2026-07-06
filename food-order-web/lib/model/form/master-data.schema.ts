@@ -25,19 +25,53 @@ export const CategorySchema = z.object({
 
 export type CategoryForm = z.infer<typeof CategorySchema>
 
-export const CusineSearchSchema = z.object({
+export const CATEGORY_OPTIONS: {
+    value: string
+    label: string
+}[] = [
+    {value: 'Curry', label: 'Curry'},
+    {value: 'Salad', label: 'Salad'},
+    {value: 'Soup', label: 'Soup'},
+    {value: 'Dessert', label: 'Dessert'},
+]
+
+export const SPICE_LEVEL_OPTIONS: {
+    value: string
+    label: string
+}[] = [
+    {value: 'Mild', label: 'Mild'},
+    {value: 'Medium', label: 'Medium'},
+    {value: 'High', label: 'High'},
+    {value: 'So High', label: 'So High'},
+]
+
+export const CuisineSearchSchema = z.object({
     status: z.enum(["Pending", "Enable", ""]),
     keyword: z.string()
 })
 
-export type CuisineSearchForm = z.infer<typeof CusineSearchSchema>
+export type CuisineSearchForm = z.infer<typeof CuisineSearchSchema>
 
 export const CuisineSchema = z.object({
-    status: z.enum(["Pending", "Enable", ""]),
-}).refine(data => data.status !== "", {
+    name: z.string().nonempty("Please enter cuisine name."),
+    description: z.string().nonempty("Please enter description."),
+    category: z.string().nonempty("Please select category."),
+    isRegular: z.boolean().nonoptional(),
+    spiceLevel: z.enum(['', 'Mild', 'Medium', 'High', 'So High']),
+    status: z.enum(['Pending', 'Enable', '']),
+    ingredients: z.array(z.object({
+        name: z.string().nonempty("Please enter ingredient name."),
+        value: z.string().nonempty("Please enter ingredient value.")
+    }))
+}).refine(data => data.spiceLevel !== '', {
+    message: "Please select spice level.",
+    path: ['spiceLevel']
+}).refine(data => data.status !== '', {
     message: "Please select status.",
     path: ['status']
 })
+
+export type CuisineForm = z.infer<typeof CuisineSchema>
 
 export const DeliTimeSearchSchema = z.object({
     status: z.enum(["Pending", "Enable", ""]),

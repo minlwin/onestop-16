@@ -8,7 +8,7 @@ import { HugeiconsIcon } from "@hugeicons/react"
 import { Button } from "@/components/ui/button"
 import FormsInput from "@/components/widgets/forms/forms-input"
 import FormsSelect from "@/components/widgets/forms/forms-select"
-import { CuisineSearchForm, CusineSearchSchema, MASTER_STATUS } from "@/lib/model/form/master-data.schema"
+import { CuisineSearchForm, CuisineSearchSchema, MASTER_STATUS } from "@/lib/model/form/master-data.schema"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Search } from "@hugeicons/core-free-icons"
 import { useForm } from "react-hook-form"
@@ -37,7 +37,7 @@ function SearchForm() {
     const router = useRouter()
 
     const form = useForm<CuisineSearchForm>({
-        resolver: zodResolver(CusineSearchSchema),
+        resolver: zodResolver(CuisineSearchSchema),
         defaultValues: {
             status: '',
             keyword: ''
