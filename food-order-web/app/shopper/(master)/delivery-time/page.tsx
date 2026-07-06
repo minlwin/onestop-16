@@ -1,19 +1,20 @@
 'use client'
 
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { usePageTitle } from "../../_states/page-title-provider"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import Section from "@/components/widgets/section"
 import { Button } from "@/components/ui/button"
 import FormsInput from "@/components/widgets/forms/forms-input"
 import FormsSelect from "@/components/widgets/forms/forms-select"
-import { DeliTimeSearchForm, DeliTimeSearchSchema, MASTER_STATUS } from "@/lib/model/form/master-data.schema"
+import { DeliTimeForm, DeliTimeSchema, DeliTimeSearchForm, DeliTimeSearchSchema, MASTER_STATUS } from "@/lib/model/form/master-data.schema"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { Search } from "@hugeicons/core-free-icons"
+import { Save, Search } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { useForm } from "react-hook-form"
 import AddNewBtn from "@/components/widgets/add-new-btn"
 import DetailsLink from "@/components/widgets/details-link"
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 
 export default function DeliveryTimeMasterPage() {
     const {setTitle} = usePageTitle()
@@ -22,15 +23,59 @@ export default function DeliveryTimeMasterPage() {
         setTitle('Delivery Time Master')
     }, [])
 
+    const form = useForm<DeliTimeForm>({
+        resolver: zodResolver(DeliTimeSchema),
+        defaultValues: {
+            timeFrom: "",
+            timeTo: "",
+            status: ""
+        }
+    })
+    const [open, setOpen] = useState(false)
+
+    const save = (form:DeliTimeForm) => {
+        console.log(form)
+        setOpen(false)
+    }
+
     return (
         <section className="space-y-6">
-            <SearchForm />
+            <SearchForm onAddNew={() => {
+                form.reset()
+                setOpen(true)
+            }}/>
+
             <ResultTable />
+
+            <Dialog open={open} onOpenChange={setOpen}>
+                <DialogContent>
+                    <form onSubmit={form.handleSubmit(save)}>
+                        <DialogHeader>
+                            <DialogTitle>Create Delivery Time</DialogTitle>
+                            <DialogDescription>Define a delivery time slot by setting the start and end time.</DialogDescription>
+                        </DialogHeader>
+
+                        <section className="my-4 space-y-4">
+                            <div className="grid grid-cols-2 gap-4">
+                                <FormsInput control={form.control} path="timeFrom" type="time" label="Time From" />
+                                <FormsInput control={form.control} path="timeTo" type="time" label="Time To" />
+                            </div>
+                            <FormsSelect control={form.control} path="status" label="Status" options={MASTER_STATUS} />
+                        </section>
+
+                        <DialogFooter>
+                            <Button type="submit">
+                                <HugeiconsIcon icon={Save} /> Save
+                            </Button>
+                        </DialogFooter>
+                    </form>
+                </DialogContent>
+            </Dialog>
         </section>
     )
 }
 
-function SearchForm() {
+function SearchForm({onAddNew} : {onAddNew : VoidFunction}) {
     const form = useForm<DeliTimeSearchForm>({
         resolver: zodResolver(DeliTimeSearchSchema),
         defaultValues: {
@@ -43,8 +88,6 @@ function SearchForm() {
 
     }
 
-    const addNew = () => {}
-
     return (
         <Section>
             <form onSubmit={form.handleSubmit(search)} className="flex gap-4">
@@ -56,7 +99,7 @@ function SearchForm() {
                         <HugeiconsIcon icon={Search} /> Search
                     </Button>
 
-                    <AddNewBtn onClick={addNew} />
+                    <AddNewBtn onClick={onAddNew} />
                 </div>
             </form>
         </Section>

@@ -1,36 +1,77 @@
 'use client'
 
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { usePageTitle } from "../../_states/page-title-provider"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import Section from "@/components/widgets/section"
 import { useForm } from "react-hook-form"
-import { CategorySearchForm, CategorySearchSchema, MASTER_STATUS } from "@/lib/model/form/master-data.schema"
+import { CategoryForm, CategorySchema, CategorySearchForm, CategorySearchSchema, MASTER_STATUS } from "@/lib/model/form/master-data.schema"
 import { zodResolver } from "@hookform/resolvers/zod"
 import FormsSelect from "@/components/widgets/forms/forms-select"
 import { Button } from "@/components/ui/button"
 import { HugeiconsIcon } from "@hugeicons/react"
-import { Search } from "@hugeicons/core-free-icons"
+import { Save, Search } from "@hugeicons/core-free-icons"
 import FormsInput from "@/components/widgets/forms/forms-input"
 import AddNewBtn from "@/components/widgets/add-new-btn"
 import DetailsLink from "@/components/widgets/details-link"
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 
 export default function CategoryMasterPage() {
     const {setTitle} = usePageTitle()
+    const [isOpen, setOpen] = useState(false)
 
     useEffect(() => {
         setTitle('Category Master')
     }, [])
 
+    const form = useForm<CategoryForm>({
+        resolver: zodResolver(CategorySchema),
+        defaultValues: {
+            name: "",
+            status: ""
+        }
+    })
+
+    const save = (form:CategoryForm) => {
+        console.log(form);
+        setOpen(false)
+    }
+
     return (
         <section className="space-y-6">
-            <SearchForm />
+            <SearchForm onAddNew={() => {
+                form.reset()
+                setOpen(true)
+            }}/>
+            
             <ResultTable />
+
+            <Dialog open={isOpen} onOpenChange={setOpen}>
+                <DialogContent>
+                    <form onSubmit={form.handleSubmit(save)}>
+                        <DialogHeader>
+                            <DialogTitle>Create Category</DialogTitle>
+                            <DialogDescription>Create a new category to organize your menu items.</DialogDescription>
+                        </DialogHeader>
+                        
+                        <section className="my-4 space-y-4">
+                            <FormsInput control={form.control} path="name" label="Category Name" />
+                            <FormsSelect control={form.control} path="status" label="Status" options={MASTER_STATUS} />
+                        </section>
+
+                        <DialogFooter>
+                            <Button type="submit">
+                                <HugeiconsIcon icon={Save} /> Save
+                            </Button>
+                        </DialogFooter>
+                    </form>
+                </DialogContent>
+            </Dialog>
         </section>
     )
 }
 
-function SearchForm() {
+function SearchForm({onAddNew} : {onAddNew : () => void}) {
     const form = useForm<CategorySearchForm>({
         resolver: zodResolver(CategorySearchSchema),
         defaultValues: {
@@ -43,8 +84,6 @@ function SearchForm() {
 
     }
 
-    const addNew = () => {}
-
     return (
         <Section>
             <form onSubmit={form.handleSubmit(search)} className="flex gap-4">
@@ -56,7 +95,7 @@ function SearchForm() {
                         <HugeiconsIcon icon={Search} /> Search
                     </Button>
 
-                    <AddNewBtn onClick={addNew} />
+                    <AddNewBtn onClick={onAddNew} />
                 </div>
             </form>
         </Section>

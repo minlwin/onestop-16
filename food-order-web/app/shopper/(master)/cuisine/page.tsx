@@ -14,6 +14,7 @@ import { Search } from "@hugeicons/core-free-icons"
 import { useForm } from "react-hook-form"
 import AddNewBtn from "@/components/widgets/add-new-btn"
 import DetailsLink from "@/components/widgets/details-link"
+import { useRouter } from "next/navigation"
 
 export default function CuisineMasterPage() {
 
@@ -32,6 +33,9 @@ export default function CuisineMasterPage() {
 }
 
 function SearchForm() {
+
+    const router = useRouter()
+
     const form = useForm<CuisineSearchForm>({
         resolver: zodResolver(CusineSearchSchema),
         defaultValues: {
@@ -44,8 +48,6 @@ function SearchForm() {
 
     }
 
-    const addNew = () => {}
-
     return (
         <Section>
             <form onSubmit={form.handleSubmit(search)} className="flex gap-4">
@@ -57,7 +59,7 @@ function SearchForm() {
                         <HugeiconsIcon icon={Search} /> Search
                     </Button>
 
-                    <AddNewBtn onClick={addNew} />
+                    <AddNewBtn onClick={() => router.push('/shopper/cuisine/edit')} />
                 </div>
             </form>
         </Section>
