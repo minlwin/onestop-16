@@ -1,19 +1,21 @@
 'use client'
 
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { usePageTitle } from "../../_states/page-title-provider"
 import Section from "@/components/widgets/section"
 import { useForm } from "react-hook-form"
-import { EmployeeSearchForm, EmployeeSearchSchema } from "@/lib/model/form/account.schema"
+import { EmployeeForm, EmployeeSchema, EmployeeSearchForm, EmployeeSearchSchema } from "@/lib/model/form/account.schema"
 import { zodResolver } from "@hookform/resolvers/zod"
 import FormsSelect from "@/components/widgets/forms/forms-select"
 import FormsInput from "@/components/widgets/forms/forms-input"
 import { Button } from "@/components/ui/button"
 import { HugeiconsIcon } from "@hugeicons/react"
-import { Plus, Search } from "@hugeicons/core-free-icons"
+import { Plus, Save, Search } from "@hugeicons/core-free-icons"
 import Link from "next/link"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import DetailsLink from "@/components/widgets/details-link"
+import AddNewBtn from "@/components/widgets/add-new-btn"
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 
 export default function EmployeeManagementPage() {
     
@@ -23,15 +25,58 @@ export default function EmployeeManagementPage() {
         setTitle('Employee Management')
     }, [])
 
+    const [open, setOpen] = useState(false)
+    const form = useForm<EmployeeForm>({
+        resolver: zodResolver(EmployeeSchema),
+        defaultValues: {
+            name: '',
+            email: '',
+            phone: '',
+            entryAt: ''
+        }
+    })
+
+    const save = (form: EmployeeForm) => {
+        console.log(form)
+        setOpen(false)
+    }
+
     return (
         <section className="space-y-6">
-            <SearchForm />
+            <SearchForm onAddNew={() => {
+                form.reset()
+                setOpen(true)
+            }} />
+
             <ResultTable />
+
+            <Dialog open={open} onOpenChange={setOpen}>
+                <DialogContent>
+                    <form onSubmit={form.handleSubmit(save)}>
+                        <DialogHeader>
+                            <DialogTitle>Create Employee</DialogTitle>
+                        </DialogHeader>
+
+                        <section className="space-y-4 my-4">
+                            <FormsInput control={form.control} path="name" label="Name" />
+                            <FormsInput control={form.control} path="phone" label="Phone" />
+                            <FormsInput control={form.control} path="email" label="Email" />
+                            <FormsInput control={form.control} path="entryAt" label="Entry Date" type="date" />
+                        </section>
+
+                        <DialogFooter>
+                            <Button type="submit">
+                                <HugeiconsIcon icon={Save} /> Save 
+                            </Button>
+                        </DialogFooter>
+                    </form>
+                </DialogContent>
+            </Dialog>
         </section>
     )
 }
 
-function SearchForm() {
+function SearchForm({onAddNew} : {onAddNew : VoidFunction}) {
 
     const form = useForm<EmployeeSearchForm>({
         resolver: zodResolver(EmployeeSearchSchema),
@@ -58,11 +103,7 @@ function SearchForm() {
                         <HugeiconsIcon icon={Search} /> Search
                     </Button>
 
-                    <Button asChild variant={"outline"}>
-                        <Link href={'/shopper/employees/edit'}>
-                            <HugeiconsIcon icon={Plus} /> Add Employee
-                        </Link>
-                    </Button>
+                    <AddNewBtn onClick={onAddNew} />
                 </div>
             </form>
         </Section>
@@ -75,7 +116,6 @@ function ResultTable() {
             <Table>
                 <TableHeader>
                     <TableRow>
-                        <TableHead>Code</TableHead>
                         <TableHead>Name</TableHead>
                         <TableHead>Phone</TableHead>
                         <TableHead>Email</TableHead>
@@ -87,7 +127,6 @@ function ResultTable() {
 
                 <TableBody>
                     <TableRow>
-                        <TableCell>E0001</TableCell>
                         <TableCell>Aung Aung</TableCell>
                         <TableCell>091817662</TableCell>
                         <TableCell>aung@gmail.com</TableCell>

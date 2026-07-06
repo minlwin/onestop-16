@@ -65,7 +65,6 @@ function ResultTable() {
             <Table>
                 <TableHeader>
                     <TableRow>
-                        <TableHead>Code</TableHead>
                         <TableHead>Name</TableHead>
                         <TableHead>Phone</TableHead>
                         <TableHead>Email</TableHead>
@@ -77,7 +76,6 @@ function ResultTable() {
 
                 <TableBody>
                     <TableRow>
-                        <TableCell>C001</TableCell>
                         <TableCell>Thidar</TableCell>
                         <TableCell>019181817</TableCell>
                         <TableCell>thidar@gmail.com</TableCell>

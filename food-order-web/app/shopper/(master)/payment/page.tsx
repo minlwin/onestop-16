@@ -1,19 +1,20 @@
 'use client'
 
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { usePageTitle } from "../../_states/page-title-provider"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import Section from "@/components/widgets/section"
 import { Button } from "@/components/ui/button"
 import FormsInput from "@/components/widgets/forms/forms-input"
 import FormsSelect from "@/components/widgets/forms/forms-select"
-import { MASTER_STATUS, PaymentInfoSearchForm, PaymentInfoSearchSchema } from "@/lib/model/form/master-data.schema"
+import { MASTER_STATUS, PaymentInfoForm, PaymentInfoSchema, PaymentInfoSearchForm, PaymentInfoSearchSchema } from "@/lib/model/form/master-data.schema"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { Search } from "@hugeicons/core-free-icons"
+import { Save, Search } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { useForm } from "react-hook-form"
 import AddNewBtn from "@/components/widgets/add-new-btn"
 import DetailsLink from "@/components/widgets/details-link"
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 
 export default function PaymentInfoMasterPage() {
 
@@ -23,15 +24,58 @@ export default function PaymentInfoMasterPage() {
         setTitle('Payment Info Master')
     }, [])
 
+    const [open, setOpen] = useState(false)
+    const form = useForm<PaymentInfoForm>({
+        resolver: zodResolver(PaymentInfoSchema),
+        defaultValues: {
+            bank: '',
+            accountNo: '',
+            accountName: '',
+            status: ''
+        }
+    })
+
+    const save = (form: PaymentInfoForm) => {
+
+    }
+
     return (
         <section className="space-y-6">
-            <SearchForm />
+            <SearchForm onAddNew={() => {
+                form.reset()
+                setOpen(true)
+            }} />
+            
             <ResultTable />
+
+            <Dialog open={open} onOpenChange={setOpen}>
+                <DialogContent>
+                    <form onSubmit={form.handleSubmit(save)}>
+                        <DialogHeader>
+                            <DialogTitle>Create Payment Information</DialogTitle>
+                            <DialogDescription>Add a new payment method with its bank, account, and status details.</DialogDescription>
+                        </DialogHeader>
+
+                        <section className="my-4 space-y-4">
+                            <FormsInput control={form.control} path="bank" label="Bank / Provider" />
+                            <FormsInput control={form.control} path="accountNo" label="Account No" />
+                            <FormsInput control={form.control} path="accountName" label="Account Name" />
+                            <FormsSelect control={form.control} path="status" label="Status" options={MASTER_STATUS} />
+                        </section>
+
+                        <DialogFooter>
+                            <Button type="submit">
+                                <HugeiconsIcon icon={Save} /> Save
+                            </Button>
+                        </DialogFooter>
+                    </form>
+                </DialogContent>
+            </Dialog>
         </section>
     )
 }
 
-function SearchForm() {
+function SearchForm({onAddNew} : {onAddNew : VoidFunction}) {
     const form = useForm<PaymentInfoSearchForm>({
         resolver: zodResolver(PaymentInfoSearchSchema),
         defaultValues: {
@@ -45,8 +89,6 @@ function SearchForm() {
 
     }
 
-    const addNew = () => {}
-
     return (
         <Section>
             <form onSubmit={form.handleSubmit(search)} className="flex gap-4">
@@ -59,7 +101,7 @@ function SearchForm() {
                         <HugeiconsIcon icon={Search} /> Search
                     </Button>
 
-                    <AddNewBtn onClick={addNew} />
+                    <AddNewBtn onClick={onAddNew} />
                 </div>
             </form>
         </Section>
