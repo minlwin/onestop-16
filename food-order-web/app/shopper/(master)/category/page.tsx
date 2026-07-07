@@ -125,7 +125,7 @@ function ResultTable() {
                         <TableCell>2020-01-01 09:00</TableCell>
                         <TableCell>2023-05-01 10:00</TableCell>
                         <TableCell className="flex justify-center">
-                            <DetailsLink url="" />
+                            <DetailsLink url="/shopper/category/1" />
                         </TableCell>
                     </TableRow>
                 </TableBody>
