@@ -90,7 +90,7 @@ function ResultTable() {
                         <TableCell>2026-06-28 9:00am</TableCell>
                         <TableCell className="text-end">90,000 MMK</TableCell>
                         <TableCell className="flex justify-center">
-                            <DetailsLink url="" />
+                            <DetailsLink url={`/shopper/invoices/1`} />
                         </TableCell>
                     </TableRow>
                 </TableBody>

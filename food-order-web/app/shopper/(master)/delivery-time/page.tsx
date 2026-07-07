@@ -13,8 +13,8 @@ import { Save, Search } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { useForm } from "react-hook-form"
 import AddNewBtn from "@/components/widgets/add-new-btn"
-import DetailsLink from "@/components/widgets/details-link"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import EditLink from "@/components/widgets/edit-link"
 
 export default function DeliveryTimeMasterPage() {
     const {setTitle} = usePageTitle()
@@ -32,6 +32,18 @@ export default function DeliveryTimeMasterPage() {
         }
     })
     const [open, setOpen] = useState(false)
+    const [id, setId] = useState<string>()
+
+    const addNew = () => {
+        setId(undefined)
+        form.reset()
+        setOpen(true)
+    }
+
+    const edit = (id: string) => {
+        setId(id)
+        setOpen(true)
+    }
 
     const save = (form:DeliTimeForm) => {
         console.log(form)
@@ -40,18 +52,15 @@ export default function DeliveryTimeMasterPage() {
 
     return (
         <section className="space-y-6">
-            <SearchForm onAddNew={() => {
-                form.reset()
-                setOpen(true)
-            }}/>
+            <SearchForm onAddNew={addNew}/>
 
-            <ResultTable />
+            <ResultTable onEdit={edit} />
 
             <Dialog open={open} onOpenChange={setOpen}>
                 <DialogContent>
                     <form onSubmit={form.handleSubmit(save)}>
                         <DialogHeader>
-                            <DialogTitle>Create Delivery Time</DialogTitle>
+                            <DialogTitle>{id == undefined ? 'Create' : 'Edit'} Delivery Time</DialogTitle>
                             <DialogDescription>Define a delivery time slot by setting the start and end time.</DialogDescription>
                         </DialogHeader>
 
@@ -106,7 +115,7 @@ function SearchForm({onAddNew} : {onAddNew : VoidFunction}) {
     )
 }
 
-function ResultTable() {
+function ResultTable({onEdit} : {onEdit : (id:any) => void}) {
     return (
         <Section>
             <Table>
@@ -129,7 +138,7 @@ function ResultTable() {
                         <TableCell>2020-01-01 09:00</TableCell>
                         <TableCell>2023-05-01 10:00</TableCell>
                         <TableCell className="flex justify-center">
-                            <DetailsLink url="" />
+                            <EditLink onClick={() => onEdit(10)} />
                         </TableCell>
                     </TableRow>
                 </TableBody>

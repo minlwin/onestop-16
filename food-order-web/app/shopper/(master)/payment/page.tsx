@@ -13,8 +13,9 @@ import { Save, Search } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { useForm } from "react-hook-form"
 import AddNewBtn from "@/components/widgets/add-new-btn"
-import DetailsLink from "@/components/widgets/details-link"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import EditLink from "@/components/widgets/edit-link"
+import { EditAction } from "@/lib/utils"
 
 export default function PaymentInfoMasterPage() {
 
@@ -24,6 +25,7 @@ export default function PaymentInfoMasterPage() {
         setTitle('Payment Info Master')
     }, [])
 
+    const [id, setId] = useState<string>()
     const [open, setOpen] = useState(false)
     const form = useForm<PaymentInfoForm>({
         resolver: zodResolver(PaymentInfoSchema),
@@ -35,24 +37,33 @@ export default function PaymentInfoMasterPage() {
         }
     })
 
-    const save = (form: PaymentInfoForm) => {
+    const addNew = () => {
+        setId(undefined)
+        form.reset()
+        setOpen(true)
+    }
 
+    const edit = (id:any) => {
+        setId(id)
+        setOpen(true)
+    }
+
+    const save = (form: PaymentInfoForm) => {
+        console.log(form)
+        setOpen(false)
     }
 
     return (
         <section className="space-y-6">
-            <SearchForm onAddNew={() => {
-                form.reset()
-                setOpen(true)
-            }} />
+            <SearchForm onAddNew={addNew} />
             
-            <ResultTable />
+            <ResultTable onEdit={edit} />
 
             <Dialog open={open} onOpenChange={setOpen}>
                 <DialogContent>
                     <form onSubmit={form.handleSubmit(save)}>
                         <DialogHeader>
-                            <DialogTitle>Create Payment Information</DialogTitle>
+                            <DialogTitle>{id == undefined ? 'Create' : 'Edit'} Payment Information</DialogTitle>
                             <DialogDescription>Add a new payment method with its bank, account, and status details.</DialogDescription>
                         </DialogHeader>
 
@@ -108,7 +119,7 @@ function SearchForm({onAddNew} : {onAddNew : VoidFunction}) {
     )
 }
 
-function ResultTable() {
+function ResultTable({onEdit} : {onEdit : EditAction}) {
     return (
         <Section>
             <Table>
@@ -133,7 +144,7 @@ function ResultTable() {
                         <TableCell>2020-01-01 09:00</TableCell>
                         <TableCell>2023-05-01 10:00</TableCell>
                         <TableCell className="flex justify-center">
-                            <DetailsLink url="" />
+                            <EditLink onClick={() => onEdit(1)} />
                         </TableCell>
                     </TableRow>
                 </TableBody>

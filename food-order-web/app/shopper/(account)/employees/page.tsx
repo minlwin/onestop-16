@@ -10,12 +10,12 @@ import FormsSelect from "@/components/widgets/forms/forms-select"
 import FormsInput from "@/components/widgets/forms/forms-input"
 import { Button } from "@/components/ui/button"
 import { HugeiconsIcon } from "@hugeicons/react"
-import { Plus, Save, Search } from "@hugeicons/core-free-icons"
-import Link from "next/link"
+import { Save, Search } from "@hugeicons/core-free-icons"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import DetailsLink from "@/components/widgets/details-link"
 import AddNewBtn from "@/components/widgets/add-new-btn"
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { EditAction } from "@/lib/utils"
+import EditLink from "@/components/widgets/edit-link"
 
 export default function EmployeeManagementPage() {
     
@@ -25,6 +25,7 @@ export default function EmployeeManagementPage() {
         setTitle('Employee Management')
     }, [])
 
+    const [id, setId] = useState<string>()
     const [open, setOpen] = useState(false)
     const form = useForm<EmployeeForm>({
         resolver: zodResolver(EmployeeSchema),
@@ -32,9 +33,21 @@ export default function EmployeeManagementPage() {
             name: '',
             email: '',
             phone: '',
-            entryAt: ''
+            entryAt: '',
+            retireAt: ''
         }
     })
+
+    const addNew = () => {
+        setId(undefined)
+        form.reset()
+        setOpen(true)
+    }
+
+    const edit = (id : string) => {
+        setId(id)
+        setOpen(true)
+    }
 
     const save = (form: EmployeeForm) => {
         console.log(form)
@@ -43,12 +56,9 @@ export default function EmployeeManagementPage() {
 
     return (
         <section className="space-y-6">
-            <SearchForm onAddNew={() => {
-                form.reset()
-                setOpen(true)
-            }} />
+            <SearchForm onAddNew={addNew} />
 
-            <ResultTable />
+            <ResultTable onEdit={edit} />
 
             <Dialog open={open} onOpenChange={setOpen}>
                 <DialogContent>
@@ -61,11 +71,12 @@ export default function EmployeeManagementPage() {
                             <FormsInput control={form.control} path="name" label="Name" />
                             <FormsInput control={form.control} path="phone" label="Phone" />
                             <FormsInput control={form.control} path="email" label="Email" />
-                            <FormsInput control={form.control} path="entryAt" label="Entry Date" type="date" />
+                            <FormsInput control={form.control} path="entryAt" label="Entry Date" type="date" className={id != undefined ? 'hidden' : ''} />
+                            <FormsInput control={form.control} path="retireAt" label="Retire Date" type="date" className={id == undefined ? 'hidden' : ''} />
                         </section>
 
                         <DialogFooter>
-                            <Button type="submit">
+                            <Button type="submit" disabled={!form.formState.isValid}>
                                 <HugeiconsIcon icon={Save} /> Save 
                             </Button>
                         </DialogFooter>
@@ -87,7 +98,7 @@ function SearchForm({onAddNew} : {onAddNew : VoidFunction}) {
     })
 
     const search = (form: EmployeeSearchForm) => {
-
+        console.log(form)
     }
 
     return (
@@ -110,7 +121,7 @@ function SearchForm({onAddNew} : {onAddNew : VoidFunction}) {
     )
 }
 
-function ResultTable() {
+function ResultTable({onEdit} : {onEdit : EditAction}) {
     return (
         <Section>
             <Table>
@@ -133,7 +144,7 @@ function ResultTable() {
                         <TableCell>2020-01-01</TableCell>
                         <TableCell></TableCell>
                         <TableCell className="flex items-center justify-center">
-                            <DetailsLink url="" />
+                            <EditLink onClick={() => onEdit(1)} />
                         </TableCell>
                     </TableRow>
                 </TableBody>

@@ -82,7 +82,7 @@ function ResultTable() {
                         <TableHead>2025/10/01</TableHead>
                         <TableCell className="text-end">20</TableCell>
                         <TableCell className="flex justify-center">
-                            <DetailsLink url="" />
+                            <DetailsLink url="/shopper/customers/1" />
                         </TableCell>
                     </TableRow>
                 </TableBody>

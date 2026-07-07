@@ -20,6 +20,7 @@ export const EmployeeSchema = z.object({
     phone : z.string().nonempty('Please enter phone number.'),
     email : z.string().nonempty('Please enter email address.'),
     entryAt : z.string().nonempty('Please enter entry date.'),
+    retireAt: z.string().optional()
 })
 
 export type EmployeeForm = z.infer<typeof EmployeeSchema>

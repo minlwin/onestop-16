@@ -84,7 +84,7 @@ function ResultTable() {
                         <TableCell>09:00AM - 11:00AM</TableCell>
                         <TableCell>Yangon, Kamayut</TableCell>
                         <TableCell className="flex justify-center">
-                            <DetailsLink url="" />
+                            <DetailsLink url={`/shopper/invoices/1`} />
                         </TableCell>
                     </TableRow>
                 </TableBody>
