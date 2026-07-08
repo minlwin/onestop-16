@@ -1,7 +1,7 @@
 'use client'
 import { Button } from "@/components/ui/button"
 import FormsInput from "@/components/widgets/forms/forms-input"
-import { SignUpForm, SignUpSchema } from "@/lib/model/form/auth.schema"
+import { SignUpForm, SignUpSchema } from "@/lib/model/form/security.schema"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { CheckFreeIcons, Login02Icon, UserAdd02Icon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
