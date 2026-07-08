@@ -1,7 +1,28 @@
-import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar";
-import { Calendar02FreeIcons, ChefHatFreeIcons, ClockAlertIcon, Dish02FreeIcons, ShoppingBag02Icon, Tag02FreeIcons, TruckDeliveryFreeIcons, UserAiFreeIcons, UserCheck02FreeIcons, Wallet02FreeIcons } from "@hugeicons/core-free-icons";
-import { HugeiconsIcon, IconSvgElement } from "@hugeicons/react";
-import Link from "next/link";
+import {
+    Sidebar,
+    SidebarContent,
+    SidebarGroup,
+    SidebarGroupContent,
+    SidebarGroupLabel,
+    SidebarHeader,
+    SidebarMenu,
+    SidebarMenuButton,
+    SidebarMenuItem,
+} from "@/components/ui/sidebar"
+import {
+    Calendar02FreeIcons,
+    ChefHatFreeIcons,
+    ClockAlertIcon,
+    Dish02FreeIcons,
+    ShoppingBag02Icon,
+    Tag02FreeIcons,
+    TruckDeliveryFreeIcons,
+    UserAiFreeIcons,
+    UserCheck02FreeIcons,
+    Wallet02FreeIcons,
+} from "@hugeicons/core-free-icons"
+import { HugeiconsIcon, IconSvgElement } from "@hugeicons/react"
+import Link from "next/link"
 
 export function ManagementMenu() {
     return (
@@ -18,12 +39,12 @@ export function ManagementMenu() {
                 </div>
             </SidebarHeader>
             <SidebarContent>
-                {MENUS.map((group, index) => 
+                {MENUS.map((group, index) => (
                     <SidebarGroup key={index}>
                         <SidebarGroupLabel>{group.name}</SidebarGroupLabel>
                         <SidebarGroupContent>
                             <SidebarMenu>
-                                {group.menus.map((item, itemIndex) => 
+                                {group.menus.map((item, itemIndex) => (
                                     <SidebarMenuItem key={`${index}-${itemIndex}`}>
                                         <SidebarMenuButton asChild>
                                             <Link href={`/shopper/${item.link}`}>
@@ -31,20 +52,19 @@ export function ManagementMenu() {
                                             </Link>
                                         </SidebarMenuButton>
                                     </SidebarMenuItem>
-                                )}
+                                ))}
                             </SidebarMenu>
                         </SidebarGroupContent>
                     </SidebarGroup>
-                )}
+                ))}
             </SidebarContent>
         </Sidebar>
     )
 }
 
-
 type MenuGroup = {
-    name : string
-    menus : MenuItem []
+    name: string
+    menus: MenuItem[]
 }
 
 type MenuItem = {
@@ -53,65 +73,65 @@ type MenuItem = {
     link: string
 }
 
-const MENUS : MenuGroup[] = [
+const MENUS: MenuGroup[] = [
     {
         name: "Management",
         menus: [
             {
-                name : 'Order Management',
-                icon : ShoppingBag02Icon,
-                link: 'orders'
+                name: "Order Management",
+                icon: ShoppingBag02Icon,
+                link: "orders",
             },
             {
-                name : 'Delivery Management',
-                icon : TruckDeliveryFreeIcons,
-                link: 'delivery'
+                name: "Delivery Management",
+                icon: TruckDeliveryFreeIcons,
+                link: "delivery",
             },
             {
-                name : 'Invoice History',
-                icon : Calendar02FreeIcons,
-                link: 'invoices'
+                name: "Invoice History",
+                icon: Calendar02FreeIcons,
+                link: "invoices",
             },
-        ]
+        ],
     },
     {
         name: "Master Data",
         menus: [
             {
-                name : 'Category Master',
-                icon : Tag02FreeIcons,
-                link: 'category'
+                name: "Category Master",
+                icon: Tag02FreeIcons,
+                link: "category",
             },
             {
-                name : 'Cuisine Master',
-                icon : Dish02FreeIcons,
-                link: 'cuisine'
+                name: "Cuisine Master",
+                icon: Dish02FreeIcons,
+                link: "cuisine",
             },
             {
-                name : 'Delevery Times',
-                icon : ClockAlertIcon,
-                link: 'delivery-time'
+                name: "Delevery Times",
+                icon: ClockAlertIcon,
+                link: "delivery-time",
             },
             {
-                name : 'Payment Information',
-                icon : Wallet02FreeIcons,
-                link: 'payment'
-            }
-        ]
-    },    {
+                name: "Payment Information",
+                icon: Wallet02FreeIcons,
+                link: "payment",
+            },
+        ],
+    },
+    {
         name: "Accounts",
         menus: [
             {
-                name : 'Customers',
-                icon : UserAiFreeIcons,
-                link: 'customers'
+                name: "Customers",
+                icon: UserAiFreeIcons,
+                link: "customers",
             },
             {
-                name : 'Employee',
-                icon : UserCheck02FreeIcons,
-                link: 'employees'
-            }
-
-        ]
+                name: "Employee",
+                icon: UserCheck02FreeIcons,
+                link: "employees",
+            },
+        ],
     },
-];
+]

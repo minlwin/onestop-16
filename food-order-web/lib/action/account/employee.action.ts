@@ -1,4 +1,4 @@
-'use server'
+"use server"
 
 import { ModificationResult } from "@/lib/model"
 import { EmployeeForm, EmployeeSearchForm } from "@/lib/model/form/account.schema"
@@ -10,7 +10,7 @@ export async function search(form: EmployeeSearchForm): Promise<EmployeeListItem
     return await client.search(form)
 }
 
-export async function findById(id: any): Promise<EmployeeForm & {id: number}> {
+export async function findById(id: any): Promise<EmployeeForm & { id: number }> {
     return await client.findById(id)
 }
 

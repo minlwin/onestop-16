@@ -1,4 +1,4 @@
-'use client'
+"use client"
 
 import { useEffect, useState } from "react"
 import { useParams } from "next/navigation"
@@ -16,6 +16,7 @@ import { CategoryForm, CategorySchema, MASTER_STATUS } from "@/lib/model/form/ma
 import { CategoryDetails } from "@/lib/model/output/master-data.model"
 import * as service from "@/lib/action/master/category.action"
 import LoadingWidget from "@/components/widgets/loading-widget"
+import { useFetch } from "@/hooks/use-fetch"
 
 /**
  * Display Category Name and Cuisines Belong to This Category
@@ -23,29 +24,18 @@ import LoadingWidget from "@/components/widgets/loading-widget"
  */
 export default function CategoryDetailsPage() {
     const { setTitle } = usePageTitle()
-    useEffect(() => setTitle('Category Details'), [])
+    useEffect(() => setTitle("Category Details"), [])
 
     const { id } = useParams()
-    const [category, setCategory] = useState<CategoryDetails>()
-
-    useEffect(() => {
-        const load = async () => {
-            if(id) {
-                const result = await service.findById(id)
-                setCategory(result) 
-            }
-        }
-        load()
-    }, [id])
-
+    const [category, setCategory] = useFetch(() => (id ? service.findById(id) : undefined), [id])
 
     const [isEditing, setEditing] = useState(false)
     const form = useForm<CategoryForm>({
         resolver: zodResolver(CategorySchema),
         defaultValues: {
             name: category?.name ?? "",
-            status: category?.status ?? ""
-        }
+            status: category?.status ?? "",
+        },
     })
 
     const startEdit = () => {
@@ -60,10 +50,8 @@ export default function CategoryDetailsPage() {
         setEditing(false)
     }
 
-    if(!category) {
-        return (
-            <LoadingWidget />
-        )
+    if (!category) {
+        return <LoadingWidget />
     }
 
     return (
@@ -73,11 +61,20 @@ export default function CategoryDetailsPage() {
                     <form onSubmit={form.handleSubmit(save)} className="space-y-4">
                         <div className="grid grid-cols-2 gap-4">
                             <FormsInput control={form.control} path="name" label="Category Name" />
-                            <FormsSelect control={form.control} path="status" label="Status" options={MASTER_STATUS} />
+                            <FormsSelect
+                                control={form.control}
+                                path="status"
+                                label="Status"
+                                options={MASTER_STATUS}
+                            />
                         </div>
 
                         <div className="flex justify-end gap-2">
-                            <Button type="button" variant="outline" onClick={() => setEditing(false)}>
+                            <Button
+                                type="button"
+                                variant="outline"
+                                onClick={() => setEditing(false)}
+                            >
                                 <HugeiconsIcon icon={Cancel} /> Cancel
                             </Button>
 
@@ -123,7 +120,7 @@ export default function CategoryDetailsPage() {
                 <h3 className="text-xl font-semibold text-primary">Cuisines</h3>
 
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                    {category.cusines.map(cuisine => (
+                    {category.cusines.map((cuisine) => (
                         <CuisineCard key={cuisine.id} cuisine={cuisine} />
                     ))}
                 </div>

@@ -20,7 +20,6 @@ export default function CuisineCard({ cuisine }: { cuisine: CuisineListItem }) {
                 <DetailsLink url={`/shopper/cuisine/${cuisine.id}`} label="Show Details" />
             </CardHeader>
 
-
             <CardContent>
                 <div className="space-y-1 text-sm text-muted-foreground">
                     <p>Status: {cuisine.status}</p>

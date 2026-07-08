@@ -1,8 +1,15 @@
-'use client'
+"use client"
 
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
 import { usePageTitle } from "../../_states/page-title-provider"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from "@/components/ui/table"
 import Section from "@/components/widgets/section"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { Search } from "@hugeicons/core-free-icons"
@@ -16,10 +23,11 @@ import { CustomerListItem } from "@/lib/model/output/account.model"
 import { PageResult } from "@/lib/model"
 import Pagination from "@/components/widgets/pagination"
 import NoDataWidget from "@/components/widgets/no-data"
+import { useFetch } from "@/hooks/use-fetch"
 
 import * as service from "@/lib/action/account/customer.action"
 
-const SEARCH_FORM:CustomerSearchForm = {
+const SEARCH_FORM: CustomerSearchForm = {
     from: "",
     to: "",
     keyword: "",
@@ -27,19 +35,17 @@ const SEARCH_FORM:CustomerSearchForm = {
 }
 
 export default function CustomerManagementPage() {
-    const {setTitle} = usePageTitle()
+    const { setTitle } = usePageTitle()
 
-    const [searchResult, setSearchResult] = useState<PageResult<CustomerListItem>>()
+    const [searchResult, setSearchResult] = useFetch(() => service.search(SEARCH_FORM), [])
 
     const form = useForm<CustomerSearchForm>({
         resolver: zodResolver(CustomerSearchSchema),
-        defaultValues: {...SEARCH_FORM}
+        defaultValues: { ...SEARCH_FORM },
     })
 
     useEffect(() => {
-        setTitle('Customer Management')
-        const load = async () => await search({...SEARCH_FORM})
-        load()
+        setTitle("Customer Management")
     }, [setTitle])
 
     const search = async (form: CustomerSearchForm) => {
@@ -47,7 +53,7 @@ export default function CustomerManagementPage() {
         setSearchResult(result)
     }
 
-    const onPageChange = async (page : number) => {
+    const onPageChange = async (page: number) => {
         form.setValue("page", page)
         await search(form.getValues())
     }
@@ -56,9 +62,26 @@ export default function CustomerManagementPage() {
         <section className="space-y-6">
             <Section>
                 <form onSubmit={form.handleSubmit(search)} className="flex gap-4">
-                    <FormsInput type="date" control={form.control} path="from" label="Date From" className="flex-1" />
-                    <FormsInput type="date" control={form.control} path="to" label="Date To" className="flex-1" />
-                    <FormsInput control={form.control} path="keyword" label="Keyword" className="flex-2" />
+                    <FormsInput
+                        type="date"
+                        control={form.control}
+                        path="from"
+                        label="Date From"
+                        className="flex-1"
+                    />
+                    <FormsInput
+                        type="date"
+                        control={form.control}
+                        path="to"
+                        label="Date To"
+                        className="flex-1"
+                    />
+                    <FormsInput
+                        control={form.control}
+                        path="keyword"
+                        label="Keyword"
+                        className="flex-2"
+                    />
                     <div className="flex-4 flex items-end">
                         <Button type="submit">
                             <HugeiconsIcon icon={Search} /> Search
@@ -74,8 +97,8 @@ export default function CustomerManagementPage() {
     )
 }
 
-function ResultTable({list} : {list: CustomerListItem[]}) {
-    if(list.length === 0) {
+function ResultTable({ list }: { list: CustomerListItem[] }) {
+    if (list.length === 0) {
         return (
             <Section>
                 <NoDataWidget />
@@ -98,7 +121,7 @@ function ResultTable({list} : {list: CustomerListItem[]}) {
                 </TableHeader>
 
                 <TableBody>
-                    {list.map(item =>
+                    {list.map((item) => (
                         <TableRow key={item.id}>
                             <TableCell>{item.name}</TableCell>
                             <TableCell>{item.phone}</TableCell>
@@ -109,9 +132,9 @@ function ResultTable({list} : {list: CustomerListItem[]}) {
                                 <DetailsLink url={`/shopper/customers/${item.id}`} />
                             </TableCell>
                         </TableRow>
-                    )}
+                    ))}
                 </TableBody>
             </Table>
         </Section>
-    );
+    )
 }

@@ -1,38 +1,33 @@
-'use client'
+"use client"
 
 import { usePageTitle } from "@/app/shopper/_states/page-title-provider"
 import { useParams } from "next/navigation"
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
 import Section from "@/components/widgets/section"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from "@/components/ui/table"
 import { CustomerDetails } from "@/lib/model/output/account.model"
 import LoadingWidget from "@/components/widgets/loading-widget"
+import { useFetch } from "@/hooks/use-fetch"
 
 import * as service from "@/lib/action/account/customer.action"
 
 export default function CustomerDetailsPage() {
-
     const { setTitle } = usePageTitle()
-    useEffect(() => setTitle('Customer Details'), [])
+    useEffect(() => setTitle("Customer Details"), [])
 
     const { id } = useParams()
 
-    const [customer, setCustomer] = useState<CustomerDetails>()
+    const [customer] = useFetch(() => (id ? service.findById(id) : undefined), [id])
 
-    useEffect(() => {
-        const load = async () => {
-            if(id) {
-                const result = await service.findById(id)
-                setCustomer(result)
-            }
-        }
-        load()
-    }, [id])
-
-    if(!customer) {
-        return (
-            <LoadingWidget />
-        )
+    if (!customer) {
+        return <LoadingWidget />
     }
 
     const { addresses, orderSummary } = customer
@@ -79,7 +74,7 @@ export default function CustomerDetailsPage() {
                             </TableHeader>
 
                             <TableBody>
-                                {addresses.map(address => (
+                                {addresses.map((address) => (
                                     <TableRow key={address.id}>
                                         <TableCell>{address.label}</TableCell>
                                         <TableCell>{address.address}</TableCell>
@@ -106,7 +101,7 @@ export default function CustomerDetailsPage() {
                             </TableHeader>
 
                             <TableBody>
-                                {orderSummary.map(summary => (
+                                {orderSummary.map((summary) => (
                                     <TableRow key={summary.status}>
                                         <TableCell>{summary.status}</TableCell>
                                         <TableCell className="text-end">{summary.count}</TableCell>

@@ -1,4 +1,4 @@
-'use client'
+"use client"
 
 import { Button } from "@/components/ui/button"
 import { SidebarTrigger } from "@/components/ui/sidebar"
@@ -7,8 +7,7 @@ import { HugeiconsIcon } from "@hugeicons/react"
 import { usePageTitle } from "../_states/page-title-provider"
 
 export default function ManagementHeader() {
-
-    const {title} = usePageTitle()
+    const { title } = usePageTitle()
 
     return (
         <header className="flex justify-between items-center px-8 py-4">
@@ -21,14 +20,14 @@ export default function ManagementHeader() {
                 <HugeiconsIcon icon={ArrowRight} size={20} />
 
                 <div>
-                    <h1 className="uppercase">{title || 'Dashboard'}</h1>
+                    <h1 className="uppercase">{title || "Dashboard"}</h1>
                 </div>
             </div>
 
-            <Button variant={'ghost'}>
+            <Button variant={"ghost"}>
                 <HugeiconsIcon icon={SignOut} />
                 <span>Sign Out</span>
             </Button>
-        </header>        
+        </header>
     )
 }

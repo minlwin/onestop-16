@@ -1,11 +1,13 @@
 package com.jdc.foods.api.shopper.master.input;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import com.jdc.foods.model.consts.Status;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import jakarta.validation.Valid;
 
 public record CuisineForm(
@@ -18,6 +20,9 @@ public record CuisineForm(
 		boolean isRegular,
 		@NotBlank(message = "Please select spice level.")
 		String spiceLevel,
+		@NotNull(message = "Please enter price.")
+		@Positive(message = "Please enter a valid price.")
+		BigDecimal price,
 		@NotNull(message = "Please select status.")
 		Status status,
 		@Valid

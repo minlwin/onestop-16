@@ -1,11 +1,22 @@
-'use client'
+"use client"
 
 import { useEffect } from "react"
 import { usePageTitle } from "../../_states/page-title-provider"
 import Section from "@/components/widgets/section"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from "@/components/ui/table"
 import DetailsLink from "@/components/widgets/details-link"
-import { INVOICE_STATUS_OPTION, InvoiceSearchForm, InvoiceSearchSchema } from "@/lib/model/form/management.schema"
+import {
+    INVOICE_STATUS_OPTION,
+    InvoiceSearchForm,
+    InvoiceSearchSchema,
+} from "@/lib/model/form/management.schema"
 import { Button } from "@/components/ui/button"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Search } from "@hugeicons/core-free-icons"
@@ -15,11 +26,10 @@ import FormsSelect from "@/components/widgets/forms/forms-select"
 import FormsInput from "@/components/widgets/forms/forms-input"
 
 export default function InvoiceHistoryPage() {
-
-    const {setTitle} = usePageTitle()
+    const { setTitle } = usePageTitle()
 
     useEffect(() => {
-        setTitle('Invoice History')
+        setTitle("Invoice History")
     }, [])
 
     return (
@@ -37,21 +47,42 @@ function SearchForm() {
             status: "",
             from: "",
             to: "",
-            keyword: ""
-        }
+            keyword: "",
+        },
     })
 
-    const search = (form: InvoiceSearchForm) => {
-
-    }
+    const search = (form: InvoiceSearchForm) => {}
 
     return (
         <Section>
             <form onSubmit={form.handleSubmit(search)} className="flex gap-4">
-                <FormsSelect control={form.control} path="status" label="Status" options={INVOICE_STATUS_OPTION} className="flex-1" />
-                <FormsInput control={form.control} path="from" label="Date From" type="date" className="flex-1" />
-                <FormsInput control={form.control} path="to" label="Date To" type="date" className="flex-1" />
-                <FormsInput control={form.control} path="keyword" label="Keyword" className="flex-2" />
+                <FormsSelect
+                    control={form.control}
+                    path="status"
+                    label="Status"
+                    options={INVOICE_STATUS_OPTION}
+                    className="flex-1"
+                />
+                <FormsInput
+                    control={form.control}
+                    path="from"
+                    label="Date From"
+                    type="date"
+                    className="flex-1"
+                />
+                <FormsInput
+                    control={form.control}
+                    path="to"
+                    label="Date To"
+                    type="date"
+                    className="flex-1"
+                />
+                <FormsInput
+                    control={form.control}
+                    path="keyword"
+                    label="Keyword"
+                    className="flex-2"
+                />
 
                 <div className="flex-1 flex items-end">
                     <Button type="submit">

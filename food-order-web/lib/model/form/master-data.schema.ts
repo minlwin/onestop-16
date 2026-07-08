@@ -1,28 +1,30 @@
-import z from "zod";
-import { PageSearch } from "..";
+import z from "zod"
+import { PageSearch } from ".."
 
 export const MASTER_STATUS: {
     value: string
     label: string
 }[] = [
-    {value : 'Pending', label: 'Pending'},
-    {value : 'Enable', label: 'Enable'},
+    { value: "Pending", label: "Pending" },
+    { value: "Enable", label: "Enable" },
 ]
 
 export const CategorySearchSchema = z.object({
     status: z.enum(["Pending", "Enable", ""]),
-    keyword: z.string()
+    keyword: z.string(),
 })
 
 export type CategorySearchForm = z.infer<typeof CategorySearchSchema>
 
-export const CategorySchema = z.object({
-    name : z.string().nonempty("Please enter category name."),
-    status: z.enum(["Pending", "Enable", ""]).nonoptional("Please select status.")
-}).refine(data => data.status !== "", {
-    message: "Please select status.",
-    path: ['status']
-})
+export const CategorySchema = z
+    .object({
+        name: z.string().nonempty("Please enter category name."),
+        status: z.enum(["Pending", "Enable", ""]).nonoptional("Please select status."),
+    })
+    .refine((data) => data.status !== "", {
+        message: "Please select status.",
+        path: ["status"],
+    })
 
 export type CategoryForm = z.infer<typeof CategorySchema>
 
@@ -30,84 +32,94 @@ export const CATEGORY_OPTIONS: {
     value: string
     label: string
 }[] = [
-    {value: 'Curry', label: 'Curry'},
-    {value: 'Salad', label: 'Salad'},
-    {value: 'Soup', label: 'Soup'},
-    {value: 'Dessert', label: 'Dessert'},
+    { value: "Curry", label: "Curry" },
+    { value: "Salad", label: "Salad" },
+    { value: "Soup", label: "Soup" },
+    { value: "Dessert", label: "Dessert" },
 ]
 
 export const SPICE_LEVEL_OPTIONS: {
     value: string
     label: string
 }[] = [
-    {value: 'Mild', label: 'Mild'},
-    {value: 'Medium', label: 'Medium'},
-    {value: 'High', label: 'High'},
-    {value: 'So High', label: 'So High'},
+    { value: "Mild", label: "Mild" },
+    { value: "Medium", label: "Medium" },
+    { value: "High", label: "High" },
+    { value: "So High", label: "So High" },
 ]
 
 export const CuisineSearchSchema = z.object({
     status: z.enum(["Pending", "Enable", ""]),
-    keyword: z.string()
+    keyword: z.string(),
 })
 
 export type CuisineSearchForm = z.infer<typeof CuisineSearchSchema> & PageSearch
 
-export const CuisineSchema = z.object({
-    name: z.string().nonempty("Please enter cuisine name."),
-    description: z.string().nonempty("Please enter description."),
-    category: z.string().nonempty("Please select category."),
-    isRegular: z.boolean().nonoptional(),
-    spiceLevel: z.enum(['', 'Mild', 'Medium', 'High', 'So High']),
-    status: z.enum(['Pending', 'Enable', '']),
-    ingredients: z.array(z.object({
-        name: z.string().nonempty("Please enter ingredient name."),
-        value: z.string().nonempty("Please enter ingredient value.")
-    }))
-}).refine(data => data.spiceLevel !== '', {
-    message: "Please select spice level.",
-    path: ['spiceLevel']
-}).refine(data => data.status !== '', {
-    message: "Please select status.",
-    path: ['status']
-})
+export const CuisineSchema = z
+    .object({
+        name: z.string().nonempty("Please enter cuisine name."),
+        description: z.string().nonempty("Please enter description."),
+        category: z.string().nonempty("Please select category."),
+        isRegular: z.boolean().nonoptional(),
+        spiceLevel: z.enum(["", "Mild", "Medium", "High", "So High"]),
+        price: z.number().positive("Please enter a valid price."),
+        status: z.enum(["Pending", "Enable", ""]),
+        ingredients: z.array(
+            z.object({
+                name: z.string().nonempty("Please enter ingredient name."),
+                value: z.string().nonempty("Please enter ingredient value."),
+            })
+        ),
+    })
+    .refine((data) => data.spiceLevel !== "", {
+        message: "Please select spice level.",
+        path: ["spiceLevel"],
+    })
+    .refine((data) => data.status !== "", {
+        message: "Please select status.",
+        path: ["status"],
+    })
 
 export type CuisineForm = z.infer<typeof CuisineSchema>
 
 export const DeliTimeSearchSchema = z.object({
     status: z.enum(["Pending", "Enable", ""]),
-    time: z.string()
+    time: z.string(),
 })
 
 export type DeliTimeSearchForm = z.infer<typeof DeliTimeSearchSchema>
 
-export const DeliTimeSchema = z.object({
-    timeFrom : z.string().nonempty("Please enter start time."),
-    timeTo: z.string().nonempty("Please enter end time."),
-    status: z.enum(["Pending", "Enable", ""])
-}).refine(data => data.status !== "", {
-    message: "Please select status.",
-    path: ['status']
-})
+export const DeliTimeSchema = z
+    .object({
+        timeFrom: z.string().nonempty("Please enter start time."),
+        timeTo: z.string().nonempty("Please enter end time."),
+        status: z.enum(["Pending", "Enable", ""]),
+    })
+    .refine((data) => data.status !== "", {
+        message: "Please select status.",
+        path: ["status"],
+    })
 
 export type DeliTimeForm = z.infer<typeof DeliTimeSchema>
 
 export const PaymentInfoSearchSchema = z.object({
     status: z.enum(["Pending", "Enable", ""]),
     bank: z.string(),
-    account: z.string()
+    account: z.string(),
 })
 
 export type PaymentInfoSearchForm = z.infer<typeof PaymentInfoSearchSchema>
 
-export const PaymentInfoSchema = z.object({
-    bank: z.string().nonempty("Please enter bank name."),
-    accountNo: z.string().nonempty("Please enter account no."),
-    accountName: z.string().nonempty("Please enter account name."),
-    status: z.enum(["Pending", "Enable", ""]),
-}).refine(data => data.status !== "", {
-    message: "Please select status.",
-    path: ['status']
-})
+export const PaymentInfoSchema = z
+    .object({
+        bank: z.string().nonempty("Please enter bank name."),
+        accountNo: z.string().nonempty("Please enter account no."),
+        accountName: z.string().nonempty("Please enter account name."),
+        status: z.enum(["Pending", "Enable", ""]),
+    })
+    .refine((data) => data.status !== "", {
+        message: "Please select status.",
+        path: ["status"],
+    })
 
 export type PaymentInfoForm = z.infer<typeof PaymentInfoSchema>

@@ -1,13 +1,9 @@
-import React from "react";
+import React from "react"
 
-export default function CustomerLayout({children} : {children : React.ReactNode}) {
-
+export default function CustomerLayout({ children }: { children: React.ReactNode }) {
     return (
         <div>
-
-            <section>
-                {children}
-            </section>
+            <section>{children}</section>
         </div>
     )
 }

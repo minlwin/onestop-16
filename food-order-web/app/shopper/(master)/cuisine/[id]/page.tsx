@@ -1,6 +1,6 @@
-'use client'
+"use client"
 
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useRef } from "react"
 import { useParams, useRouter } from "next/navigation"
 import Image from "next/image"
 import { usePageTitle } from "@/app/shopper/_states/page-title-provider"
@@ -10,15 +10,20 @@ import { HugeiconsIcon } from "@hugeicons/react"
 import { Edit02Icon, ImageUploadIcon, StarIcon } from "@hugeicons/core-free-icons"
 import { CuisineDetails } from "@/lib/model/output/master-data.model"
 import LoadingWidget from "@/components/widgets/loading-widget"
+import { useFetch } from "@/hooks/use-fetch"
 
 import * as service from "@/lib/action/master/cuisine.action"
 
 function StatusBadge({ status }: { status: string }) {
-    const isEnabled = status === 'Enable'
+    const isEnabled = status === "Enable"
 
     return (
-        <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-medium ${isEnabled ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}`}>
-            <span className={`h-1.5 w-1.5 rounded-full ${isEnabled ? 'bg-emerald-500' : 'bg-amber-500'}`} />
+        <span
+            className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-medium ${isEnabled ? "bg-emerald-100 text-emerald-700" : "bg-amber-100 text-amber-700"}`}
+        >
+            <span
+                className={`h-1.5 w-1.5 rounded-full ${isEnabled ? "bg-emerald-500" : "bg-amber-500"}`}
+            />
             {status}
         </span>
     )
@@ -33,27 +38,15 @@ export default function CuisineDetailsPage() {
     const router = useRouter()
     const { setTitle } = usePageTitle()
 
-    const [cuisine, setCuisine] = useState<CuisineDetails>()
+    const [cuisine, setCuisine] = useFetch(() => (id ? service.findById(id) : undefined), [id])
     const fileInputRef = useRef<HTMLInputElement>(null)
 
     useEffect(() => {
         setTitle("Cuisine Details")
     }, [])
 
-    useEffect(() => {
-        const load = async () => {
-            if (id) {
-                const result = await service.findById(id)
-                setCuisine(result)
-            }
-        }
-        load()
-    }, [id])
-
     if (!cuisine) {
-        return (
-            <LoadingWidget />
-        )
+        return <LoadingWidget />
     }
 
     const photos = cuisine.photos ?? []
@@ -82,9 +75,11 @@ export default function CuisineDetailsPage() {
                         <span>{cuisine.category.name}</span>
                         <span>&middot;</span>
                         <StatusBadge status={cuisine.status} />
-                        {cuisine.isRegular &&
-                            <span className="rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-medium text-primary">Regular</span>
-                        }
+                        {cuisine.isRegular && (
+                            <span className="rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-medium text-primary">
+                                Regular
+                            </span>
+                        )}
                     </div>
                 </div>
 
@@ -113,13 +108,13 @@ export default function CuisineDetailsPage() {
                             )}
                         </div>
 
-                        {photos.length > 0 &&
+                        {photos.length > 0 && (
                             <div className="flex gap-3 overflow-x-auto pb-1">
-                                {photos.map(photo => (
+                                {photos.map((photo) => (
                                     <div
                                         key={photo}
                                         onClick={() => setCoverPhoto(photo)}
-                                        className={`group relative h-18 w-24 shrink-0 cursor-pointer overflow-hidden rounded-md ${photo === coverPhoto ? 'ring-2 ring-primary' : 'ring-1 ring-foreground/10'}`}
+                                        className={`group relative h-18 w-24 shrink-0 cursor-pointer overflow-hidden rounded-md ${photo === coverPhoto ? "ring-2 ring-primary" : "ring-1 ring-foreground/10"}`}
                                     >
                                         <Image
                                             src={photo}
@@ -130,19 +125,25 @@ export default function CuisineDetailsPage() {
                                             className="h-full w-full object-cover"
                                         />
 
-                                        {photo !== coverPhoto &&
+                                        {photo !== coverPhoto && (
                                             <span className="absolute inset-0 hidden items-center justify-center bg-black/40 group-hover:flex">
-                                                <HugeiconsIcon icon={StarIcon} size={16} color="#fff" />
+                                                <HugeiconsIcon
+                                                    icon={StarIcon}
+                                                    size={16}
+                                                    color="#fff"
+                                                />
                                             </span>
-                                        }
+                                        )}
 
-                                        {photo === coverPhoto &&
-                                            <span className="absolute inset-x-0 bottom-0 bg-primary py-0.5 text-center text-[10px] text-primary-foreground">Cover</span>
-                                        }
+                                        {photo === coverPhoto && (
+                                            <span className="absolute inset-x-0 bottom-0 bg-primary py-0.5 text-center text-[10px] text-primary-foreground">
+                                                Cover
+                                            </span>
+                                        )}
                                     </div>
                                 ))}
                             </div>
-                        }
+                        )}
 
                         <input
                             ref={fileInputRef}
@@ -150,18 +151,23 @@ export default function CuisineDetailsPage() {
                             accept="image/*"
                             multiple
                             hidden
-                            onChange={e => {
+                            onChange={(e) => {
                                 uploadPhotos(e.target.files)
                                 e.target.value = ""
                             }}
                         />
 
-                        <Button type="button" variant="outline" className="w-full" onClick={() => fileInputRef.current?.click()}>
+                        <Button
+                            type="button"
+                            variant="outline"
+                            className="w-full"
+                            onClick={() => fileInputRef.current?.click()}
+                        >
                             <HugeiconsIcon icon={ImageUploadIcon} /> Upload Photos
                         </Button>
                     </div>
                 </Section>
-                
+
                 <div className="lg:col-span-3 space-y-4">
                     <Section title="Details">
                         <div className="space-y-4">
@@ -172,12 +178,19 @@ export default function CuisineDetailsPage() {
                                 </div>
 
                                 <div>
+                                    <p className="text-sm text-muted-foreground">Price</p>
+                                    <p className="font-medium">{cuisine.price}</p>
+                                </div>
+
+                                <div>
                                     <p className="text-sm text-muted-foreground">Created At</p>
                                     <p className="font-medium">{cuisine.createdAt}</p>
                                 </div>
 
                                 <div>
-                                    <p className="text-sm text-muted-foreground">Status Changed At</p>
+                                    <p className="text-sm text-muted-foreground">
+                                        Status Changed At
+                                    </p>
                                     <p className="font-medium">{cuisine.modifiedAt}</p>
                                 </div>
                             </div>
@@ -189,17 +202,20 @@ export default function CuisineDetailsPage() {
                         </div>
                     </Section>
 
-                    {(cuisine.ingredients?.length ?? 0) > 0 &&
+                    {(cuisine.ingredients?.length ?? 0) > 0 && (
                         <Section title="Ingredients">
                             <div className="flex flex-wrap gap-2">
                                 {cuisine.ingredients!.map((ingredient, index) => (
-                                    <span key={index} className="rounded-full bg-emerald-100 px-3 py-1 text-xs font-medium text-emerald-800">
+                                    <span
+                                        key={index}
+                                        className="rounded-full bg-emerald-100 px-3 py-1 text-xs font-medium text-emerald-800"
+                                    >
                                         {ingredient.name}: {ingredient.value}
                                     </span>
                                 ))}
                             </div>
                         </Section>
-                    }
+                    )}
                 </div>
             </div>
         </section>

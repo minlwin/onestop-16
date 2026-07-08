@@ -13,7 +13,7 @@ export type Pager = {
 }
 
 export type PageResult<T> = {
-    contents: T[],
+    contents: T[]
     pager: Pager
 }
 
@@ -22,10 +22,10 @@ export type PageSearch = {
     size?: number
 }
 
-export const NO_RESULT_PAGER:Pager = {
+export const NO_RESULT_PAGER: Pager = {
     page: 0,
     size: 10,
     totalCount: 0,
     totalPage: 0,
-    links: []
+    links: [],
 }

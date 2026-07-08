@@ -1,8 +1,15 @@
-'use client'
+"use client"
 
 import { useEffect, useState } from "react"
 import Section from "@/components/widgets/section"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from "@/components/ui/table"
 import { CustomerInfo, DeliveryInfo, InvoiceDetails } from "@/lib/model/output/management.model"
 import LoadingWidget from "./loading-widget"
 
@@ -14,7 +21,7 @@ const MOCK_INVOICE: InvoiceDetails = {
     customer: {
         name: "U Win Ko",
         phone: "0917181777",
-        email: "winko@gmail.com"
+        email: "winko@gmail.com",
     },
     delivery: {
         label: "Home",
@@ -23,31 +30,29 @@ const MOCK_INVOICE: InvoiceDetails = {
         dispatchDate: "2026-06-30",
         timeFrom: "09:00AM",
         timeTo: "11:00AM",
-        fees: 3000
+        fees: 3000,
     },
     items: [
         { id: "1", cuisine: "Chicken Curry", quantity: 2, price: 18000 },
         { id: "2", cuisine: "Fish Curry", quantity: 3, price: 15000 },
         { id: "3", cuisine: "Ginger Salad", quantity: 1, price: 7000 },
-    ]
+    ],
 }
 
-export default function InvoiceDetailsWidget({id} : {id : string}) {
-
+export default function InvoiceDetailsWidget({ id }: { id: string }) {
     const [invoice, setInvoice] = useState<InvoiceDetails>()
 
-    const subtotal = invoice?.items.map(item => item.price * item.quantity).reduce((a, b) => a + b) ?? 0
+    const subtotal =
+        invoice?.items.map((item) => item.price * item.quantity).reduce((a, b) => a + b) ?? 0
     const deliveryFees = subtotal + (invoice?.delivery.fees ?? 0)
     const allTotal = subtotal + deliveryFees
-    
+
     useEffect(() => {
         setInvoice(MOCK_INVOICE)
     }, [id])
 
-    if(invoice === undefined) {
-        return (
-            <LoadingWidget />
-        )
+    if (invoice === undefined) {
+        return <LoadingWidget />
     }
 
     return (
@@ -74,12 +79,16 @@ export default function InvoiceDetailsWidget({id} : {id : string}) {
                             </TableHeader>
 
                             <TableBody>
-                                {invoice.items.map(item => (
+                                {invoice.items.map((item) => (
                                     <TableRow key={item.id}>
                                         <TableCell>{item.cuisine}</TableCell>
                                         <TableCell className="text-end">{item.quantity}</TableCell>
-                                        <TableCell className="text-end">{item.price.toLocaleString()} MMK</TableCell>
-                                        <TableCell className="text-end">{(item.quantity * item.price).toLocaleString()} MMK</TableCell>
+                                        <TableCell className="text-end">
+                                            {item.price.toLocaleString()} MMK
+                                        </TableCell>
+                                        <TableCell className="text-end">
+                                            {(item.quantity * item.price).toLocaleString()} MMK
+                                        </TableCell>
                                     </TableRow>
                                 ))}
                             </TableBody>
@@ -104,11 +113,9 @@ export default function InvoiceDetailsWidget({id} : {id : string}) {
                     </Section>
                 </section>
             </div>
-
         </section>
     )
 }
-
 
 function CustomerInfoCard({ customer }: { customer: CustomerInfo }) {
     return (
@@ -133,7 +140,7 @@ function CustomerInfoCard({ customer }: { customer: CustomerInfo }) {
     )
 }
 
-function DeliveryInfoCard({ info }: { info : DeliveryInfo }) {
+function DeliveryInfoCard({ info }: { info: DeliveryInfo }) {
     return (
         <Section title="Delivery Information">
             <div className="space-y-4">
@@ -149,7 +156,9 @@ function DeliveryInfoCard({ info }: { info : DeliveryInfo }) {
 
                 <div>
                     <p className="text-sm text-muted-foreground">Time Range</p>
-                    <p className="font-medium">{info.timeFrom} - {info.timeTo}</p>
+                    <p className="font-medium">
+                        {info.timeFrom} - {info.timeTo}
+                    </p>
                 </div>
             </div>
         </Section>

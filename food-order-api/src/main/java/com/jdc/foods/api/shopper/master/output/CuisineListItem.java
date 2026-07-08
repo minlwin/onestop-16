@@ -1,5 +1,6 @@
 package com.jdc.foods.api.shopper.master.output;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import com.jdc.foods.model.consts.Status;
@@ -11,6 +12,7 @@ public record CuisineListItem(
 		IdAndName category,
 		String spiceLevel,
 		boolean isRegular,
+		BigDecimal price,
 		Status status,
 		LocalDateTime createdAt,
 		LocalDateTime modifiedAt) {

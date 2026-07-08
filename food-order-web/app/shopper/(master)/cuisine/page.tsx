@@ -1,14 +1,25 @@
-'use client'
+"use client"
 
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
 import { usePageTitle } from "../../_states/page-title-provider"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from "@/components/ui/table"
 import Section from "@/components/widgets/section"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { Button } from "@/components/ui/button"
 import FormsInput from "@/components/widgets/forms/forms-input"
 import FormsSelect from "@/components/widgets/forms/forms-select"
-import { CuisineSearchForm, CuisineSearchSchema, MASTER_STATUS } from "@/lib/model/form/master-data.schema"
+import {
+    CuisineSearchForm,
+    CuisineSearchSchema,
+    MASTER_STATUS,
+} from "@/lib/model/form/master-data.schema"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Search } from "@hugeicons/core-free-icons"
 import { useForm } from "react-hook-form"
@@ -19,33 +30,31 @@ import { CuisineListItem } from "@/lib/model/output/master-data.model"
 import { PageResult } from "@/lib/model"
 import Pagination from "@/components/widgets/pagination"
 import NoDataWidget from "@/components/widgets/no-data"
+import { useFetch } from "@/hooks/use-fetch"
 
 import * as service from "@/lib/action/master/cuisine.action"
 
-const SEARCH_FORM:CuisineSearchForm = {
-    keyword: '',
-    status: '',
+const SEARCH_FORM: CuisineSearchForm = {
+    keyword: "",
+    status: "",
     page: 0,
 }
 
 export default function CuisineMasterPage() {
-
-    const {setTitle} = usePageTitle()
+    const { setTitle } = usePageTitle()
     const router = useRouter()
 
     const form = useForm<CuisineSearchForm>({
         resolver: zodResolver(CuisineSearchSchema),
         defaultValues: {
-            ...SEARCH_FORM
-        }
+            ...SEARCH_FORM,
+        },
     })
 
-    const [searchResult, setSearchResult] = useState<PageResult<CuisineListItem>>() 
+    const [searchResult, setSearchResult] = useFetch(() => service.search(SEARCH_FORM), [])
 
     useEffect(() => {
-        setTitle('Cuisine Master')
-        const load = async () => await search({...SEARCH_FORM})
-        load()
+        setTitle("Cuisine Master")
     }, [])
 
     const search = async (form: CuisineSearchForm) => {
@@ -53,7 +62,7 @@ export default function CuisineMasterPage() {
         setSearchResult(result)
     }
 
-    const onPageChange = async (page : number) => {
+    const onPageChange = async (page: number) => {
         form.setValue("page", page)
         await search(form.getValues())
     }
@@ -62,29 +71,39 @@ export default function CuisineMasterPage() {
         <section className="space-y-6">
             <Section>
                 <form onSubmit={form.handleSubmit(search)} className="flex gap-4">
-                    <FormsSelect control={form.control} path="status" label="Status" options={MASTER_STATUS} className="flex-2" />
-                    <FormsInput control={form.control} path="keyword" label="Keyword" className="flex-3" />
+                    <FormsSelect
+                        control={form.control}
+                        path="status"
+                        label="Status"
+                        options={MASTER_STATUS}
+                        className="flex-2"
+                    />
+                    <FormsInput
+                        control={form.control}
+                        path="keyword"
+                        label="Keyword"
+                        className="flex-3"
+                    />
 
                     <div className="flex-4 flex gap-2 items-end">
                         <Button type="submit">
                             <HugeiconsIcon icon={Search} /> Search
                         </Button>
 
-                        <AddNewBtn onClick={() => router.push('/shopper/cuisine/edit')} />
+                        <AddNewBtn onClick={() => router.push("/shopper/cuisine/edit")} />
                     </div>
                 </form>
             </Section>
 
-            <ResultTable list={searchResult?.contents || []}/>
+            <ResultTable list={searchResult?.contents || []} />
 
             <Pagination pager={searchResult?.pager} className="my-4" onPageClick={onPageChange} />
-
         </section>
     )
 }
 
-function ResultTable({list} : {list : CuisineListItem[]}) {
-    if(list.length === 0) {
+function ResultTable({ list }: { list: CuisineListItem[] }) {
+    if (list.length === 0) {
         return (
             <Section>
                 <NoDataWidget />
@@ -99,6 +118,7 @@ function ResultTable({list} : {list : CuisineListItem[]}) {
                     <TableRow>
                         <TableHead>Cuisine</TableHead>
                         <TableHead>Category</TableHead>
+                        <TableHead className="text-end">Price</TableHead>
                         <TableHead>Status</TableHead>
                         <TableHead>Created At</TableHead>
                         <TableHead>Last Modified At</TableHead>
@@ -107,10 +127,11 @@ function ResultTable({list} : {list : CuisineListItem[]}) {
                 </TableHeader>
 
                 <TableBody>
-                    {list.map(item => 
+                    {list.map((item) => (
                         <TableRow key={item.id}>
                             <TableCell>{item.name}</TableCell>
                             <TableCell>{item.category.name}</TableCell>
+                            <TableCell className="text-end">{item.price}</TableCell>
                             <TableCell>{item.status}</TableCell>
                             <TableCell>{item.createdAt}</TableCell>
                             <TableCell>{item.modifiedAt}</TableCell>
@@ -118,7 +139,7 @@ function ResultTable({list} : {list : CuisineListItem[]}) {
                                 <DetailsLink url={`/shopper/cuisine/${item.id}`} />
                             </TableCell>
                         </TableRow>
-                    )}
+                    ))}
                 </TableBody>
             </Table>
         </Section>

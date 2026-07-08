@@ -16,17 +16,18 @@ export type BaseModel = IdAndName & StatusInfo
 
 export type CategoryListItem = BaseModel & {
     cusines: number
-} 
+}
 
 export type CategoryDetails = BaseModel & {
-    cusines : CuisineListItem []
+    cusines: CuisineListItem[]
 }
 
 export type CuisineListItem = BaseModel & {
     category: IdAndName
     spiceLevel: string
     isRegular: boolean
-} 
+    price: number
+}
 
 export type CuisineDetails = CuisineListItem & {
     description: string
@@ -36,7 +37,7 @@ export type CuisineDetails = CuisineListItem & {
 }
 
 export type CuisineForEdit = {
-    id: number 
+    id: number
 } & CuisineForm
 
 export type Ingredient = {

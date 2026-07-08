@@ -1,10 +1,10 @@
-'use client'
+"use client"
 
 import React, { createContext, useContext, useState } from "react"
 
 type PageTitleContextType = {
     title: string
-    setTitle: (title:string) => void
+    setTitle: (title: string) => void
 }
 
 const PageTitleContext = createContext<PageTitleContextType | undefined>(undefined)
@@ -12,19 +12,18 @@ const PageTitleContext = createContext<PageTitleContextType | undefined>(undefin
 export function usePageTitle() {
     const context = useContext(PageTitleContext)
 
-    if(!context) {
+    if (!context) {
         throw Error("Invalid usage of paget title context.")
     }
 
-    return context;
+    return context
 }
 
-export function PageTitleContextProvider({children} : {children : React.ReactNode}) {
-    
+export function PageTitleContextProvider({ children }: { children: React.ReactNode }) {
     const [state, setState] = useState("")
 
     return (
-        <PageTitleContext.Provider value={{title: state, setTitle: setState}}>
+        <PageTitleContext.Provider value={{ title: state, setTitle: setState }}>
             {children}
         </PageTitleContext.Provider>
     )

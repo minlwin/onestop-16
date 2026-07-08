@@ -1,17 +1,23 @@
-'use client'
+"use client"
 
 import { useEffect } from "react"
 import { usePageTitle } from "../../_states/page-title-provider"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from "@/components/ui/table"
 import Section from "@/components/widgets/section"
 import DetailsLink from "@/components/widgets/details-link"
 
 export default function OrdersManagementPage() {
-
-    const {setTitle} = usePageTitle()
+    const { setTitle } = usePageTitle()
 
     useEffect(() => {
-        setTitle('Order Management')
+        setTitle("Order Management")
     }, [])
 
     return (
@@ -52,7 +58,6 @@ function ResultTable() {
                         </TableCell>
                     </TableRow>
                 </TableBody>
-
             </Table>
         </Section>
     )
