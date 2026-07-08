@@ -1,4 +1,5 @@
 import z from "zod";
+import { PageSearch } from "..";
 
 export const MASTER_STATUS: {
     value: string
@@ -50,7 +51,7 @@ export const CuisineSearchSchema = z.object({
     keyword: z.string()
 })
 
-export type CuisineSearchForm = z.infer<typeof CuisineSearchSchema>
+export type CuisineSearchForm = z.infer<typeof CuisineSearchSchema> & PageSearch
 
 export const CuisineSchema = z.object({
     name: z.string().nonempty("Please enter cuisine name."),

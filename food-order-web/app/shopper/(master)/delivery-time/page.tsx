@@ -18,6 +18,7 @@ import EditLink from "@/components/widgets/edit-link"
 
 import * as service from "@/lib/action/master/delivery-time.action"
 import { DeliTimeListItem } from "@/lib/model/output/master-data.model"
+import NoDataWidget from "@/components/widgets/no-data"
 
 const SEARCH_FORM:DeliTimeSearchForm = {
     time: "",
@@ -141,6 +142,14 @@ function SearchForm({searchForm, onAddNew, onSearch} : {searchForm: DeliTimeSear
 }
 
 function ResultTable({list, onEdit} : {list: DeliTimeListItem[] , onEdit : (id:any) => void}) {
+    if(list.length === 0) {
+        return (
+            <Section>
+                <NoDataWidget />
+            </Section>
+        )
+    }
+
     return (
         <Section>
             <Table>

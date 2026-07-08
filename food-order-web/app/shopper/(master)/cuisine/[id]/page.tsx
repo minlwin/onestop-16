@@ -7,46 +7,11 @@ import { usePageTitle } from "@/app/shopper/_states/page-title-provider"
 import Section from "@/components/widgets/section"
 import { Button } from "@/components/ui/button"
 import { HugeiconsIcon } from "@hugeicons/react"
-import { Delete02Icon, Edit02Icon, ImageUploadIcon, StarIcon } from "@hugeicons/core-free-icons"
-import { CuisineForm } from "@/lib/model/form/master-data.schema"
+import { Edit02Icon, ImageUploadIcon, StarIcon } from "@hugeicons/core-free-icons"
+import { CuisineDetails } from "@/lib/model/output/master-data.model"
+import LoadingWidget from "@/components/widgets/loading-widget"
 
-type CuisineDetails = {
-    name: string
-    description: string
-    category: string
-    spiceLevel: CuisineForm['spiceLevel']
-    status: CuisineForm['status']
-    isRegular: boolean
-    ingredients: { name: string, value: string }[]
-    createdAt: string
-    statusChangedAt: string
-}
-
-type CuisinePhoto = {
-    id: string
-    url: string
-    isCover: boolean
-}
-
-const MOCK_CUISINE: CuisineDetails = {
-    name: "Chicken Curry",
-    description: "Slow cooked chicken curry with coconut milk and Myanmar spices.",
-    category: "Curry",
-    spiceLevel: "Medium",
-    status: "Enable",
-    isRegular: true,
-    ingredients: [
-        { name: "Chicken", value: "500g" },
-        { name: "Coconut Milk", value: "200ml" },
-        { name: "Turmeric", value: "1 tsp" },
-    ],
-    createdAt: "2020-01-01 09:00",
-    statusChangedAt: "2023-05-01 10:00"
-}
-
-const MOCK_PHOTOS: CuisinePhoto[] = [
-    { id: "1", url: "/images/cuisine-placeholder.svg", isCover: true },
-]
+import * as service from "@/lib/action/master/cuisine.action"
 
 function StatusBadge({ status }: { status: string }) {
     const isEnabled = status === 'Enable'
@@ -68,48 +33,44 @@ export default function CuisineDetailsPage() {
     const router = useRouter()
     const { setTitle } = usePageTitle()
 
-    const [cuisine] = useState<CuisineDetails>(MOCK_CUISINE)
-    const [photos, setPhotos] = useState<CuisinePhoto[]>(MOCK_PHOTOS)
+    const [cuisine, setCuisine] = useState<CuisineDetails>()
     const fileInputRef = useRef<HTMLInputElement>(null)
 
     useEffect(() => {
         setTitle("Cuisine Details")
     }, [])
 
-    const coverPhoto = photos.find(photo => photo.isCover) ?? photos[0]
+    useEffect(() => {
+        const load = async () => {
+            if (id) {
+                const result = await service.findById(id)
+                setCuisine(result)
+            }
+        }
+        load()
+    }, [id])
 
-    const uploadPhotos = (files: FileList | null) => {
+    if (!cuisine) {
+        return (
+            <LoadingWidget />
+        )
+    }
+
+    const photos = cuisine.photos ?? []
+    const coverPhoto = cuisine.coverPhoto ?? photos[0]
+
+    const uploadPhotos = async (files: FileList | null) => {
         if (!files || files.length === 0) return
 
-        const uploaded: CuisinePhoto[] = Array.from(files).map(file => ({
-            id: crypto.randomUUID(),
-            url: URL.createObjectURL(file),
-            isCover: false
-        }))
-
-        setPhotos(prev => {
-            if (prev.length === 0) {
-                uploaded[0].isCover = true
-            }
-            return [...prev, ...uploaded]
-        })
+        await service.uploadPhoto(id, files)
+        const result = await service.findById(id)
+        setCuisine(result)
     }
 
-    const setCoverPhoto = (id: string) => {
-        setPhotos(prev => prev.map(photo => ({ ...photo, isCover: photo.id === id })))
-    }
-
-    const removePhoto = (id: string) => {
-        setPhotos(prev => {
-            const rest = prev.filter(photo => photo.id !== id)
-            const removedCover = prev.find(photo => photo.id === id)?.isCover
-
-            if (removedCover && rest.length > 0) {
-                rest[0].isCover = true
-            }
-
-            return rest
-        })
+    const setCoverPhoto = async (photo: string) => {
+        await service.updateCoverPhoto(id, photo)
+        const result = await service.findById(id)
+        setCuisine(result)
     }
 
     return (
@@ -118,7 +79,7 @@ export default function CuisineDetailsPage() {
                 <div>
                     <h2 className="text-2xl font-semibold text-primary">{cuisine.name}</h2>
                     <div className="mt-1 flex items-center gap-2 text-sm text-muted-foreground">
-                        <span>{cuisine.category}</span>
+                        <span>{cuisine.category.name}</span>
                         <span>&middot;</span>
                         <StatusBadge status={cuisine.status} />
                         {cuisine.isRegular &&
@@ -138,7 +99,7 @@ export default function CuisineDetailsPage() {
                         <div className="overflow-hidden rounded-lg">
                             {coverPhoto ? (
                                 <Image
-                                    src={coverPhoto.url}
+                                    src={coverPhoto}
                                     alt={cuisine.name}
                                     width={600}
                                     height={360}
@@ -156,12 +117,12 @@ export default function CuisineDetailsPage() {
                             <div className="flex gap-3 overflow-x-auto pb-1">
                                 {photos.map(photo => (
                                     <div
-                                        key={photo.id}
-                                        onClick={() => setCoverPhoto(photo.id)}
-                                        className={`group relative h-18 w-24 shrink-0 cursor-pointer overflow-hidden rounded-md ${photo.isCover ? 'ring-2 ring-primary' : 'ring-1 ring-foreground/10'}`}
+                                        key={photo}
+                                        onClick={() => setCoverPhoto(photo)}
+                                        className={`group relative h-18 w-24 shrink-0 cursor-pointer overflow-hidden rounded-md ${photo === coverPhoto ? 'ring-2 ring-primary' : 'ring-1 ring-foreground/10'}`}
                                     >
                                         <Image
-                                            src={photo.url}
+                                            src={photo}
                                             alt={cuisine.name}
                                             width={96}
                                             height={72}
@@ -169,21 +130,13 @@ export default function CuisineDetailsPage() {
                                             className="h-full w-full object-cover"
                                         />
 
-                                        {!photo.isCover &&
+                                        {photo !== coverPhoto &&
                                             <span className="absolute inset-0 hidden items-center justify-center bg-black/40 group-hover:flex">
                                                 <HugeiconsIcon icon={StarIcon} size={16} color="#fff" />
                                             </span>
                                         }
 
-                                        <button
-                                            type="button"
-                                            onClick={e => { e.stopPropagation(); removePhoto(photo.id) }}
-                                            className="absolute right-1 top-1 rounded-full bg-background/80 p-0.5 opacity-0 group-hover:opacity-100"
-                                        >
-                                            <HugeiconsIcon icon={Delete02Icon} size={14} />
-                                        </button>
-
-                                        {photo.isCover &&
+                                        {photo === coverPhoto &&
                                             <span className="absolute inset-x-0 bottom-0 bg-primary py-0.5 text-center text-[10px] text-primary-foreground">Cover</span>
                                         }
                                     </div>
@@ -225,7 +178,7 @@ export default function CuisineDetailsPage() {
 
                                 <div>
                                     <p className="text-sm text-muted-foreground">Status Changed At</p>
-                                    <p className="font-medium">{cuisine.statusChangedAt}</p>
+                                    <p className="font-medium">{cuisine.modifiedAt}</p>
                                 </div>
                             </div>
 
@@ -236,10 +189,10 @@ export default function CuisineDetailsPage() {
                         </div>
                     </Section>
 
-                    {cuisine.ingredients.length > 0 &&
+                    {(cuisine.ingredients?.length ?? 0) > 0 &&
                         <Section title="Ingredients">
                             <div className="flex flex-wrap gap-2">
-                                {cuisine.ingredients.map((ingredient, index) => (
+                                {cuisine.ingredients!.map((ingredient, index) => (
                                     <span key={index} className="rounded-full bg-emerald-100 px-3 py-1 text-xs font-medium text-emerald-800">
                                         {ingredient.name}: {ingredient.value}
                                     </span>
@@ -249,7 +202,6 @@ export default function CuisineDetailsPage() {
                     }
                 </div>
             </div>
-
         </section>
     )
 }

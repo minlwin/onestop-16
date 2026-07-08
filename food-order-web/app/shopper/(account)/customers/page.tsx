@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { usePageTitle } from "../../_states/page-title-provider"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import Section from "@/components/widgets/section"
@@ -12,54 +12,77 @@ import { CustomerSearchForm, CustomerSearchSchema } from "@/lib/model/form/accou
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Button } from "@/components/ui/button"
 import DetailsLink from "@/components/widgets/details-link"
+import { CustomerListItem } from "@/lib/model/output/account.model"
+import { PageResult } from "@/lib/model"
+import Pagination from "@/components/widgets/pagination"
+import NoDataWidget from "@/components/widgets/no-data"
+
+import * as service from "@/lib/action/account/customer.action"
+
+const SEARCH_FORM:CustomerSearchForm = {
+    from: "",
+    to: "",
+    keyword: "",
+    page: 0,
+}
 
 export default function CustomerManagementPage() {
     const {setTitle} = usePageTitle()
 
+    const [searchResult, setSearchResult] = useState<PageResult<CustomerListItem>>()
+
+    const form = useForm<CustomerSearchForm>({
+        resolver: zodResolver(CustomerSearchSchema),
+        defaultValues: {...SEARCH_FORM}
+    })
+
     useEffect(() => {
         setTitle('Customer Management')
+        const load = async () => await search({...SEARCH_FORM})
+        load()
     }, [setTitle])
+
+    const search = async (form: CustomerSearchForm) => {
+        const result = await service.search(form)
+        setSearchResult(result)
+    }
+
+    const onPageChange = async (page : number) => {
+        form.setValue("page", page)
+        await search(form.getValues())
+    }
 
     return (
         <section className="space-y-6">
-            <SearchForm />
-            <ResultTable />
+            <Section>
+                <form onSubmit={form.handleSubmit(search)} className="flex gap-4">
+                    <FormsInput type="date" control={form.control} path="from" label="Date From" className="flex-1" />
+                    <FormsInput type="date" control={form.control} path="to" label="Date To" className="flex-1" />
+                    <FormsInput control={form.control} path="keyword" label="Keyword" className="flex-2" />
+                    <div className="flex-4 flex items-end">
+                        <Button type="submit">
+                            <HugeiconsIcon icon={Search} /> Search
+                        </Button>
+                    </div>
+                </form>
+            </Section>
+
+            <ResultTable list={searchResult?.contents || []} />
+
+            <Pagination pager={searchResult?.pager} className="my-4" onPageClick={onPageChange} />
         </section>
     )
 }
 
-function SearchForm() {
-
-    const form = useForm<CustomerSearchForm>({
-        resolver: zodResolver(CustomerSearchSchema),
-        defaultValues: {
-            from: "",
-            to: "",
-            keyword: ""
-        }
-    })
-
-    const search = (form:CustomerSearchForm) => {
-
+function ResultTable({list} : {list: CustomerListItem[]}) {
+    if(list.length === 0) {
+        return (
+            <Section>
+                <NoDataWidget />
+            </Section>
+        )
     }
 
-    return (
-        <Section>
-            <form onSubmit={form.handleSubmit(search)} className="flex gap-4">
-                <FormsInput type="date" control={form.control} path="from" label="Date From" className="flex-1" />
-                <FormsInput type="date" control={form.control} path="to" label="Date To" className="flex-1" />
-                <FormsInput control={form.control} path="keyword" label="Keyword" className="flex-2" />
-                <div className="flex-4 flex items-end">
-                    <Button type="submit">
-                        <HugeiconsIcon icon={Search} /> Search
-                    </Button>
-                </div>
-            </form>
-        </Section>
-    )
-}
-
-function ResultTable() {
     return (
         <Section>
             <Table>
@@ -75,16 +98,18 @@ function ResultTable() {
                 </TableHeader>
 
                 <TableBody>
-                    <TableRow>
-                        <TableCell>Thidar</TableCell>
-                        <TableCell>019181817</TableCell>
-                        <TableCell>thidar@gmail.com</TableCell>
-                        <TableHead>2025/10/01</TableHead>
-                        <TableCell className="text-end">20</TableCell>
-                        <TableCell className="flex justify-center">
-                            <DetailsLink url="/shopper/customers/1" />
-                        </TableCell>
-                    </TableRow>
+                    {list.map(item =>
+                        <TableRow key={item.id}>
+                            <TableCell>{item.name}</TableCell>
+                            <TableCell>{item.phone}</TableCell>
+                            <TableCell>{item.email}</TableCell>
+                            <TableCell>{item.registeredAt}</TableCell>
+                            <TableCell className="text-end">{item.invoices}</TableCell>
+                            <TableCell className="flex justify-center">
+                                <DetailsLink url={`/shopper/customers/${item.id}`} />
+                            </TableCell>
+                        </TableRow>
+                    )}
                 </TableBody>
             </Table>
         </Section>

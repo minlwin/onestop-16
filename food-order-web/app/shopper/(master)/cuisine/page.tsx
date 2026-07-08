@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { usePageTitle } from "../../_states/page-title-provider"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import Section from "@/components/widgets/section"
@@ -15,58 +15,83 @@ import { useForm } from "react-hook-form"
 import AddNewBtn from "@/components/widgets/add-new-btn"
 import DetailsLink from "@/components/widgets/details-link"
 import { useRouter } from "next/navigation"
+import { CuisineListItem } from "@/lib/model/output/master-data.model"
+import { PageResult } from "@/lib/model"
+import Pagination from "@/components/widgets/pagination"
+import NoDataWidget from "@/components/widgets/no-data"
+
+import * as service from "@/lib/action/master/cuisine.action"
+
+const SEARCH_FORM:CuisineSearchForm = {
+    keyword: '',
+    status: '',
+    page: 0,
+}
 
 export default function CuisineMasterPage() {
 
     const {setTitle} = usePageTitle()
-
-    useEffect(() => {
-        setTitle('Cuisine Master')
-    }, [])
-
-    return (
-        <section className="space-y-6">
-            <SearchForm />
-            <ResultTable />
-        </section>
-    )
-}
-
-function SearchForm() {
-
     const router = useRouter()
 
     const form = useForm<CuisineSearchForm>({
         resolver: zodResolver(CuisineSearchSchema),
         defaultValues: {
-            status: '',
-            keyword: ''
+            ...SEARCH_FORM
         }
     })
 
-    const search = (form:CuisineSearchForm) => {
+    const [searchResult, setSearchResult] = useState<PageResult<CuisineListItem>>() 
 
+    useEffect(() => {
+        setTitle('Cuisine Master')
+        const load = async () => await search({...SEARCH_FORM})
+        load()
+    }, [])
+
+    const search = async (form: CuisineSearchForm) => {
+        const result = await service.search(form)
+        setSearchResult(result)
+    }
+
+    const onPageChange = async (page : number) => {
+        form.setValue("page", page)
+        await search(form.getValues())
     }
 
     return (
-        <Section>
-            <form onSubmit={form.handleSubmit(search)} className="flex gap-4">
-                <FormsSelect control={form.control} path="status" label="Status" options={MASTER_STATUS} className="flex-2" />
-                <FormsInput control={form.control} path="keyword" label="Keyword" className="flex-3" />
+        <section className="space-y-6">
+            <Section>
+                <form onSubmit={form.handleSubmit(search)} className="flex gap-4">
+                    <FormsSelect control={form.control} path="status" label="Status" options={MASTER_STATUS} className="flex-2" />
+                    <FormsInput control={form.control} path="keyword" label="Keyword" className="flex-3" />
 
-                <div className="flex-4 flex gap-2 items-end">
-                    <Button type="submit">
-                        <HugeiconsIcon icon={Search} /> Search
-                    </Button>
+                    <div className="flex-4 flex gap-2 items-end">
+                        <Button type="submit">
+                            <HugeiconsIcon icon={Search} /> Search
+                        </Button>
 
-                    <AddNewBtn onClick={() => router.push('/shopper/cuisine/edit')} />
-                </div>
-            </form>
-        </Section>
+                        <AddNewBtn onClick={() => router.push('/shopper/cuisine/edit')} />
+                    </div>
+                </form>
+            </Section>
+
+            <ResultTable list={searchResult?.contents || []}/>
+
+            <Pagination pager={searchResult?.pager} className="my-4" onPageClick={onPageChange} />
+
+        </section>
     )
 }
 
-function ResultTable() {
+function ResultTable({list} : {list : CuisineListItem[]}) {
+    if(list.length === 0) {
+        return (
+            <Section>
+                <NoDataWidget />
+            </Section>
+        )
+    }
+
     return (
         <Section>
             <Table>
@@ -82,16 +107,18 @@ function ResultTable() {
                 </TableHeader>
 
                 <TableBody>
-                    <TableRow>
-                        <TableCell>Chicken Curry</TableCell>
-                        <TableCell>Curry</TableCell>
-                        <TableCell>Available</TableCell>
-                        <TableCell>2020-01-01 09:00</TableCell>
-                        <TableCell>2023-05-01 10:00</TableCell>
-                        <TableCell className="flex justify-center">
-                            <DetailsLink url="/shopper/cuisine/1" />
-                        </TableCell>
-                    </TableRow>
+                    {list.map(item => 
+                        <TableRow key={item.id}>
+                            <TableCell>{item.name}</TableCell>
+                            <TableCell>{item.category.name}</TableCell>
+                            <TableCell>{item.status}</TableCell>
+                            <TableCell>{item.createdAt}</TableCell>
+                            <TableCell>{item.modifiedAt}</TableCell>
+                            <TableCell className="flex justify-center">
+                                <DetailsLink url={`/shopper/cuisine/${item.id}`} />
+                            </TableCell>
+                        </TableRow>
+                    )}
                 </TableBody>
             </Table>
         </Section>

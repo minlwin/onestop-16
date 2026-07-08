@@ -16,13 +16,27 @@ import AddNewBtn from "@/components/widgets/add-new-btn"
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { EditAction } from "@/lib/utils"
 import EditLink from "@/components/widgets/edit-link"
+import { EmployeeListItem } from "@/lib/model/output/account.model"
+import NoDataWidget from "@/components/widgets/no-data"
+
+import * as service from "@/lib/action/account/employee.action"
+
+const SEARCH_FORM:EmployeeSearchForm = {
+    status: '',
+    keyword: ''
+}
 
 export default function EmployeeManagementPage() {
-    
+
     const {setTitle} = usePageTitle()
-    
+
+    const [searchForm, setSearchForm] = useState<EmployeeSearchForm>({...SEARCH_FORM})
+    const [list, setList] = useState<EmployeeListItem[]>([])
+
     useEffect(() => {
         setTitle('Employee Management')
+        const load = async () => await search({...SEARCH_FORM})
+        load()
     }, [])
 
     const [id, setId] = useState<string>()
@@ -38,33 +52,54 @@ export default function EmployeeManagementPage() {
         }
     })
 
+    const search = async (form: EmployeeSearchForm) => {
+        const result = await service.search(form)
+        setList(result)
+    }
+
     const addNew = () => {
         setId(undefined)
         form.reset()
         setOpen(true)
     }
 
-    const edit = (id : string) => {
+    const edit = async (id : string) => {
+        const result = await service.findById(id)
+        form.reset({
+            name: result.name,
+            phone: result.phone,
+            email: result.email,
+            entryAt: result.entryAt,
+            retireAt: result.retireAt
+        })
         setId(id)
         setOpen(true)
     }
 
-    const save = (form: EmployeeForm) => {
-        console.log(form)
+    const save = async (form: EmployeeForm) => {
+        if(id) {
+            await service.update(id, form)
+        } else {
+            await service.create(form)
+        }
+
+        setSearchForm({...SEARCH_FORM})
+        await search({...SEARCH_FORM})
+
         setOpen(false)
     }
 
     return (
         <section className="space-y-6">
-            <SearchForm onAddNew={addNew} />
+            <SearchForm searchForm={searchForm} onAddNew={addNew} onSearch={search} />
 
-            <ResultTable onEdit={edit} />
+            <ResultTable list={list} onEdit={edit} />
 
             <Dialog open={open} onOpenChange={setOpen}>
                 <DialogContent>
                     <form onSubmit={form.handleSubmit(save)}>
                         <DialogHeader>
-                            <DialogTitle>Create Employee</DialogTitle>
+                            <DialogTitle>{id == undefined ? 'Create' : 'Edit'} Employee</DialogTitle>
                         </DialogHeader>
 
                         <section className="space-y-4 my-4">
@@ -87,23 +122,20 @@ export default function EmployeeManagementPage() {
     )
 }
 
-function SearchForm({onAddNew} : {onAddNew : VoidFunction}) {
+function SearchForm({searchForm, onAddNew, onSearch} : {
+    searchForm: EmployeeSearchForm,
+    onAddNew : VoidFunction,
+    onSearch : (form: EmployeeSearchForm) => void
+}) {
 
     const form = useForm<EmployeeSearchForm>({
         resolver: zodResolver(EmployeeSearchSchema),
-        defaultValues: {
-            status: '',
-            keyword: ''
-        }
+        defaultValues: searchForm
     })
-
-    const search = (form: EmployeeSearchForm) => {
-        console.log(form)
-    }
 
     return (
         <Section>
-            <form onSubmit={form.handleSubmit(search)} className="flex gap-4">
+            <form onSubmit={form.handleSubmit(onSearch)} className="flex gap-4">
                 <FormsSelect control={form.control} path="status" label="Status" options={[
                     {value: 'Active', label: 'Active'},
                     {value: 'Retired', label: 'Retired'},
@@ -121,7 +153,15 @@ function SearchForm({onAddNew} : {onAddNew : VoidFunction}) {
     )
 }
 
-function ResultTable({onEdit} : {onEdit : EditAction}) {
+function ResultTable({list, onEdit} : {list: EmployeeListItem[], onEdit : EditAction}) {
+    if(list.length === 0) {
+        return (
+            <Section>
+                <NoDataWidget />
+            </Section>
+        )
+    }
+
     return (
         <Section>
             <Table>
@@ -137,16 +177,18 @@ function ResultTable({onEdit} : {onEdit : EditAction}) {
                 </TableHeader>
 
                 <TableBody>
-                    <TableRow>
-                        <TableCell>Aung Aung</TableCell>
-                        <TableCell>091817662</TableCell>
-                        <TableCell>aung@gmail.com</TableCell>
-                        <TableCell>2020-01-01</TableCell>
-                        <TableCell></TableCell>
-                        <TableCell className="flex items-center justify-center">
-                            <EditLink onClick={() => onEdit(1)} />
-                        </TableCell>
-                    </TableRow>
+                    {list.map(item =>
+                        <TableRow key={item.id}>
+                            <TableCell>{item.name}</TableCell>
+                            <TableCell>{item.phone}</TableCell>
+                            <TableCell>{item.email}</TableCell>
+                            <TableCell>{item.entryAt}</TableCell>
+                            <TableCell>{item.retireAt}</TableCell>
+                            <TableCell className="flex items-center justify-center">
+                                <EditLink onClick={() => onEdit(item.id)} />
+                            </TableCell>
+                        </TableRow>
+                    )}
                 </TableBody>
             </Table>
         </Section>

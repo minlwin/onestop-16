@@ -19,6 +19,7 @@ import { EditAction } from "@/lib/utils"
 
 import * as service from "@/lib/action/master/payment-info.action"
 import { PaymentInfoListItem } from "@/lib/model/output/master-data.model"
+import NoDataWidget from "@/components/widgets/no-data"
 
 const SEARCH_FORM:PaymentInfoSearchForm = {
     account: "",
@@ -145,6 +146,14 @@ function SearchForm({searchForm, onAddNew, onSearch} : {searchForm: PaymentInfoS
 }
 
 function ResultTable({list, onEdit} : {list: PaymentInfoListItem[] , onEdit : EditAction}) {
+    if(list.length === 0) {
+        return (
+            <Section>
+                <NoDataWidget />
+            </Section>
+        )
+    }
+
     return (
         <Section>
             <Table>

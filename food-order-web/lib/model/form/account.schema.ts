@@ -1,4 +1,5 @@
 import z from "zod";
+import { PageSearch } from "..";
 
 export const CustomerSearchSchema = z.object({
     from: z.string(),
@@ -6,7 +7,7 @@ export const CustomerSearchSchema = z.object({
     keyword: z.string()
 })
 
-export type CustomerSearchForm = z.infer<typeof CustomerSearchSchema>
+export type CustomerSearchForm = z.infer<typeof CustomerSearchSchema> & PageSearch
 
 export const EmployeeSearchSchema = z.object({
     status: z.string(),

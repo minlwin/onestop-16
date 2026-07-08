@@ -17,6 +17,7 @@ import DetailsLink from "@/components/widgets/details-link"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { CategoryListItem } from "@/lib/model/output/master-data.model"
 import * as service from '@/lib/action/master/category.action'
+import NoDataWidget from "@/components/widgets/no-data"
 
 const SEARCH_FORM:CategorySearchForm = {
     keyword: "",
@@ -123,6 +124,14 @@ function SearchForm({searchForm, onSearch, onAddNew} : {
 }
 
 function ResultTable({ list } : { list:CategoryListItem[] }) {
+    if(list.length === 0) {
+        return (
+            <Section>
+                <NoDataWidget />
+            </Section>
+        )
+    }
+
     return (
         <Section>
             <Table>
@@ -138,7 +147,7 @@ function ResultTable({ list } : { list:CategoryListItem[] }) {
                 </TableHeader>
 
                 <TableBody>
-                    {list.map(item => 
+                    {list.map(item =>
                         <TableRow key={item.id}>
                             <TableCell>{item.name}</TableCell>
                             <TableCell className="text-end">{item.cusines}</TableCell>
@@ -148,7 +157,7 @@ function ResultTable({ list } : { list:CategoryListItem[] }) {
                             <TableCell className="flex justify-center">
                                 <DetailsLink url={`/shopper/category/${item.id}`} />
                             </TableCell>
-                        </TableRow>                        
+                        </TableRow>
                     )}
                 </TableBody>
             </Table>

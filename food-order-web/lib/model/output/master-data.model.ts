@@ -1,4 +1,5 @@
 import { Status } from ".."
+import { CuisineForm } from "../form/master-data.schema"
 
 export interface IdAndName {
     id: number
@@ -27,11 +28,16 @@ export type CuisineListItem = BaseModel & {
     isRegular: boolean
 } 
 
-export type CusineDetails = CuisineListItem & {
+export type CuisineDetails = CuisineListItem & {
+    description: string
     coverPhoto?: string
     photos?: string[]
     ingredients?: Ingredient[]
 }
+
+export type CuisineForEdit = {
+    id: number 
+} & CuisineForm
 
 export type Ingredient = {
     name: string
