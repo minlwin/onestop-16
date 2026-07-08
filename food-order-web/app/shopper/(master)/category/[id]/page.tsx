@@ -6,72 +6,64 @@ import { usePageTitle } from "../../../_states/page-title-provider"
 import Section from "@/components/widgets/section"
 import FormsInput from "@/components/widgets/forms/forms-input"
 import FormsSelect from "@/components/widgets/forms/forms-select"
-import CuisineCard, { CuisineSummary } from "@/components/widgets/cuisine-card"
+import CuisineCard from "@/components/widgets/cuisine-card"
 import { Button } from "@/components/ui/button"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { Cancel, Edit02Icon, Save } from "@hugeicons/core-free-icons"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { CategoryForm, CategorySchema, MASTER_STATUS } from "@/lib/model/form/master-data.schema"
-
-type CategoryDetails = {
-    name: string
-    status: CategoryForm['status']
-    createdAt: string
-    statusChangedAt: string
-}
-
-const MOCK_CATEGORY: CategoryDetails = {
-    name: "Curry",
-    status: "Enable",
-    createdAt: "2020-01-01 09:00",
-    statusChangedAt: "2023-05-01 10:00"
-}
-
-const MOCK_CUISINES: CuisineSummary[] = [
-    { id: "1", name: "Chicken Curry", status: "Enable", spiceLevel: "Medium", isRegular: true },
-    { id: "2", name: "Fish Curry", status: "Enable", spiceLevel: "High", isRegular: false },
-    { id: "3", name: "Pumpkin Curry", status: "Pending", spiceLevel: "Mild", isRegular: false },
-]
+import { CategoryDetails } from "@/lib/model/output/master-data.model"
+import * as service from "@/lib/action/master/category.action"
+import LoadingWidget from "@/components/widgets/loading-widget"
 
 /**
  * Display Category Name and Cuisines Belong to This Category
  * @returns
  */
 export default function CategoryDetailsPage() {
-    const { id } = useParams()
     const { setTitle } = usePageTitle()
+    useEffect(() => setTitle('Category Details'), [])
 
-    const [isEditing, setEditing] = useState(false)
-    const [category, setCategory] = useState<CategoryDetails>(MOCK_CATEGORY)
+    const { id } = useParams()
+    const [category, setCategory] = useState<CategoryDetails>()
 
     useEffect(() => {
-        setTitle('Category Details')
-    }, [])
+        const load = async () => {
+            if(id) {
+                const result = await service.findById(id)
+                setCategory(result) 
+            }
+        }
+        load()
+    }, [id])
 
+
+    const [isEditing, setEditing] = useState(false)
     const form = useForm<CategoryForm>({
         resolver: zodResolver(CategorySchema),
         defaultValues: {
-            name: category.name,
-            status: category.status
+            name: category?.name ?? "",
+            status: category?.status ?? ""
         }
     })
 
     const startEdit = () => {
-        form.reset({ name: category.name, status: category.status })
+        form.reset()
         setEditing(true)
     }
 
-    const save = (values: CategoryForm) => {
-        setCategory(prev => ({
-            ...prev,
-            name: values.name,
-            status: values.status,
-            statusChangedAt: values.status !== prev.status
-                ? new Date().toISOString().slice(0, 16).replace('T', ' ')
-                : prev.statusChangedAt
-        }))
+    const save = async (values: CategoryForm) => {
+        const updateResult = await service.update(id, values)
+        const findResult = await service.findById(updateResult.id)
+        setCategory(findResult)
         setEditing(false)
+    }
+
+    if(!category) {
+        return (
+            <LoadingWidget />
+        )
     }
 
     return (
@@ -114,7 +106,7 @@ export default function CategoryDetailsPage() {
 
                             <div>
                                 <p className="text-sm text-muted-foreground">Status Changed At</p>
-                                <p className="font-medium">{category.statusChangedAt}</p>
+                                <p className="font-medium">{category.modifiedAt}</p>
                             </div>
                         </div>
 
@@ -131,7 +123,7 @@ export default function CategoryDetailsPage() {
                 <h3 className="text-xl font-semibold text-primary">Cuisines</h3>
 
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                    {MOCK_CUISINES.map(cuisine => (
+                    {category.cusines.map(cuisine => (
                         <CuisineCard key={cuisine.id} cuisine={cuisine} />
                     ))}
                 </div>

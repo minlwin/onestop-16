@@ -15,13 +15,25 @@ import FormsInput from "@/components/widgets/forms/forms-input"
 import AddNewBtn from "@/components/widgets/add-new-btn"
 import DetailsLink from "@/components/widgets/details-link"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { CategoryListItem } from "@/lib/model/output/master-data.model"
+import * as service from '@/lib/action/master/category.action'
+
+const SEARCH_FORM:CategorySearchForm = {
+    keyword: "",
+    status: ""
+} 
 
 export default function CategoryMasterPage() {
     const {setTitle} = usePageTitle()
-    const [isOpen, setOpen] = useState(false)
+    const [show, setShow] = useState(false)
+
+    const [searchForm, setSearchForm] = useState<CategorySearchForm>({...SEARCH_FORM})
+    const [searchResult, setSearchResult] = useState<CategoryListItem[]>([])
 
     useEffect(() => {
         setTitle('Category Master')
+        const load = async () => await search({...SEARCH_FORM})
+        load()
     }, [])
 
     const form = useForm<CategoryForm>({
@@ -32,21 +44,31 @@ export default function CategoryMasterPage() {
         }
     })
 
-    const save = (form:CategoryForm) => {
-        console.log(form);
-        setOpen(false)
+    const create = () => {
+        form.reset()
+        setShow(true)
+    }
+
+    const save = async (editForm:CategoryForm) => {
+        await service.create(editForm)
+        form.reset()
+        setShow(false)
+        setSearchForm({...SEARCH_FORM})
+        await search({...SEARCH_FORM})
+    }
+
+    const search = async (form:CategorySearchForm) => {
+        const result = await service.search(form)
+        setSearchResult(result)
     }
 
     return (
         <section className="space-y-6">
-            <SearchForm onAddNew={() => {
-                form.reset()
-                setOpen(true)
-            }}/>
+            <SearchForm searchForm={searchForm} onSearch={search} onAddNew={create} />
             
-            <ResultTable />
+            <ResultTable list={searchResult} />
 
-            <Dialog open={isOpen} onOpenChange={setOpen}>
+            <Dialog open={show} onOpenChange={setShow}>
                 <DialogContent>
                     <form onSubmit={form.handleSubmit(save)}>
                         <DialogHeader>
@@ -71,22 +93,20 @@ export default function CategoryMasterPage() {
     )
 }
 
-function SearchForm({onAddNew} : {onAddNew : () => void}) {
+function SearchForm({searchForm, onSearch, onAddNew} : {
+    searchForm: CategorySearchForm,
+    onSearch : (form: CategorySearchForm) => void,
+    onAddNew : VoidFunction
+}) {
+    
     const form = useForm<CategorySearchForm>({
         resolver: zodResolver(CategorySearchSchema),
-        defaultValues: {
-            status: '',
-            keyword: ''
-        }
+        defaultValues: searchForm
     })
-
-    const search = (form:CategorySearchForm) => {
-
-    }
 
     return (
         <Section>
-            <form onSubmit={form.handleSubmit(search)} className="flex gap-4">
+            <form onSubmit={form.handleSubmit(onSearch)} className="flex gap-4">
                 <FormsSelect control={form.control} path="status" label="Status" options={MASTER_STATUS} className="flex-2" />
                 <FormsInput control={form.control} path="keyword" label="Keyword" className="flex-3" />
 
@@ -102,7 +122,7 @@ function SearchForm({onAddNew} : {onAddNew : () => void}) {
     )
 }
 
-function ResultTable() {
+function ResultTable({ list } : { list:CategoryListItem[] }) {
     return (
         <Section>
             <Table>
@@ -118,16 +138,18 @@ function ResultTable() {
                 </TableHeader>
 
                 <TableBody>
-                    <TableRow>
-                        <TableCell>Curry</TableCell>
-                        <TableCell className="text-end">3</TableCell>
-                        <TableCell>Available</TableCell>
-                        <TableCell>2020-01-01 09:00</TableCell>
-                        <TableCell>2023-05-01 10:00</TableCell>
-                        <TableCell className="flex justify-center">
-                            <DetailsLink url="/shopper/category/1" />
-                        </TableCell>
-                    </TableRow>
+                    {list.map(item => 
+                        <TableRow key={item.id}>
+                            <TableCell>{item.name}</TableCell>
+                            <TableCell className="text-end">{item.cusines}</TableCell>
+                            <TableCell>{item.status}</TableCell>
+                            <TableCell>{item.createdAt}</TableCell>
+                            <TableCell>{item.modifiedAt}</TableCell>
+                            <TableCell className="flex justify-center">
+                                <DetailsLink url={`/shopper/category/${item.id}`} />
+                            </TableCell>
+                        </TableRow>                        
+                    )}
                 </TableBody>
             </Table>
         </Section>

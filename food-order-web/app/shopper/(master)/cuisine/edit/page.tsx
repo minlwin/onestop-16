@@ -79,8 +79,8 @@ export default function CuisineEditPage() {
                     <div className="space-y-4">
                         {fieldArray.fields.map((field, index) => (
                             <div key={field.id} className="flex gap-4 items-end">
-                                <FormsInput control={form.control} path={`ingredients.${index}.name`} label="Name" className="flex-1" />
-                                <FormsInput control={form.control} path={`ingredients.${index}.value`} label="Value" className="flex-1" />
+                                <FormsInput control={form.control} path={`ingredients.${index}.name`} label={index == 0 ? 'Name' : undefined} placeholder="Enter ingredient name" className="flex-1" />
+                                <FormsInput control={form.control} path={`ingredients.${index}.value`} label={index == 0 ? 'Value' : undefined} placeholder="Enter value" className="flex-1" />
 
                                 <Button type="button" variant="outline" size="icon" onClick={() => removeIngredient(index)}>
                                     <HugeiconsIcon icon={Delete02Icon} />

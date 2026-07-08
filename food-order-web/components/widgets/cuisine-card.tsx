@@ -1,17 +1,9 @@
 import Image from "next/image"
-import Section from "@/components/widgets/section"
 import DetailsLink from "@/components/widgets/details-link"
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card"
+import { CuisineListItem } from "@/lib/model/output/master-data.model"
 
-export type CuisineSummary = {
-    id: string
-    name: string
-    status: string
-    spiceLevel: string
-    isRegular: boolean
-}
-
-export default function CuisineCard({ cuisine }: { cuisine: CuisineSummary }) {
+export default function CuisineCard({ cuisine }: { cuisine: CuisineListItem }) {
     return (
         <Card>
             <Image

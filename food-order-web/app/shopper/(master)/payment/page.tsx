@@ -17,17 +17,25 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import EditLink from "@/components/widgets/edit-link"
 import { EditAction } from "@/lib/utils"
 
+import * as service from "@/lib/action/master/payment-info.action"
+import { PaymentInfoListItem } from "@/lib/model/output/master-data.model"
+
+const SEARCH_FORM:PaymentInfoSearchForm = {
+    account: "",
+    bank: "",
+    status: ""
+};
+
 export default function PaymentInfoMasterPage() {
 
     const {setTitle} = usePageTitle()
 
-    useEffect(() => {
-        setTitle('Payment Info Master')
-    }, [])
-
     const [id, setId] = useState<string>()
     const [open, setOpen] = useState(false)
-    const form = useForm<PaymentInfoForm>({
+    const [searchForm, setSearchForm] = useState<PaymentInfoSearchForm>({...SEARCH_FORM})
+    const [searchResult, setSearchResult] = useState<PaymentInfoListItem[]>([])
+
+    const editForm = useForm<PaymentInfoForm>({
         resolver: zodResolver(PaymentInfoSchema),
         defaultValues: {
             bank: '',
@@ -37,41 +45,66 @@ export default function PaymentInfoMasterPage() {
         }
     })
 
-    const addNew = () => {
-        setId(undefined)
-        form.reset()
-        setOpen(true)
+    useEffect(() => {
+        setTitle('Payment Info Master')
+        const load = async () => await search({...SEARCH_FORM})
+        load()
+    }, [])
+
+    useEffect(() => {
+        editForm.reset()
+        const load = async () => {
+            if(id) {
+                const result = await service.findById(id)
+                editForm.reset({
+                    bank: result.bank,
+                    accountNo: result.accountNo,
+                    accountName: result.accountName,
+                    status: result.status
+                })
+            }
+            setOpen(true)
+        }
+        load()
+    }, [id])
+
+    const search = async (form:PaymentInfoSearchForm) => {
+        const result = await service.search(form)
+        setSearchResult(result)
     }
 
-    const edit = (id:any) => {
-        setId(id)
-        setOpen(true)
-    }
+    const save = async (form: PaymentInfoForm) => {
+        if(id) {
+            await service.update(id, form)
+        } else {
+            await service.create(form)
+        }
+        
+        setSearchForm({...SEARCH_FORM})
+        search({...SEARCH_FORM})
 
-    const save = (form: PaymentInfoForm) => {
-        console.log(form)
         setOpen(false)
     }
 
     return (
         <section className="space-y-6">
-            <SearchForm onAddNew={addNew} />
+            <SearchForm searchForm={searchForm} onSearch={search} onAddNew={() => setId(undefined)} />
             
-            <ResultTable onEdit={edit} />
+            <ResultTable onEdit={setId} list={searchResult} />
 
             <Dialog open={open} onOpenChange={setOpen}>
                 <DialogContent>
-                    <form onSubmit={form.handleSubmit(save)}>
+                    <form onSubmit={editForm.handleSubmit(save)}>
                         <DialogHeader>
                             <DialogTitle>{id == undefined ? 'Create' : 'Edit'} Payment Information</DialogTitle>
                             <DialogDescription>Add a new payment method with its bank, account, and status details.</DialogDescription>
                         </DialogHeader>
 
                         <section className="my-4 space-y-4">
-                            <FormsInput control={form.control} path="bank" label="Bank / Provider" />
-                            <FormsInput control={form.control} path="accountNo" label="Account No" />
-                            <FormsInput control={form.control} path="accountName" label="Account Name" />
-                            <FormsSelect control={form.control} path="status" label="Status" options={MASTER_STATUS} />
+                            <FormsInput control={editForm.control} path="bank" label="Bank / Provider" />
+                            <FormsInput control={editForm.control} path="accountNo" label="Account No" />
+                            <FormsInput control={editForm.control} path="accountName" label="Account Name" />
+                            <FormsSelect control={editForm.control} path="status" label="Status" options={MASTER_STATUS} />
                         </section>
 
                         <DialogFooter>
@@ -86,23 +119,15 @@ export default function PaymentInfoMasterPage() {
     )
 }
 
-function SearchForm({onAddNew} : {onAddNew : VoidFunction}) {
+function SearchForm({searchForm, onAddNew, onSearch} : {searchForm: PaymentInfoSearchForm, onAddNew : VoidFunction, onSearch: (form: PaymentInfoSearchForm) => void}) {
     const form = useForm<PaymentInfoSearchForm>({
         resolver: zodResolver(PaymentInfoSearchSchema),
-        defaultValues: {
-            status: '',
-            bank: '',
-            account: ''
-        }
+        defaultValues: searchForm
     })
-
-    const search = (form:PaymentInfoSearchForm) => {
-
-    }
 
     return (
         <Section>
-            <form onSubmit={form.handleSubmit(search)} className="flex gap-4">
+            <form onSubmit={form.handleSubmit(onSearch)} className="flex gap-4">
                 <FormsSelect control={form.control} path="status" label="Status" options={MASTER_STATUS} className="flex-2" />
                 <FormsSelect control={form.control} path="bank" label="Bank" options={[]} className="flex-2" />
                 <FormsInput control={form.control} path="account" label="Account" className="flex-3" />
@@ -119,7 +144,7 @@ function SearchForm({onAddNew} : {onAddNew : VoidFunction}) {
     )
 }
 
-function ResultTable({onEdit} : {onEdit : EditAction}) {
+function ResultTable({list, onEdit} : {list: PaymentInfoListItem[] , onEdit : EditAction}) {
     return (
         <Section>
             <Table>
@@ -136,17 +161,19 @@ function ResultTable({onEdit} : {onEdit : EditAction}) {
                 </TableHeader>
 
                 <TableBody>
-                    <TableRow>
-                        <TableCell>KBZ Pay</TableCell>
-                        <TableCell>09782003098</TableCell>
-                        <TableCell>U Zaw Min Lwin</TableCell>
-                        <TableCell>Available</TableCell>
-                        <TableCell>2020-01-01 09:00</TableCell>
-                        <TableCell>2023-05-01 10:00</TableCell>
-                        <TableCell className="flex justify-center">
-                            <EditLink onClick={() => onEdit(1)} />
-                        </TableCell>
-                    </TableRow>
+                    {list.map(item => 
+                        <TableRow key={item.id}>
+                            <TableCell>{item.provider}</TableCell>
+                            <TableCell>{item.accountNo}</TableCell>
+                            <TableCell>{item.accountName}</TableCell>
+                            <TableCell>{item.status}</TableCell>
+                            <TableCell>{item.createdAt}</TableCell>
+                            <TableCell>{item.modifiedAt}</TableCell>
+                            <TableCell className="flex justify-center">
+                                <EditLink onClick={() => onEdit(item.id)} />
+                            </TableCell>
+                        </TableRow>
+                    )}
                 </TableBody>
             </Table>
         </Section>

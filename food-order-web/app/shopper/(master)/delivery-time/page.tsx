@@ -16,14 +16,21 @@ import AddNewBtn from "@/components/widgets/add-new-btn"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import EditLink from "@/components/widgets/edit-link"
 
+import * as service from "@/lib/action/master/delivery-time.action"
+import { DeliTimeListItem } from "@/lib/model/output/master-data.model"
+
+const SEARCH_FORM:DeliTimeSearchForm = {
+    time: "",
+    status: ""
+};
+
 export default function DeliveryTimeMasterPage() {
     const {setTitle} = usePageTitle()
 
-    useEffect(() => {
-        setTitle('Delivery Time Master')
-    }, [])
-
-    const form = useForm<DeliTimeForm>({
+    const [searchForm, setSearchForm] = useState<DeliTimeSearchForm>({...SEARCH_FORM})
+    const [list, setList] = useState<DeliTimeListItem[]>([])
+    
+    const editForm = useForm<DeliTimeForm>({
         resolver: zodResolver(DeliTimeSchema),
         defaultValues: {
             timeFrom: "",
@@ -31,34 +38,59 @@ export default function DeliveryTimeMasterPage() {
             status: ""
         }
     })
+
     const [open, setOpen] = useState(false)
     const [id, setId] = useState<string>()
 
-    const addNew = () => {
-        setId(undefined)
-        form.reset()
-        setOpen(true)
+    useEffect(() => {
+        setTitle('Delivery Time Master')
+        const load = async () => {
+            await search({...SEARCH_FORM})
+        }
+        load()
+    }, [])
+
+    useEffect(() => {
+        editForm.reset()
+        const load = async () => {
+            if(id) {
+                const result = await service.findById(id) 
+                editForm.reset({
+                    timeFrom: result.timeFrom, 
+                    timeTo: result.timeTo, 
+                    status: result.status,
+                })
+            }
+            setOpen(true)
+        }
+        load()
+    }, [id])
+
+    const search = async (form: DeliTimeSearchForm) => {
+        const result = await service.search(form)
+        setList(result)
     }
 
-    const edit = (id: string) => {
-        setId(id)
-        setOpen(true)
-    }
-
-    const save = (form:DeliTimeForm) => {
-        console.log(form)
+    const save = async (form:DeliTimeForm) => {
+        if(id) {
+            await service.update(id, form)
+        } else {
+            await service.create(form)
+        }
+        setSearchForm({status : "", time: ""})
+        await search({status : "", time: ""})
         setOpen(false)
     }
 
     return (
         <section className="space-y-6">
-            <SearchForm onAddNew={addNew}/>
+            <SearchForm searchForm={searchForm} onAddNew={() => setId(undefined)} onSearch={search} />
 
-            <ResultTable onEdit={edit} />
+            <ResultTable list={list} onEdit={id => setId(id)} />
 
             <Dialog open={open} onOpenChange={setOpen}>
                 <DialogContent>
-                    <form onSubmit={form.handleSubmit(save)}>
+                    <form onSubmit={editForm.handleSubmit(save)}>
                         <DialogHeader>
                             <DialogTitle>{id == undefined ? 'Create' : 'Edit'} Delivery Time</DialogTitle>
                             <DialogDescription>Define a delivery time slot by setting the start and end time.</DialogDescription>
@@ -66,10 +98,10 @@ export default function DeliveryTimeMasterPage() {
 
                         <section className="my-4 space-y-4">
                             <div className="grid grid-cols-2 gap-4">
-                                <FormsInput control={form.control} path="timeFrom" type="time" label="Time From" />
-                                <FormsInput control={form.control} path="timeTo" type="time" label="Time To" />
+                                <FormsInput control={editForm.control} path="timeFrom" type="time" label="Time From" />
+                                <FormsInput control={editForm.control} path="timeTo" type="time" label="Time To" />
                             </div>
-                            <FormsSelect control={form.control} path="status" label="Status" options={MASTER_STATUS} />
+                            <FormsSelect control={editForm.control} path="status" label="Status" options={MASTER_STATUS} />
                         </section>
 
                         <DialogFooter>
@@ -84,22 +116,15 @@ export default function DeliveryTimeMasterPage() {
     )
 }
 
-function SearchForm({onAddNew} : {onAddNew : VoidFunction}) {
+function SearchForm({searchForm, onAddNew, onSearch} : {searchForm: DeliTimeSearchForm, onAddNew : VoidFunction, onSearch : (form:DeliTimeSearchForm) => void}) {
     const form = useForm<DeliTimeSearchForm>({
         resolver: zodResolver(DeliTimeSearchSchema),
-        defaultValues: {
-            status: '',
-            time: ''
-        }
+        defaultValues: searchForm
     })
-
-    const search = (form:DeliTimeSearchForm) => {
-
-    }
 
     return (
         <Section>
-            <form onSubmit={form.handleSubmit(search)} className="flex gap-4">
+            <form onSubmit={form.handleSubmit(onSearch)} className="flex gap-4">
                 <FormsSelect control={form.control} path="status" label="Status" options={MASTER_STATUS} className="flex-2" />
                 <FormsInput control={form.control} path="time" label="Time" className="flex-3" />
 
@@ -115,7 +140,7 @@ function SearchForm({onAddNew} : {onAddNew : VoidFunction}) {
     )
 }
 
-function ResultTable({onEdit} : {onEdit : (id:any) => void}) {
+function ResultTable({list, onEdit} : {list: DeliTimeListItem[] , onEdit : (id:any) => void}) {
     return (
         <Section>
             <Table>
@@ -131,16 +156,18 @@ function ResultTable({onEdit} : {onEdit : (id:any) => void}) {
                 </TableHeader>
 
                 <TableBody>
-                    <TableRow>
-                        <TableCell>09:00 AM</TableCell>
-                        <TableCell>11:00 AM</TableCell>
-                        <TableCell>Available</TableCell>
-                        <TableCell>2020-01-01 09:00</TableCell>
-                        <TableCell>2023-05-01 10:00</TableCell>
-                        <TableCell className="flex justify-center">
-                            <EditLink onClick={() => onEdit(10)} />
-                        </TableCell>
-                    </TableRow>
+                    {list.map(item => 
+                        <TableRow key={item.id}>
+                            <TableCell>{item.timeFrom}</TableCell>
+                            <TableCell>{item.timeTo}</TableCell>
+                            <TableCell>{item.status}</TableCell>
+                            <TableCell>{item.createdAt}</TableCell>
+                            <TableCell>{item.modifiedAt}</TableCell>
+                            <TableCell className="flex justify-center">
+                                <EditLink onClick={() => onEdit(item.id)} />
+                            </TableCell>
+                        </TableRow>
+                    )}
                 </TableBody>
             </Table>
         </Section>
