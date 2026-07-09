@@ -19,8 +19,8 @@ import com.jdc.foods.model.dto.ModificationResult;
 
 import lombok.RequiredArgsConstructor;
 
-@RestController
 @RequiredArgsConstructor
+@RestController("categoryMasterApi")
 @RequestMapping("shopper/categories")
 public class CategoryApi {
 

@@ -4,9 +4,7 @@ import com.jdc.foods.model.consts.Status;
 
 public record CuisineSearch(
 	Status status,
-	String keyword,
-	Integer page,
-	Integer size
+	String keyword
 ) {
 
 }

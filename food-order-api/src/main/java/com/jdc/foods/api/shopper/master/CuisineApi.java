@@ -23,8 +23,8 @@ import com.jdc.foods.model.dto.PageResult;
 
 import lombok.RequiredArgsConstructor;
 
-@RestController
 @RequiredArgsConstructor
+@RestController("cuisineMasterApi")
 @RequestMapping("shopper/cuisines")
 public class CuisineApi {
 
