@@ -14,7 +14,6 @@ export async function checkout(
     }
 }
 
-
 export async function findById(id: any): Promise<InvoiceDetails> {
     return {
         id: String(id),
@@ -34,6 +33,7 @@ export async function findById(id: any): Promise<InvoiceDetails> {
             dispatchDate: "2026-01-02",
             timeFrom: "09:00AM",
             timeTo: "11:00AM",
+            remark: "Please call before delivery.",
         },
         items: [
             { id: "1", cuisine: "Chicken Curry", quantity: 2, price: 3500 },

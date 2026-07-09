@@ -7,17 +7,27 @@ import { HugeiconsIcon } from "@hugeicons/react"
 import { ArrowLeft, ShoppingBasket01Icon } from "@hugeicons/core-free-icons"
 import { Button } from "@/components/ui/button"
 import FormsInput from "@/components/widgets/forms/forms-input"
+import FormsSelect from "@/components/widgets/forms/forms-select"
+import FormsTextarea from "@/components/widgets/forms/forms-textarea"
 import Section from "@/components/widgets/section"
 import NoDataWidget from "@/components/widgets/no-data"
+import LoadingWidget from "@/components/widgets/loading-widget"
+import { useFetch } from "@/hooks/use-fetch"
 import { CheckoutForm, CheckoutSchema } from "@/lib/model/form/checkout.schema"
 import { formatCurrency } from "@/lib/utils"
 import { useCart } from "../_states/cart-provider"
 
 import * as checkoutService from "@/lib/action/anonymous/invoice.action"
+import * as deliveryTimeService from "@/lib/action/anonymous/delivery-time.action"
 
 export default function CheckOutPage() {
     const router = useRouter()
     const cart = useCart()
+
+    const [deliveryTimes] = useFetch(
+        () => deliveryTimeService.search({ status: "Enable", time: "" }),
+        []
+    )
 
     const form = useForm<CheckoutForm>({
         resolver: zodResolver(CheckoutSchema),
@@ -27,6 +37,9 @@ export default function CheckOutPage() {
             email: "",
             address: "",
             township: "",
+            deliveryDate: "",
+            deliveryTimeId: "",
+            remark: "",
         },
     })
 
@@ -34,6 +47,10 @@ export default function CheckOutPage() {
         const result = await checkoutService.checkout(values, cart.items)
         cart.clear()
         router.push(`/cart/invoice?id=${result.id}`)
+    }
+
+    if (!deliveryTimes) {
+        return <LoadingWidget />
     }
 
     if (cart.items.length === 0) {
@@ -71,17 +88,50 @@ export default function CheckOutPage() {
                         </div>
                     </Section>
 
-                    <Section title="Delivery Address">
-                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                            <FormsInput
-                                control={form.control}
-                                path="address"
-                                label="Address"
-                                className="sm:col-span-2"
-                            />
-                            <FormsInput control={form.control} path="township" label="Township" />
-                        </div>
-                    </Section>
+                    <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                        <Section title="Delivery Address">
+                            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                                <FormsInput
+                                    control={form.control}
+                                    path="township"
+                                    label="Township"
+                                />
+                                <FormsTextarea
+                                    control={form.control}
+                                    path="address"
+                                    label="Address"
+                                    className="sm:col-span-2"
+                                />
+                            </div>
+                        </Section>
+
+                        <Section title="Delivery Schedule">
+                            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                                <FormsInput
+                                    control={form.control}
+                                    path="deliveryDate"
+                                    type="date"
+                                    label="Delivery Date"
+                                />
+                                <FormsSelect
+                                    control={form.control}
+                                    path="deliveryTimeId"
+                                    label="Delivery Time"
+                                    options={deliveryTimes.map((slot) => ({
+                                        value: String(slot.id),
+                                        label: `${slot.timeFrom} - ${slot.timeTo}`,
+                                    }))}
+                                />
+                                <FormsTextarea
+                                    control={form.control}
+                                    path="remark"
+                                    label="Remark"
+                                    placeholder="Any note for the rider or kitchen"
+                                    className="sm:col-span-2"
+                                />
+                            </div>
+                        </Section>
+                    </div>
 
                     <Button type="submit" className="w-full" disabled={form.formState.isSubmitting}>
                         <HugeiconsIcon icon={ShoppingBasket01Icon} /> Place Order

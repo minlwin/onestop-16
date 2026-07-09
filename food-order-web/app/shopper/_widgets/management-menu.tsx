@@ -33,7 +33,9 @@ export function ManagementMenu() {
                         <HugeiconsIcon icon={ChefHatFreeIcons} color="white" />
                     </div>
                     <div>
-                        <h1 className="text-2xl">Welcome</h1>
+                        <Link href={'/'}>
+                            <h1 className="text-2xl">Welcome</h1>
+                        </Link>
                         <h3>Management User</h3>
                     </div>
                 </div>

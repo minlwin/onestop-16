@@ -107,7 +107,7 @@ export default function ShoppingCartPage() {
                             <NoDataWidget message="No cuisines available." />
                         </Section>
                     ) : (
-                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
                             {filteredCuisines.map((cuisine) => (
                                 <CuisineCard
                                     key={cuisine.id}
@@ -311,7 +311,7 @@ function CuisineCard({
                 width={400}
                 height={240}
                 unoptimized
-                className="h-40 w-full object-cover"
+                className="h-60 w-full object-cover"
             />
 
             <CardHeader>

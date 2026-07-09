@@ -1,6 +1,5 @@
 "use client"
 
-import { useEffect, useState } from "react"
 import Section from "@/components/widgets/section"
 import {
     Table,
@@ -12,62 +11,29 @@ import {
 } from "@/components/ui/table"
 import { CustomerInfo, DeliveryInfo, InvoiceDetails } from "@/lib/model/output/management.model"
 import LoadingWidget from "./loading-widget"
+import { useFetch } from "@/hooks/use-fetch"
 
-const MOCK_INVOICE: InvoiceDetails = {
-    id: "202606010001",
-    status: "Confirmed",
-    invoiceDate: "2026-06-28",
-    statusChangedAt: "2026-06-28 09:00am",
-    customer: {
-        name: "U Win Ko",
-        phone: "0917181777",
-        email: "winko@gmail.com",
-    },
-    delivery: {
-        label: "Home",
-        address: "No. 12, 5th Street",
-        township: "Kamayut",
-        dispatchDate: "2026-06-30",
-        timeFrom: "09:00AM",
-        timeTo: "11:00AM",
-        fees: 3000,
-    },
-    items: [
-        { id: "1", cuisine: "Chicken Curry", quantity: 2, price: 18000 },
-        { id: "2", cuisine: "Fish Curry", quantity: 3, price: 15000 },
-        { id: "3", cuisine: "Ginger Salad", quantity: 1, price: 7000 },
-    ],
-}
+import * as invoiceService from "@/lib/action/shopper/management/invoice.action"
 
 export default function InvoiceDetailsWidget({ id }: { id: string }) {
-    const [invoice, setInvoice] = useState<InvoiceDetails>()
+    const [invoice] = useFetch(() => invoiceService.findById(id), [id])
 
     const subtotal =
         invoice?.items.map((item) => item.price * item.quantity).reduce((a, b) => a + b) ?? 0
     const deliveryFees = subtotal + (invoice?.delivery.fees ?? 0)
     const allTotal = subtotal + deliveryFees
 
-    useEffect(() => {
-        setInvoice(MOCK_INVOICE)
-    }, [id])
-
     if (invoice === undefined) {
         return <LoadingWidget />
     }
 
     return (
-        <section className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,360px)_1fr]">
-            <div className="space-y-6">
-                <CustomerInfoCard customer={invoice.customer} />
-                <DeliveryInfoCard info={invoice.delivery} />
-            </div>
-
+        <section className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_minmax(0,360px)]">
             <div className="space-y-6">
                 <InvoiceStatusCard invoice={invoice} />
-                <section className="space-y-4">
-                    <h3 className="text-xl font-semibold text-primary">Invoice Items</h3>
 
-                    <Section>
+                <section className="space-y-4">
+                    <Section title="Invoice Items">
                         <Table>
                             <TableHeader>
                                 <TableRow>
@@ -112,6 +78,13 @@ export default function InvoiceDetailsWidget({ id }: { id: string }) {
                         </div>
                     </Section>
                 </section>
+
+                <RemarkCard remark={invoice.delivery.remark} />
+            </div>
+
+            <div className="space-y-6">
+                <CustomerInfoCard customer={invoice.customer} />
+                <DeliveryInfoCard info={invoice.delivery} />
             </div>
         </section>
     )
@@ -165,18 +138,21 @@ function DeliveryInfoCard({ info }: { info: DeliveryInfo }) {
     )
 }
 
+function RemarkCard({ remark }: { remark: string }) {
+    return (
+        <Section title="Remark">
+            <p className="text-sm text-muted-foreground">{remark || "No remark."}</p>
+        </Section>
+    )
+}
+
 function InvoiceStatusCard({ invoice }: { invoice: InvoiceDetails }) {
     return (
         <Section title="Invoice Status">
-            <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
                 <div>
                     <p className="text-sm text-muted-foreground">Invoice ID</p>
                     <p className="font-medium">{invoice.id}</p>
-                </div>
-
-                <div>
-                    <p className="text-sm text-muted-foreground">Invoice Date</p>
-                    <p className="font-medium">{invoice.invoiceDate}</p>
                 </div>
 
                 <div>

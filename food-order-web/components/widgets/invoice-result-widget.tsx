@@ -5,6 +5,7 @@ import { HugeiconsIcon } from "@hugeicons/react"
 import { Alert01Icon } from "@hugeicons/core-free-icons"
 import Section from "@/components/widgets/section"
 import LoadingWidget from "@/components/widgets/loading-widget"
+import StatusBadge from "@/components/widgets/status-badge"
 import {
     Table,
     TableBody,
@@ -101,57 +102,74 @@ export default function InvoiceResultWidget({
                             </div>
 
                             <div>
-                                <p className="text-sm text-muted-foreground">Status</p>
-                                <p className="font-medium">{invoice.status}</p>
+                                <p className="text-sm text-muted-foreground">Delivery Date</p>
+                                <p className="font-medium">{invoice.delivery.dispatchDate}</p>
+                            </div>
+
+                            <div>
+                                <p className="text-sm text-muted-foreground">Delivery Time</p>
+                                <p className="font-medium">
+                                    {invoice.delivery.timeFrom} - {invoice.delivery.timeTo}
+                                </p>
                             </div>
                         </div>
                     </Section>
                 </div>
 
-                <Section title="Order Items">
-                    <Table>
-                        <TableHeader>
-                            <TableRow>
-                                <TableHead>Cuisine</TableHead>
-                                <TableHead className="text-end">Quantity</TableHead>
-                                <TableHead className="text-end">Price</TableHead>
-                                <TableHead className="text-end">Amount</TableHead>
-                            </TableRow>
-                        </TableHeader>
-
-                        <TableBody>
-                            {invoice.items.map((item) => (
-                                <TableRow key={item.id}>
-                                    <TableCell>{item.cuisine}</TableCell>
-                                    <TableCell className="text-end">{item.quantity}</TableCell>
-                                    <TableCell className="text-end">
-                                        {formatCurrency(item.price)}
-                                    </TableCell>
-                                    <TableCell className="text-end">
-                                        {formatCurrency(item.price * item.quantity)}
-                                    </TableCell>
+                <div className="space-y-6">
+                    <Section title="Order Items" action={<StatusBadge status={invoice.status} />}>
+                        <Table>
+                            <TableHeader>
+                                <TableRow>
+                                    <TableHead>Cuisine</TableHead>
+                                    <TableHead className="text-end">Quantity</TableHead>
+                                    <TableHead className="text-end">Price</TableHead>
+                                    <TableHead className="text-end">Amount</TableHead>
                                 </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
+                            </TableHeader>
 
-                    <div className="ml-auto w-full max-w-xs space-y-2 pt-4">
-                        <div className="flex justify-between text-sm">
-                            <p className="text-muted-foreground">Subtotal</p>
-                            <p className="font-medium">{formatCurrency(subtotal)}</p>
-                        </div>
+                            <TableBody>
+                                {invoice.items.map((item) => (
+                                    <TableRow key={item.id}>
+                                        <TableCell>{item.cuisine}</TableCell>
+                                        <TableCell className="text-end">{item.quantity}</TableCell>
+                                        <TableCell className="text-end">
+                                            {formatCurrency(item.price)}
+                                        </TableCell>
+                                        <TableCell className="text-end">
+                                            {formatCurrency(item.price * item.quantity)}
+                                        </TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
 
-                        <div className="flex justify-between text-sm">
-                            <p className="text-muted-foreground">Delivery Fee</p>
-                            <p className="font-medium">{formatCurrency(invoice.delivery.fees)}</p>
-                        </div>
+                        <div className="ml-auto w-full max-w-xs space-y-2 pt-4">
+                            <div className="flex justify-between text-sm">
+                                <p className="text-muted-foreground">Subtotal</p>
+                                <p className="font-medium">{formatCurrency(subtotal)}</p>
+                            </div>
 
-                        <div className="flex justify-between border-t pt-2 text-base">
-                            <p className="font-semibold">Total</p>
-                            <p className="font-semibold">{formatCurrency(total)}</p>
+                            <div className="flex justify-between text-sm">
+                                <p className="text-muted-foreground">Delivery Fee</p>
+                                <p className="font-medium">
+                                    {formatCurrency(invoice.delivery.fees)}
+                                </p>
+                            </div>
+
+                            <div className="flex justify-between border-t pt-2 text-base">
+                                <p className="font-semibold">Total</p>
+                                <p className="font-semibold">{formatCurrency(total)}</p>
+                            </div>
                         </div>
-                    </div>
-                </Section>
+                    </Section>
+
+                    <Section title="Remark">
+                        <p className="text-sm text-muted-foreground">
+                            {invoice.delivery.remark || "No remark."}
+                        </p>
+                    </Section>
+                </div>
 
                 <div>
                     <Section title="Payment Information">

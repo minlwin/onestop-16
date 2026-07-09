@@ -2,7 +2,7 @@ import WelcomeServiceLink from "@/components/widgets/welcome-service-link"
 import {
     Search01FreeIcons,
     ShoppingBag02FreeIcons,
-    User02FreeIcons,
+    SignIn,
 } from "@hugeicons/core-free-icons"
 
 export default function WelcomePage() {
@@ -46,10 +46,10 @@ export default function WelcomePage() {
                 <WelcomeServiceLink
                     bgColor="bg-orange-700"
                     textColor="white"
-                    icon={User02FreeIcons}
-                    title="Be a member"
-                    subTitle="Sign Up to be a member."
-                    route="/signup"
+                    icon={SignIn}
+                    title="Sign In"
+                    subTitle="Access Your Account"
+                    route="/signin"
                 />
             </section>
         </main>

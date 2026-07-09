@@ -12,6 +12,7 @@ export type DeliveryInfo = {
     dispatchDate: string
     timeFrom: string
     timeTo: string
+    remark: string
 }
 
 export type InvoiceItem = {
@@ -29,4 +30,34 @@ export type InvoiceDetails = {
     items: InvoiceItem[]
     customer: CustomerInfo
     delivery: DeliveryInfo
+}
+
+export type InvoiceListItem = {
+    id: string
+    customer: string
+    phone: string
+    invoiceDate: string
+    status: string
+    statusChangedAt: string
+    amount: number
+}
+
+export type DeliveryListItem = {
+    invoiceId: string
+    customer: string
+    deliveryDate: string
+    timeRange: string
+    address: string
+}
+
+export type WeeklyInvoiceItem = {
+    id: string
+    customer: string
+    confirmDate: string
+    deliveryDate: string
+}
+
+export type OrderCuisineSummary = {
+    cuisine: string
+    quantity: number
 }

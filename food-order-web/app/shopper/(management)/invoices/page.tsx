@@ -12,11 +12,13 @@ import {
     TableRow,
 } from "@/components/ui/table"
 import DetailsLink from "@/components/widgets/details-link"
+import NoDataWidget from "@/components/widgets/no-data"
 import {
     INVOICE_STATUS_OPTION,
     InvoiceSearchForm,
     InvoiceSearchSchema,
 } from "@/lib/model/form/management.schema"
+import { InvoiceListItem } from "@/lib/model/output/management.model"
 import { Button } from "@/components/ui/button"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Search } from "@hugeicons/core-free-icons"
@@ -24,38 +26,49 @@ import { HugeiconsIcon } from "@hugeicons/react"
 import { useForm } from "react-hook-form"
 import FormsSelect from "@/components/widgets/forms/forms-select"
 import FormsInput from "@/components/widgets/forms/forms-input"
+import { useFetch } from "@/hooks/use-fetch"
+import { formatCurrency } from "@/lib/utils"
+
+import * as invoiceService from "@/lib/action/shopper/management/invoice.action"
+
+const SEARCH_FORM: InvoiceSearchForm = {
+    status: "",
+    from: "",
+    to: "",
+    keyword: "",
+}
 
 export default function InvoiceHistoryPage() {
     const { setTitle } = usePageTitle()
+
+    const [list, setList] = useFetch(() => invoiceService.search(SEARCH_FORM), [])
 
     useEffect(() => {
         setTitle("Invoice History")
     }, [])
 
+    const search = async (form: InvoiceSearchForm) => {
+        const result = await invoiceService.search(form)
+        setList(result)
+    }
+
     return (
         <section className="space-y-6">
-            <SearchForm />
-            <ResultTable />
+            <SearchForm onSearch={search} />
+            <ResultTable list={list ?? []} />
         </section>
     )
 }
 
-function SearchForm() {
+function SearchForm({ onSearch }: { onSearch: (form: InvoiceSearchForm) => void }) {
     const form = useForm<InvoiceSearchForm>({
         resolver: zodResolver(InvoiceSearchSchema),
-        defaultValues: {
-            status: "",
-            from: "",
-            to: "",
-            keyword: "",
-        },
+        defaultValues: { ...SEARCH_FORM },
     })
-
-    const search = (form: InvoiceSearchForm) => {}
 
     return (
         <Section>
-            <form onSubmit={form.handleSubmit(search)} className="flex gap-4">
+            <form onSubmit={form.handleSubmit(onSearch)} className="flex gap-4">
                 <FormsSelect
                     control={form.control}
                     path="status"
@@ -94,7 +107,15 @@ function SearchForm() {
     )
 }
 
-function ResultTable() {
+function ResultTable({ list }: { list: InvoiceListItem[] }) {
+    if (list.length === 0) {
+        return (
+            <Section>
+                <NoDataWidget />
+            </Section>
+        )
+    }
+
     return (
         <Section>
             <Table>
@@ -112,18 +133,22 @@ function ResultTable() {
                 </TableHeader>
 
                 <TableBody>
-                    <TableRow>
-                        <TableCell>202606010001</TableCell>
-                        <TableCell>U Win Ko</TableCell>
-                        <TableCell>0917181777</TableCell>
-                        <TableCell>2026-06-28</TableCell>
-                        <TableCell>Confirmed</TableCell>
-                        <TableCell>2026-06-28 9:00am</TableCell>
-                        <TableCell className="text-end">90,000 MMK</TableCell>
-                        <TableCell className="flex justify-center">
-                            <DetailsLink url={`/shopper/invoices/1`} />
-                        </TableCell>
-                    </TableRow>
+                    {list.map((item) => (
+                        <TableRow key={item.id}>
+                            <TableCell>{item.id}</TableCell>
+                            <TableCell>{item.customer}</TableCell>
+                            <TableCell>{item.phone}</TableCell>
+                            <TableCell>{item.invoiceDate}</TableCell>
+                            <TableCell>{item.status}</TableCell>
+                            <TableCell>{item.statusChangedAt}</TableCell>
+                            <TableCell className="text-end">
+                                {formatCurrency(item.amount)}
+                            </TableCell>
+                            <TableCell className="flex justify-center">
+                                <DetailsLink url={`/shopper/invoices/${item.id}`} />
+                            </TableCell>
+                        </TableRow>
+                    ))}
                 </TableBody>
             </Table>
         </Section>

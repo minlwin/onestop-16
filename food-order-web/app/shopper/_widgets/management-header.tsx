@@ -5,6 +5,7 @@ import { SidebarTrigger } from "@/components/ui/sidebar"
 import { ArrowRight, ArrowRight02FreeIcons, SignOut } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { usePageTitle } from "../_states/page-title-provider"
+import Link from "next/link"
 
 export default function ManagementHeader() {
     const { title } = usePageTitle()
@@ -14,7 +15,7 @@ export default function ManagementHeader() {
             <div className="flex items-center gap-2">
                 <div className="flex items-center">
                     <SidebarTrigger size={"lg"} />
-                    <h1 className="uppercase">Food Order</h1>
+                    <Link href={'/shopper'} className="uppercase">Food Order</Link>
                 </div>
 
                 <HugeiconsIcon icon={ArrowRight} size={20} />

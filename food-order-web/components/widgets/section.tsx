@@ -1,13 +1,15 @@
 import React from "react"
 import { cn } from "@/lib/utils"
-import { Card, CardContent, CardHeader, CardTitle } from "../ui/card"
+import { Card, CardAction, CardContent, CardHeader, CardTitle } from "../ui/card"
 
 export default function Section({
     title,
+    action,
     children,
     className,
 }: {
     title?: React.ReactNode
+    action?: React.ReactNode
     children: React.ReactNode
     className?: string
 }) {
@@ -16,6 +18,7 @@ export default function Section({
             {title && (
                 <CardHeader>
                     <CardTitle>{title}</CardTitle>
+                    {action && <CardAction>{action}</CardAction>}
                 </CardHeader>
             )}
 

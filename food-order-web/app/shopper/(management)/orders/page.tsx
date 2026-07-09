@@ -12,28 +12,49 @@ import {
 } from "@/components/ui/table"
 import Section from "@/components/widgets/section"
 import DetailsLink from "@/components/widgets/details-link"
+import NoDataWidget from "@/components/widgets/no-data"
+import LoadingWidget from "@/components/widgets/loading-widget"
+import { useFetch } from "@/hooks/use-fetch"
+import { OrderCuisineSummary, WeeklyInvoiceItem } from "@/lib/model/output/management.model"
+
+import * as ordersService from "@/lib/action/shopper/management/orders.action"
 
 export default function OrdersManagementPage() {
     const { setTitle } = usePageTitle()
+
+    const [weeklyInvoices] = useFetch(() => ordersService.weeklyInvoices(), [])
+    const [cuisineSummary] = useFetch(() => ordersService.cuisineSummary(), [])
 
     useEffect(() => {
         setTitle("Order Management")
     }, [])
 
+    if (!weeklyInvoices || !cuisineSummary) {
+        return <LoadingWidget />
+    }
+
     return (
         <section className="flex gap-6">
             <div className="flex-2">
-                <ResultTable />
+                <ResultTable list={weeklyInvoices} />
             </div>
 
             <div className="flex-1">
-                <OrderTable />
+                <OrderTable list={cuisineSummary} />
             </div>
         </section>
     )
 }
 
-function ResultTable() {
+function ResultTable({ list }: { list: WeeklyInvoiceItem[] }) {
+    if (list.length === 0) {
+        return (
+            <Section title="Invoice for this week">
+                <NoDataWidget />
+            </Section>
+        )
+    }
+
     return (
         <Section title="Invoice for this week">
             <Table>
@@ -48,22 +69,32 @@ function ResultTable() {
                 </TableHeader>
 
                 <TableBody>
-                    <TableRow>
-                        <TableCell>202606010001</TableCell>
-                        <TableCell>U Win Ko</TableCell>
-                        <TableCell>2026-06-03</TableCell>
-                        <TableCell>2026-06-05</TableCell>
-                        <TableCell className="flex justify-center">
-                            <DetailsLink url={`/shopper/invoices/1`} />
-                        </TableCell>
-                    </TableRow>
+                    {list.map((item) => (
+                        <TableRow key={item.id}>
+                            <TableCell>{item.id}</TableCell>
+                            <TableCell>{item.customer}</TableCell>
+                            <TableCell>{item.confirmDate}</TableCell>
+                            <TableCell>{item.deliveryDate}</TableCell>
+                            <TableCell className="flex justify-center">
+                                <DetailsLink url={`/shopper/invoices/${item.id}`} />
+                            </TableCell>
+                        </TableRow>
+                    ))}
                 </TableBody>
             </Table>
         </Section>
     )
 }
 
-function OrderTable() {
+function OrderTable({ list }: { list: OrderCuisineSummary[] }) {
+    if (list.length === 0) {
+        return (
+            <Section title="Orders">
+                <NoDataWidget />
+            </Section>
+        )
+    }
+
     return (
         <Section title="Orders">
             <Table>
@@ -75,10 +106,12 @@ function OrderTable() {
                 </TableHeader>
 
                 <TableBody>
-                    <TableRow>
-                        <TableCell>Curry</TableCell>
-                        <TableCell className="text-end">89</TableCell>
-                    </TableRow>
+                    {list.map((item) => (
+                        <TableRow key={item.cuisine}>
+                            <TableCell>{item.cuisine}</TableCell>
+                            <TableCell className="text-end">{item.quantity}</TableCell>
+                        </TableRow>
+                    ))}
                 </TableBody>
             </Table>
         </Section>

@@ -6,6 +6,9 @@ export const CheckoutSchema = z.object({
     email: z.string().nonempty("Please enter your email address."),
     address: z.string().nonempty("Please enter your delivery address."),
     township: z.string().nonempty("Please enter your township."),
+    deliveryDate: z.string().nonempty("Please select a delivery date."),
+    deliveryTimeId: z.string().nonempty("Please select a delivery time."),
+    remark: z.string(),
 })
 
 export type CheckoutForm = z.infer<typeof CheckoutSchema>

@@ -18,8 +18,8 @@ import com.jdc.foods.model.dto.ModificationResult;
 
 import lombok.RequiredArgsConstructor;
 
-@RestController
 @RequiredArgsConstructor
+@RestController("deliveryTimeMasterApi")
 @RequestMapping("shopper/delivery-times")
 public class DeliveryTimeApi {
 
