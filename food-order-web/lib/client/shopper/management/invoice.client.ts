@@ -38,7 +38,7 @@ export async function findById(id: any): Promise<InvoiceDetails> {
     }
 }
 
-const MOCK_INVOICE: InvoiceDetails = {
+export const MOCK_INVOICE: InvoiceDetails = {
     id: "202606010001",
     status: "Confirmed",
     invoiceDate: "2026-06-28",
@@ -65,7 +65,7 @@ const MOCK_INVOICE: InvoiceDetails = {
     ],
 }
 
-const MOCK_INVOICES: InvoiceListItem[] = [
+export const MOCK_INVOICES: InvoiceListItem[] = [
     {
         id: "202606010001",
         customer: "U Win Ko",

@@ -7,6 +7,7 @@ import com.jdc.foods.model.consts.Status;
 
 public record DeliTimeListItem(
 		int id,
+		String name,
 		LocalTime timeFrom,
 		LocalTime timeTo,
 		Status status,

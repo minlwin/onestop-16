@@ -29,7 +29,10 @@ import lombok.RequiredArgsConstructor;
 public class CuisineApi {
 
 	@GetMapping
-	PageResult<CuisineListItem> search(CuisineSearch form) {
+	PageResult<CuisineListItem> search(
+			CuisineSearch form,
+			@RequestParam(required = false, defaultValue = "0") Integer page,
+			@RequestParam(required = false, defaultValue = "10") Integer size) {
 		return new PageResult<CuisineListItem>(List.of(), null);
 	}
 

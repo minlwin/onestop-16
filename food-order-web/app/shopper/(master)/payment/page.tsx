@@ -72,8 +72,8 @@ export default function PaymentInfoMasterPage() {
 
     useEffect(() => {
         editForm.reset()
-        const load = async () => {
-            if (id) {
+        if (id) {
+            const load = async () => {
                 const result = await service.findById(id)
                 editForm.reset({
                     bank: result.bank,
@@ -82,9 +82,8 @@ export default function PaymentInfoMasterPage() {
                     status: result.status,
                 })
             }
-            setOpen(true)
+            load()
         }
-        load()
     }, [id])
 
     const search = async (form: PaymentInfoSearchForm) => {
@@ -110,10 +109,16 @@ export default function PaymentInfoMasterPage() {
             <SearchForm
                 searchForm={searchForm}
                 onSearch={search}
-                onAddNew={() => setId(undefined)}
+                onAddNew={() => {
+                    setId(undefined)
+                    setOpen(true)
+                }}
             />
 
-            <ResultTable onEdit={setId} list={searchResult ?? []} />
+            <ResultTable list={searchResult ?? []} onEdit={(id: any) => {
+                setId(id)
+                setOpen(true)
+            }} />
 
             <Dialog open={open} onOpenChange={setOpen}>
                 <DialogContent>
