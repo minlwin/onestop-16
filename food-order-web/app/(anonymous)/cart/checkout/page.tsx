@@ -13,7 +13,7 @@ import { CheckoutForm, CheckoutSchema } from "@/lib/model/form/checkout.schema"
 import { formatCurrency } from "@/lib/utils"
 import { useCart } from "../_states/cart-provider"
 
-import * as checkoutService from "@/lib/action/anonymous/checkout.action"
+import * as checkoutService from "@/lib/action/anonymous/invoice.action"
 
 export default function CheckOutPage() {
     const router = useRouter()
