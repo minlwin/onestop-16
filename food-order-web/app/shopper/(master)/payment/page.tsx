@@ -37,7 +37,7 @@ import {
 import EditLink from "@/components/widgets/edit-link"
 import { EditAction } from "@/lib/utils"
 
-import * as service from "@/lib/action/master/payment-info.action"
+import * as service from "@/lib/action/shopper/master/payment-info.action"
 import { PaymentInfoListItem } from "@/lib/model/output/master-data.model"
 import NoDataWidget from "@/components/widgets/no-data"
 import { useFetch } from "@/hooks/use-fetch"

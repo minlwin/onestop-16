@@ -1,6 +1,6 @@
 "use server"
 
-import * as client from "@/lib/client/master/category.client"
+import * as client from "@/lib/client/shopper/master/category.client"
 import { ModificationResult } from "@/lib/model"
 import { CategoryForm, CategorySearchForm } from "@/lib/model/form/master-data.schema"
 import { CategoryDetails, CategoryListItem } from "@/lib/model/output/master-data.model"

@@ -46,7 +46,7 @@ const MOAK_DETAILS: CategoryDetails = {
     modifiedAt: "2026-01-01 10:00",
 }
 
-const MOAK_CATEGORIES: CategoryListItem[] = [
+export const MOAK_CATEGORIES: CategoryListItem[] = [
     {
         id: 1,
         name: "Curry",

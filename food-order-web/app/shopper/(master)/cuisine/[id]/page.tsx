@@ -12,7 +12,7 @@ import { CuisineDetails } from "@/lib/model/output/master-data.model"
 import LoadingWidget from "@/components/widgets/loading-widget"
 import { useFetch } from "@/hooks/use-fetch"
 
-import * as service from "@/lib/action/master/cuisine.action"
+import * as service from "@/lib/action/shopper/master/cuisine.action"
 
 function StatusBadge({ status }: { status: string }) {
     const isEnabled = status === "Enable"

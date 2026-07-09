@@ -20,12 +20,11 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { Button } from "@/components/ui/button"
 import DetailsLink from "@/components/widgets/details-link"
 import { CustomerListItem } from "@/lib/model/output/account.model"
-import { PageResult } from "@/lib/model"
 import Pagination from "@/components/widgets/pagination"
 import NoDataWidget from "@/components/widgets/no-data"
 import { useFetch } from "@/hooks/use-fetch"
 
-import * as service from "@/lib/action/account/customer.action"
+import * as service from "@/lib/action/shopper/account/customer.action"
 
 const SEARCH_FORM: CustomerSearchForm = {
     from: "",

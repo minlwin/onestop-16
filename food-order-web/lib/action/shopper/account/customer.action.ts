@@ -4,7 +4,7 @@ import { PageResult } from "@/lib/model"
 import { CustomerSearchForm } from "@/lib/model/form/account.schema"
 import { CustomerDetails, CustomerListItem } from "@/lib/model/output/account.model"
 
-import * as client from "@/lib/client/account/customer.client"
+import * as client from "@/lib/client/shopper/account/customer.client"
 
 export async function search(form: CustomerSearchForm): Promise<PageResult<CustomerListItem>> {
     return await client.search(form)

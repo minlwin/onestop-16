@@ -36,7 +36,7 @@ import {
     DialogTitle,
 } from "@/components/ui/dialog"
 import { CategoryListItem } from "@/lib/model/output/master-data.model"
-import * as service from "@/lib/action/master/category.action"
+import * as service from "@/lib/action/shopper/master/category.action"
 import NoDataWidget from "@/components/widgets/no-data"
 import { useFetch } from "@/hooks/use-fetch"
 

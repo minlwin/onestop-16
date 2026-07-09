@@ -16,7 +16,7 @@ import { CustomerDetails } from "@/lib/model/output/account.model"
 import LoadingWidget from "@/components/widgets/loading-widget"
 import { useFetch } from "@/hooks/use-fetch"
 
-import * as service from "@/lib/action/account/customer.action"
+import * as service from "@/lib/action/shopper/account/customer.action"
 
 export default function CustomerDetailsPage() {
     const { setTitle } = usePageTitle()

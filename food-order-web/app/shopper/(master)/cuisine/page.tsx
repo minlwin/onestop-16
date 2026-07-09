@@ -32,7 +32,7 @@ import Pagination from "@/components/widgets/pagination"
 import NoDataWidget from "@/components/widgets/no-data"
 import { useFetch } from "@/hooks/use-fetch"
 
-import * as service from "@/lib/action/master/cuisine.action"
+import * as service from "@/lib/action/shopper/master/cuisine.action"
 
 const SEARCH_FORM: CuisineSearchForm = {
     keyword: "",

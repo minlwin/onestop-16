@@ -4,7 +4,7 @@ import { ModificationResult } from "@/lib/model"
 import { DeliTimeForm, DeliTimeSearchForm } from "@/lib/model/form/master-data.schema"
 import { DeliTimeListItem } from "@/lib/model/output/master-data.model"
 
-import * as client from "@/lib/client/master/delivery-time.client"
+import * as client from "@/lib/client/shopper/master/delivery-time.client"
 
 export async function search(form: DeliTimeSearchForm): Promise<DeliTimeListItem[]> {
     return client.search(form)

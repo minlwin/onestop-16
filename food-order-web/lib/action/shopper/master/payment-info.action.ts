@@ -4,7 +4,7 @@ import { ModificationResult } from "@/lib/model"
 import { PaymentInfoSearchForm, PaymentInfoForm } from "@/lib/model/form/master-data.schema"
 import { PaymentInfoListItem } from "@/lib/model/output/master-data.model"
 
-import * as client from "@/lib/client/master/payment-info.client"
+import * as client from "@/lib/client/shopper/master/payment-info.client"
 
 export async function search(form: PaymentInfoSearchForm): Promise<PaymentInfoListItem[]> {
     return await client.search(form)

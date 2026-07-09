@@ -21,7 +21,7 @@ import { Button } from "@/components/ui/button"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { Cancel, Delete02Icon, Save } from "@hugeicons/core-free-icons"
 import { useRouter, useSearchParams } from "next/navigation"
-import * as service from "@/lib/action/master/cuisine.action"
+import * as service from "@/lib/action/shopper/master/cuisine.action"
 
 export default function CuisineEditPage() {
     const { setTitle } = usePageTitle()

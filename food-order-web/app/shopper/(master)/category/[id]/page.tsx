@@ -14,7 +14,7 @@ import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { CategoryForm, CategorySchema, MASTER_STATUS } from "@/lib/model/form/master-data.schema"
 import { CategoryDetails } from "@/lib/model/output/master-data.model"
-import * as service from "@/lib/action/master/category.action"
+import * as service from "@/lib/action/shopper/master/category.action"
 import LoadingWidget from "@/components/widgets/loading-widget"
 import { useFetch } from "@/hooks/use-fetch"
 

@@ -36,7 +36,7 @@ import {
 } from "@/components/ui/dialog"
 import EditLink from "@/components/widgets/edit-link"
 
-import * as service from "@/lib/action/master/delivery-time.action"
+import * as service from "@/lib/action/shopper/master/delivery-time.action"
 import { DeliTimeListItem } from "@/lib/model/output/master-data.model"
 import NoDataWidget from "@/components/widgets/no-data"
 import { useFetch } from "@/hooks/use-fetch"

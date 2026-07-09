@@ -38,7 +38,7 @@ import { EmployeeListItem } from "@/lib/model/output/account.model"
 import NoDataWidget from "@/components/widgets/no-data"
 import { useFetch } from "@/hooks/use-fetch"
 
-import * as service from "@/lib/action/account/employee.action"
+import * as service from "@/lib/action/shopper/account/employee.action"
 
 const SEARCH_FORM: EmployeeSearchForm = {
     status: "",

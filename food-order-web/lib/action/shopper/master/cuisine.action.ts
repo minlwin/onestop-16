@@ -8,7 +8,7 @@ import {
     CuisineForEdit,
 } from "@/lib/model/output/master-data.model"
 
-import * as client from "@/lib/client/master/cuisine.client"
+import * as client from "@/lib/client/shopper/master/cuisine.client"
 
 export async function search(form: CuisineSearchForm): Promise<PageResult<CuisineListItem>> {
     return await client.search(form)
