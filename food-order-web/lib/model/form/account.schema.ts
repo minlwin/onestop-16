@@ -25,3 +25,20 @@ export const EmployeeSchema = z.object({
 })
 
 export type EmployeeForm = z.infer<typeof EmployeeSchema>
+
+export const ProfileSchema = z.object({
+    name: z.string().nonempty("Please enter your name."),
+    phone: z.string().nonempty("Please enter your phone number."),
+    email: z.email().nonempty("Please enter your email address."),
+})
+
+export type ProfileForm = z.infer<typeof ProfileSchema>
+
+export const AddressSchema = z.object({
+    label: z.string().nonempty("Please enter a label."),
+    address: z.string().nonempty("Please enter your address."),
+    township: z.string().nonempty("Please enter your township."),
+    isDefault: z.boolean().nonoptional(),
+})
+
+export type AddressForm = z.infer<typeof AddressSchema>

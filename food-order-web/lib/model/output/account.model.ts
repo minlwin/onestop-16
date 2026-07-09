@@ -1,3 +1,9 @@
+export type CustomerProfile = {
+    name: string
+    phone: string
+    email: string
+}
+
 export type CustomerListItem = {
     id: number
     name: string
