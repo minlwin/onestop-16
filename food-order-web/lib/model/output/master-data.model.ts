@@ -27,11 +27,11 @@ export type CuisineListItem = BaseModel & {
     spiceLevel: string
     isRegular: boolean
     price: number
+    description: string
+    coverPhoto?: string
 }
 
 export type CuisineDetails = CuisineListItem & {
-    description: string
-    coverPhoto?: string
     photos?: string[]
     ingredients?: Ingredient[]
 }

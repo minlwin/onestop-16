@@ -1,4 +1,4 @@
-import 'server-only'
+import "server-only"
 
 import { CategorySearchForm } from "@/lib/model/form/master-data.schema"
 import { CategoryListItem } from "@/lib/model/output/master-data.model"

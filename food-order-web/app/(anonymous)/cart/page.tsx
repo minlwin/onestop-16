@@ -12,7 +12,7 @@ import {
     ShoppingBasket01Icon,
 } from "@hugeicons/core-free-icons"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardAction, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import {
     Dialog,
     DialogContent,
@@ -26,19 +26,14 @@ import NoDataWidget from "@/components/widgets/no-data"
 import { useFetch } from "@/hooks/use-fetch"
 import { CuisineListItem } from "@/lib/model/output/master-data.model"
 import { foodPhotoUrl, formatCurrency } from "@/lib/utils"
+import { useCart } from "./_states/cart-provider"
 
 import * as categoryService from "@/lib/action/anonymous/category.action"
 import * as cuisineService from "@/lib/action/anonymous/cuisine.action"
 
-type CartItem = {
-    cuisineId: number
-    name: string
-    price: number
-    quantity: number
-}
-
 export default function ShoppingCartPage() {
     const router = useRouter()
+    const cart = useCart()
 
     const [categories] = useFetch(
         () => categoryService.search({ keyword: "", status: "Enable" }),
@@ -50,7 +45,6 @@ export default function ShoppingCartPage() {
     )
 
     const [selectedCategory, setSelectedCategory] = useState<number>()
-    const [cart, setCart] = useState<CartItem[]>([])
     const [detailsId, setDetailsId] = useState<number>()
     const [selectedPhoto, setSelectedPhoto] = useState<string>()
 
@@ -78,43 +72,8 @@ export default function ShoppingCartPage() {
         ? cuisines.filter((cuisine) => cuisine.category.id === selectedCategory)
         : cuisines
 
-    const addToCart = (cuisine: CuisineListItem) => {
-        setCart((prev) => {
-            if (prev.some((item) => item.cuisineId === cuisine.id)) {
-                return prev.map((item) =>
-                    item.cuisineId === cuisine.id ? { ...item, quantity: item.quantity + 1 } : item
-                )
-            }
-            return [
-                ...prev,
-                { cuisineId: cuisine.id, name: cuisine.name, price: cuisine.price, quantity: 1 },
-            ]
-        })
-    }
-
-    const changeQuantity = (cuisineId: number, delta: number) => {
-        setCart((prev) =>
-            prev
-                .map((item) =>
-                    item.cuisineId === cuisineId
-                        ? { ...item, quantity: item.quantity + delta }
-                        : item
-                )
-                .filter((item) => item.quantity > 0)
-        )
-    }
-
-    const removeFromCart = (cuisineId: number) => {
-        setCart((prev) => prev.filter((item) => item.cuisineId !== cuisineId))
-    }
-
-    const subtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0)
-
     const checkout = () => {
-        // Prototype: no order/checkout endpoint yet, just clear the cart and
-        // hand off to the existing order-status page.
-        setCart([])
-        router.push("/check")
+        router.push("/cart/checkout")
     }
 
     return (
@@ -148,12 +107,12 @@ export default function ShoppingCartPage() {
                             <NoDataWidget message="No cuisines available." />
                         </Section>
                     ) : (
-                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
+                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                             {filteredCuisines.map((cuisine) => (
                                 <CuisineCard
                                     key={cuisine.id}
                                     cuisine={cuisine}
-                                    onAdd={() => addToCart(cuisine)}
+                                    onAdd={() => cart.addItem(cuisine)}
                                     onShowDetails={() => showDetails(cuisine.id)}
                                 />
                             ))}
@@ -170,14 +129,14 @@ export default function ShoppingCartPage() {
                             </span>
                         }
                     >
-                        {cart.length === 0 ? (
+                        {cart.items.length === 0 ? (
                             <div className="text-gray-600">
                                 Your cart is empty. Add a dish to get started!
                             </div>
                         ) : (
                             <div className="space-y-4">
                                 <div className="space-y-3">
-                                    {cart.map((item) => (
+                                    {cart.items.map((item) => (
                                         <div
                                             key={item.cuisineId}
                                             className="flex items-center gap-2"
@@ -193,7 +152,9 @@ export default function ShoppingCartPage() {
                                                 type="button"
                                                 variant="outline"
                                                 size="icon-sm"
-                                                onClick={() => changeQuantity(item.cuisineId, -1)}
+                                                onClick={() =>
+                                                    cart.changeQuantity(item.cuisineId, -1)
+                                                }
                                             >
                                                 <HugeiconsIcon icon={MinusSignIcon} size={14} />
                                             </Button>
@@ -206,7 +167,9 @@ export default function ShoppingCartPage() {
                                                 type="button"
                                                 variant="outline"
                                                 size="icon-sm"
-                                                onClick={() => changeQuantity(item.cuisineId, 1)}
+                                                onClick={() =>
+                                                    cart.changeQuantity(item.cuisineId, 1)
+                                                }
                                             >
                                                 <HugeiconsIcon icon={PlusSignIcon} size={14} />
                                             </Button>
@@ -215,7 +178,7 @@ export default function ShoppingCartPage() {
                                                 type="button"
                                                 variant="ghost"
                                                 size="icon-sm"
-                                                onClick={() => removeFromCart(item.cuisineId)}
+                                                onClick={() => cart.removeItem(item.cuisineId)}
                                             >
                                                 <HugeiconsIcon icon={Delete02Icon} size={14} />
                                             </Button>
@@ -225,7 +188,7 @@ export default function ShoppingCartPage() {
 
                                 <div className="flex items-center justify-between border-t pt-3 font-medium">
                                     <span>Subtotal</span>
-                                    <span>{subtotal}</span>
+                                    <span>{formatCurrency(cart.subtotal)}</span>
                                 </div>
 
                                 <Button type="button" className="w-full" onClick={checkout}>
@@ -336,7 +299,7 @@ function CuisineCard({
     onShowDetails: VoidFunction
 }) {
     return (
-        <Card>
+        <Card className="flex h-full flex-col gap-3">
             <Image
                 src={foodPhotoUrl(
                     cuisine.id,
@@ -353,10 +316,15 @@ function CuisineCard({
 
             <CardHeader>
                 <CardTitle>{cuisine.name}</CardTitle>
+                <CardAction className="text-sm text-muted-foreground">
+                    {formatCurrency(cuisine.price)}
+                </CardAction>
             </CardHeader>
 
-            <CardContent className="space-y-3">
-                <p className="text-sm text-muted-foreground">{formatCurrency(cuisine.price)}</p>
+            <CardContent className="flex flex-1 flex-col gap-3">
+                <p className="line-clamp-2 flex-1 text-sm text-muted-foreground">
+                    {cuisine.description}
+                </p>
 
                 <div className="flex gap-2">
                     <Button type="button" size="sm" className="flex-1" onClick={onAdd}>

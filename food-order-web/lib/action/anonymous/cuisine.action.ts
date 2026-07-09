@@ -1,4 +1,4 @@
-'use server'
+"use server"
 
 import * as client from "@/lib/client/anonymous/cuisine.client"
 import { PageResult } from "@/lib/model"

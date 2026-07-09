@@ -13,6 +13,8 @@ public record CuisineListItem(
 		String spiceLevel,
 		boolean isRegular,
 		BigDecimal price,
+		String description,
+		String coverPhoto,
 		Status status,
 		LocalDateTime createdAt,
 		LocalDateTime modifiedAt) {
