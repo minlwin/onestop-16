@@ -14,7 +14,7 @@ import com.jdc.foods.api.shopper.account.input.EmployeeForm;
 import com.jdc.foods.api.shopper.account.input.EmployeeSearch;
 import com.jdc.foods.api.shopper.account.output.EmployeeDetails;
 import com.jdc.foods.api.shopper.account.output.EmployeeListItem;
-import com.jdc.foods.model.dto.ModificationResult;
+import com.jdc.foods.utils.dto.ModificationResult;
 
 import lombok.RequiredArgsConstructor;
 

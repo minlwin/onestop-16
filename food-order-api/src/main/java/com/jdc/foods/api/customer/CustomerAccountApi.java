@@ -17,7 +17,7 @@ import com.jdc.foods.api.customer.input.ChangePasswordForm;
 import com.jdc.foods.api.customer.input.ProfileForm;
 import com.jdc.foods.api.customer.output.CustomerProfile;
 import com.jdc.foods.api.shopper.account.output.DeliveryAddress;
-import com.jdc.foods.model.dto.ModificationResult;
+import com.jdc.foods.utils.dto.ModificationResult;
 
 import lombok.RequiredArgsConstructor;
 

@@ -14,7 +14,7 @@ import com.jdc.foods.api.shopper.master.input.PaymentInfoForm;
 import com.jdc.foods.api.shopper.master.input.PaymentInfoSearch;
 import com.jdc.foods.api.shopper.master.output.PaymentInfoDetails;
 import com.jdc.foods.api.shopper.master.output.PaymentInfoListItem;
-import com.jdc.foods.model.dto.ModificationResult;
+import com.jdc.foods.utils.dto.ModificationResult;
 
 import lombok.RequiredArgsConstructor;
 

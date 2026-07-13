@@ -18,8 +18,8 @@ import com.jdc.foods.api.shopper.master.input.UpdateCoverPhotoForm;
 import com.jdc.foods.api.shopper.master.output.CuisineDetails;
 import com.jdc.foods.api.shopper.master.output.CuisineForEdit;
 import com.jdc.foods.api.shopper.master.output.CuisineListItem;
-import com.jdc.foods.model.dto.ModificationResult;
-import com.jdc.foods.model.dto.PageResult;
+import com.jdc.foods.utils.dto.ModificationResult;
+import com.jdc.foods.utils.dto.PageResult;
 
 import lombok.RequiredArgsConstructor;
 

@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.jdc.foods.api.shopper.account.input.CustomerSearch;
 import com.jdc.foods.api.shopper.account.output.CustomerDetails;
 import com.jdc.foods.api.shopper.account.output.CustomerListItem;
-import com.jdc.foods.model.dto.PageResult;
+import com.jdc.foods.utils.dto.PageResult;
 
 import lombok.RequiredArgsConstructor;
 

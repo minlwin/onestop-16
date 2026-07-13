@@ -14,7 +14,7 @@ import com.jdc.foods.api.shopper.master.input.DeliTimeForm;
 import com.jdc.foods.api.shopper.master.input.DeliTimeSearch;
 import com.jdc.foods.api.shopper.master.output.DeliTimeDetails;
 import com.jdc.foods.api.shopper.master.output.DeliTimeListItem;
-import com.jdc.foods.model.dto.ModificationResult;
+import com.jdc.foods.utils.dto.ModificationResult;
 
 import lombok.RequiredArgsConstructor;
 

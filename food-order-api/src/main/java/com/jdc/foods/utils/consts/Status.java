@@ -1,4 +1,4 @@
-package com.jdc.foods.model.consts;
+package com.jdc.foods.utils.consts;
 
 public enum Status {
 	Pending, Enable

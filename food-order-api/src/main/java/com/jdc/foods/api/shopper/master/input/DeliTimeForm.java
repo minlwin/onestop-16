@@ -2,7 +2,7 @@ package com.jdc.foods.api.shopper.master.input;
 
 import java.time.LocalTime;
 
-import com.jdc.foods.model.consts.Status;
+import com.jdc.foods.utils.consts.Status;
 
 import jakarta.validation.constraints.NotNull;
 

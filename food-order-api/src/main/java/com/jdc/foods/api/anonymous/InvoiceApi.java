@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.jdc.foods.api.anonymous.input.CheckoutForm;
 import com.jdc.foods.api.shopper.management.output.InvoiceDetails;
-import com.jdc.foods.model.dto.ModificationResult;
+import com.jdc.foods.utils.dto.ModificationResult;
 
 import lombok.RequiredArgsConstructor;
 

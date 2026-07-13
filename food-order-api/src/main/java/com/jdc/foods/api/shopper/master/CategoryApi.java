@@ -15,7 +15,7 @@ import com.jdc.foods.api.shopper.master.input.CategoryForm;
 import com.jdc.foods.api.shopper.master.input.CategorySearch;
 import com.jdc.foods.api.shopper.master.output.CategoryDetails;
 import com.jdc.foods.api.shopper.master.output.CategoryListItem;
-import com.jdc.foods.model.dto.ModificationResult;
+import com.jdc.foods.utils.dto.ModificationResult;
 
 import lombok.RequiredArgsConstructor;
 

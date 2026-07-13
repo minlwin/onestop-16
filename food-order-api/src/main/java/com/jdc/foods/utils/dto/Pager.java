@@ -1,4 +1,4 @@
-package com.jdc.foods.model.dto;
+package com.jdc.foods.utils.dto;
 
 import java.util.List;
 
