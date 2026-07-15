@@ -40,7 +40,6 @@ public class Cuisine extends AuditableEntity {
 	private SpiceLevel spiceLevel;
 	private boolean isRegular;
 	
-
 	private String coverPhoto;
 	
 	@Convert(converter = StringListConverter.class)

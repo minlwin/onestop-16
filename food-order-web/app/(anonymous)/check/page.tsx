@@ -1,7 +1,6 @@
 "use client"
 
 import { useState } from "react"
-import { useSearchParams } from "next/navigation"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { HugeiconsIcon } from "@hugeicons/react"
@@ -13,14 +12,12 @@ import InvoiceResultWidget from "@/components/widgets/invoice-result-widget"
 import { CheckOrderForm, CheckOrderSchema } from "@/lib/model/form/check-order.schema"
 
 export default function CheckOrderPage() {
-    const params = useSearchParams()
-    const initialId = params.get("id") ?? ""
 
-    const [invoiceId, setInvoiceId] = useState<string | undefined>(initialId || undefined)
+    const [invoiceId, setInvoiceId] = useState<string>()
 
     const form = useForm<CheckOrderForm>({
         resolver: zodResolver(CheckOrderSchema),
-        defaultValues: { invoiceId: initialId },
+        defaultValues: { invoiceId: "" },
     })
 
     const check = (values: CheckOrderForm) => {

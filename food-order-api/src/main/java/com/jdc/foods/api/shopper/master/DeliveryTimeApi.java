@@ -14,6 +14,7 @@ import com.jdc.foods.api.shopper.master.input.DeliTimeForm;
 import com.jdc.foods.api.shopper.master.input.DeliTimeSearch;
 import com.jdc.foods.api.shopper.master.output.DeliTimeDetails;
 import com.jdc.foods.api.shopper.master.output.DeliTimeListItem;
+import com.jdc.foods.api.shopper.master.service.DeliveryTimeManagementService;
 import com.jdc.foods.utils.dto.ModificationResult;
 
 import lombok.RequiredArgsConstructor;
@@ -22,28 +23,30 @@ import lombok.RequiredArgsConstructor;
 @RestController("deliveryTimeMasterApi")
 @RequestMapping("shopper/delivery-times")
 public class DeliveryTimeApi {
+	
+	private final DeliveryTimeManagementService service;
 
 	@GetMapping
 	List<DeliTimeListItem> search(DeliTimeSearch form) {
-		return List.of();
+		return service.search(form);
 	}
 
 	@GetMapping("{id}")
 	DeliTimeDetails findById(@PathVariable int id) {
-		return null;
+		return service.findById(id);
 	}
 
 	@PostMapping
 	ModificationResult<Integer> create(
 			@RequestBody @Validated DeliTimeForm form) {
-		return new ModificationResult<Integer>(1);
+		return service.create(form);
 	}
 
 	@PostMapping("{id}")
 	ModificationResult<Integer> update(
 			@PathVariable int id,
 			@RequestBody @Validated DeliTimeForm form) {
-		return new ModificationResult<Integer>(id);
+		return service.update(id, form);
 	}
 
 }

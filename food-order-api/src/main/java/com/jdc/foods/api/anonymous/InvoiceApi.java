@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.jdc.foods.api.anonymous.input.CheckoutForm;
+import com.jdc.foods.api.anonymous.service.InvoiceService;
 import com.jdc.foods.api.shopper.management.output.InvoiceDetails;
 import com.jdc.foods.utils.dto.ModificationResult;
 
@@ -18,16 +19,18 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @RequestMapping("anonymous/invoices")
 public class InvoiceApi {
+	
+	private final InvoiceService service;
 
 	@PostMapping
 	ModificationResult<String> checkout(
 			@RequestBody @Validated CheckoutForm form) {
-		return new ModificationResult<String>("INV-0001");
+		return service.create(form);
 	}
 
 	@GetMapping("{id}")
 	InvoiceDetails findById(@PathVariable String id) {
-		return null;
+		return service.findById(id);
 	}
 
 }

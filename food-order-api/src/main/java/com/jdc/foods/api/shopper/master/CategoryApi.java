@@ -15,6 +15,7 @@ import com.jdc.foods.api.shopper.master.input.CategoryForm;
 import com.jdc.foods.api.shopper.master.input.CategorySearch;
 import com.jdc.foods.api.shopper.master.output.CategoryDetails;
 import com.jdc.foods.api.shopper.master.output.CategoryListItem;
+import com.jdc.foods.api.shopper.master.service.CategoryManagementService;
 import com.jdc.foods.utils.dto.ModificationResult;
 
 import lombok.RequiredArgsConstructor;
@@ -23,28 +24,30 @@ import lombok.RequiredArgsConstructor;
 @RestController("categoryMasterApi")
 @RequestMapping("shopper/categories")
 public class CategoryApi {
+	
+	private final CategoryManagementService service;
 
 	@GetMapping
 	List<CategoryListItem> search(CategorySearch form) {
-		return List.of();
+		return service.search(form);
 	}
 	
 	@GetMapping("{id}")
 	CategoryDetails findById(@PathVariable int id) {
-		return null;
+		return service.findById(id);
 	}
 	
 	@PostMapping
 	ModificationResult<Integer> create(
 			@RequestBody @Validated CategoryForm form) {
-		return new ModificationResult<Integer>(1);
+		return service.create(form);
 	}
 	
 	@PutMapping("{id}")
 	ModificationResult<Integer> update(
 			@PathVariable int id,
 			@RequestBody @Validated CategoryForm form) {
-		return new ModificationResult<Integer>(id);
+		return service.update(id, form);
 	}
 	
 }

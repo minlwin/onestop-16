@@ -46,7 +46,7 @@ export default function CheckOutPage() {
     const save = async (values: CheckoutForm) => {
         const result = await checkoutService.checkout(values, cart.items)
         cart.clear()
-        router.push(`/cart/invoice?id=${result.id}`)
+        router.push(`/cart/checkout/${result.id}`)
     }
 
     if (!deliveryTimes) {

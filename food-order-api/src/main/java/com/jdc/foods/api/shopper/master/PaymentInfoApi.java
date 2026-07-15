@@ -14,6 +14,7 @@ import com.jdc.foods.api.shopper.master.input.PaymentInfoForm;
 import com.jdc.foods.api.shopper.master.input.PaymentInfoSearch;
 import com.jdc.foods.api.shopper.master.output.PaymentInfoDetails;
 import com.jdc.foods.api.shopper.master.output.PaymentInfoListItem;
+import com.jdc.foods.api.shopper.master.service.PaymentInfoManagementService;
 import com.jdc.foods.utils.dto.ModificationResult;
 
 import lombok.RequiredArgsConstructor;
@@ -23,27 +24,29 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("shopper/payment-infos")
 public class PaymentInfoApi {
 
+	private final PaymentInfoManagementService service;
+
 	@GetMapping
 	List<PaymentInfoListItem> search(PaymentInfoSearch form) {
-		return List.of();
+		return service.search(form);
 	}
 
 	@GetMapping("{id}")
 	PaymentInfoDetails findById(@PathVariable int id) {
-		return null;
+		return service.findById(id);
 	}
 
 	@PostMapping
 	ModificationResult<Integer> create(
 			@RequestBody @Validated PaymentInfoForm form) {
-		return new ModificationResult<Integer>(1);
+		return service.create(form);
 	}
 
 	@PostMapping("{id}")
 	ModificationResult<Integer> update(
 			@PathVariable int id,
 			@RequestBody @Validated PaymentInfoForm form) {
-		return new ModificationResult<Integer>(id);
+		return service.update(id, form);
 	}
 
 }

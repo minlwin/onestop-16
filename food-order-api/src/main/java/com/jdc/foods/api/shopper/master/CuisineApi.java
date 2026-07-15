@@ -1,7 +1,5 @@
 package com.jdc.foods.api.shopper.master;
 
-import java.util.List;
-
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,6 +16,7 @@ import com.jdc.foods.api.shopper.master.input.UpdateCoverPhotoForm;
 import com.jdc.foods.api.shopper.master.output.CuisineDetails;
 import com.jdc.foods.api.shopper.master.output.CuisineForEdit;
 import com.jdc.foods.api.shopper.master.output.CuisineListItem;
+import com.jdc.foods.api.shopper.master.service.CuisineManagementService;
 import com.jdc.foods.utils.dto.ModificationResult;
 import com.jdc.foods.utils.dto.PageResult;
 
@@ -27,50 +26,52 @@ import lombok.RequiredArgsConstructor;
 @RestController("cuisineMasterApi")
 @RequestMapping("shopper/cuisines")
 public class CuisineApi {
+	
+	private final CuisineManagementService service;
 
 	@GetMapping
 	PageResult<CuisineListItem> search(
 			CuisineSearch form,
 			@RequestParam(required = false, defaultValue = "0") Integer page,
 			@RequestParam(required = false, defaultValue = "10") Integer size) {
-		return new PageResult<CuisineListItem>(List.of(), null);
+		return service.search(form, page, size);
 	}
 
 	@GetMapping("{id}")
 	CuisineDetails findById(@PathVariable int id) {
-		return null;
+		return service.findById(id);
 	}
 
 	@GetMapping("{id}/edit")
 	CuisineForEdit findForEdit(@PathVariable int id) {
-		return null;
+		return service.findForEdit(id);
 	}
 
 	@PostMapping
 	ModificationResult<Integer> create(
 			@RequestBody @Validated CuisineForm form) {
-		return new ModificationResult<Integer>(1);
+		return service.create(form);
 	}
 
 	@PostMapping("{id}")
 	ModificationResult<Integer> update(
 			@PathVariable int id,
 			@RequestBody @Validated CuisineForm form) {
-		return new ModificationResult<Integer>(id);
+		return service.update(id, form);
 	}
 
 	@PostMapping("{id}/photos")
 	ModificationResult<Integer> uploadPhoto(
 			@PathVariable int id,
 			@RequestParam MultipartFile[] files) {
-		return new ModificationResult<Integer>(id);
+		return service.uploadPhotos(id, files);
 	}
 
 	@PostMapping("{id}/cover-photo")
 	ModificationResult<Integer> updateCoverPhoto(
 			@PathVariable int id,
 			@RequestBody @Validated UpdateCoverPhotoForm form) {
-		return new ModificationResult<Integer>(id);
+		return service.update(id,  form);
 	}
 
 }

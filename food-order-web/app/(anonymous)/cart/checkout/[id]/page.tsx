@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { useRouter, useSearchParams } from "next/navigation"
+import { useParams, useRouter } from "next/navigation"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { ArrowRight, ShoppingBasket01Icon } from "@hugeicons/core-free-icons"
 import { Button } from "@/components/ui/button"
@@ -9,9 +9,9 @@ import Section from "@/components/widgets/section"
 import InvoiceResultWidget from "@/components/widgets/invoice-result-widget"
 
 export default function InvoiceResultPage() {
+
     const router = useRouter()
-    const params = useSearchParams()
-    const id = params.get("id")
+    const { id } = useParams()
 
     if (!id) {
         return (
@@ -26,7 +26,7 @@ export default function InvoiceResultPage() {
     return (
         <div className="space-y-6 px-20 pb-8">
             <InvoiceResultWidget
-                id={id}
+                id={id as string}
                 actions={
                     <>
                         <Button type="button" variant="outline" asChild>
