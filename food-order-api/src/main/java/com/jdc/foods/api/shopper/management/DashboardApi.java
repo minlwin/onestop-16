@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.jdc.foods.api.shopper.management.output.DashboardSummary;
 import com.jdc.foods.api.shopper.management.output.OrderStatusCount;
 import com.jdc.foods.api.shopper.management.output.RevenueTrendPoint;
+import com.jdc.foods.api.shopper.management.service.ManagementDashboardService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -16,20 +17,22 @@ import lombok.RequiredArgsConstructor;
 @RestController("dashboardManagementApi")
 @RequestMapping("shopper/management/dashboard")
 public class DashboardApi {
+	
+	private final ManagementDashboardService service;
 
 	@GetMapping("summary")
 	DashboardSummary summary() {
-		return null;
+		return service.getSummary();
 	}
 
 	@GetMapping("revenue-trend")
 	List<RevenueTrendPoint> revenueTrend() {
-		return List.of();
+		return service.getTrends();
 	}
 
 	@GetMapping("orders-by-status")
 	List<OrderStatusCount> ordersByStatus() {
-		return List.of();
+		return service.getOrdersByStatus();
 	}
 
 }

@@ -16,46 +16,52 @@ import com.jdc.foods.api.customer.input.AddressForm;
 import com.jdc.foods.api.customer.input.ChangePasswordForm;
 import com.jdc.foods.api.customer.input.ProfileForm;
 import com.jdc.foods.api.customer.output.CustomerProfile;
+import com.jdc.foods.api.customer.service.CustomerAccountService;
+import com.jdc.foods.api.customer.service.CustomerAddressService;
 import com.jdc.foods.api.shopper.account.output.DeliveryAddress;
 import com.jdc.foods.utils.dto.ModificationResult;
 
 import lombok.RequiredArgsConstructor;
 
-@RequiredArgsConstructor
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("customer/account")
 public class CustomerAccountApi {
+	
+	private final CustomerAccountService accountService;
+	private final CustomerAddressService addressService;
 
 	@GetMapping("profile")
 	CustomerProfile profile() {
-		return null;
+		return accountService.getProfile();
 	}
 
 	@PutMapping("profile")
 	ModificationResult<Integer> updateProfile(
 			@RequestBody @Validated ProfileForm form) {
-		return new ModificationResult<Integer>(1);
+		return accountService.update(form);
 	}
 
 	@PostMapping("password")
 	ModificationResult<Integer> changePassword(
 			@RequestBody @Validated ChangePasswordForm form) {
-		return new ModificationResult<Integer>(1);
+		return accountService.changePassword(form);
 	}
 
 	@GetMapping("addresses")
 	List<DeliveryAddress> addresses() {
-		return List.of();
+		return addressService.findAddresses();
 	}
 
 	@PostMapping("addresses")
 	ModificationResult<Integer> addAddress(
 			@RequestBody @Validated AddressForm form) {
-		return new ModificationResult<Integer>(1);
+		return addressService.createAddress(form);
 	}
 
 	@DeleteMapping("addresses/{id}")
 	void removeAddress(@PathVariable int id) {
+		addressService.removeAddress(id);
 	}
 
 }

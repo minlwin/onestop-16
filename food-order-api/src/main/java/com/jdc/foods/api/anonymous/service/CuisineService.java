@@ -1,5 +1,7 @@
 package com.jdc.foods.api.anonymous.service;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import com.jdc.foods.api.shopper.master.input.CuisineSearch;
@@ -22,5 +24,10 @@ public class CuisineService {
 
 	public CuisineDetails findById(int id) {
 		return service.findById(id);
+	}
+
+	public List<CuisineListItem> getWeeklySpecial() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

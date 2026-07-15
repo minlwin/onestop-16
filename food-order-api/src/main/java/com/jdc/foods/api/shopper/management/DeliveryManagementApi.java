@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.jdc.foods.api.shopper.management.input.DeliSearch;
 import com.jdc.foods.api.shopper.management.output.DeliveryListItem;
+import com.jdc.foods.api.shopper.management.service.InvoiceManagementService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -15,10 +16,12 @@ import lombok.RequiredArgsConstructor;
 @RestController("deliveryManagementApi")
 @RequestMapping("shopper/management/deliveries")
 public class DeliveryManagementApi {
+	
+	private final InvoiceManagementService service;
 
 	@GetMapping
 	List<DeliveryListItem> search(DeliSearch form) {
-		return List.of();
+		return service.search(form);
 	}
 
 }

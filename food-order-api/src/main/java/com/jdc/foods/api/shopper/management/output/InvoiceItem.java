@@ -8,4 +8,12 @@ public record InvoiceItem(
 		int quantity,
 		BigDecimal price) {
 
+	public static InvoiceItem from(com.jdc.foods.model.management.entity.InvoiceItem entity) {
+		return new InvoiceItem(
+				String.valueOf(entity.getCuisine().getId()),
+				entity.getCuisine().getName(),
+				entity.getQuantity(),
+				entity.getUnitPrice());
+	}
+
 }

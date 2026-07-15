@@ -14,6 +14,7 @@ import com.jdc.foods.api.shopper.account.input.EmployeeForm;
 import com.jdc.foods.api.shopper.account.input.EmployeeSearch;
 import com.jdc.foods.api.shopper.account.output.EmployeeDetails;
 import com.jdc.foods.api.shopper.account.output.EmployeeListItem;
+import com.jdc.foods.api.shopper.account.service.EmployeeManagementService;
 import com.jdc.foods.utils.dto.ModificationResult;
 
 import lombok.RequiredArgsConstructor;
@@ -22,28 +23,30 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @RequestMapping("shopper/employees")
 public class EmployeeApi {
+	
+	private final EmployeeManagementService service;
 
 	@GetMapping
 	List<EmployeeListItem> search(EmployeeSearch form) {
-		return List.of();
+		return service.search(form);
 	}
 
 	@GetMapping("{id}")
 	EmployeeDetails findById(@PathVariable int id) {
-		return null;
+		return service.findById(id);
 	}
 
 	@PostMapping
 	ModificationResult<Integer> create(
 			@RequestBody @Validated EmployeeForm form) {
-		return new ModificationResult<Integer>(1);
+		return service.create(form);
 	}
 
 	@PostMapping("{id}")
 	ModificationResult<Integer> update(
 			@PathVariable int id,
 			@RequestBody @Validated EmployeeForm form) {
-		return new ModificationResult<Integer>(id);
+		return service.update(id, form);
 	}
 
 }

@@ -1,5 +1,6 @@
 package com.jdc.foods.model.management.entity;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
@@ -29,19 +30,25 @@ public class DeliveryAddress {
 	@Id
 	@GeneratedValue
 	private UUID id;
-	
+
+	private String label;
+
 	@Column(nullable = false)
 	private String phone;
-	
+
 	@Column(nullable = false)
 	private String address;
 
 	@Column(nullable = false)
 	private String township;
-	
+
+	private BigDecimal deliveryFee;
+
+	private boolean isDefault;
+
 	@ManyToOne(optional = true)
 	private Customer customer;
-	
+
 	@OneToMany(mappedBy = "address")
 	private List<Invoice> invoice;
 }
