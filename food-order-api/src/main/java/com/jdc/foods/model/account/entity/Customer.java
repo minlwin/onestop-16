@@ -1,14 +1,17 @@
 package com.jdc.foods.model.account.entity;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import com.jdc.foods.model.AuditableEntity;
+import com.jdc.foods.model.management.entity.DeliveryAddress;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -33,5 +36,8 @@ public class Customer extends AuditableEntity {
 	
 	@Column(nullable = false)
 	private LocalDateTime registeredAt;
+	
+	@OneToMany(mappedBy = "customer")
+	private List<DeliveryAddress> address;
 
 }
