@@ -15,7 +15,6 @@ import com.jdc.foods.api.shopper.account.output.EmployeeListItem;
 import com.jdc.foods.model.account.entity.Account;
 import com.jdc.foods.model.account.entity.Account.Role;
 import com.jdc.foods.model.account.entity.Employee;
-import com.jdc.foods.model.account.entity.Employee_;
 import com.jdc.foods.model.account.repo.AccountRepo;
 import com.jdc.foods.model.account.repo.EmployeeRepo;
 import com.jdc.foods.utils.dto.ModificationResult;
@@ -40,7 +39,6 @@ public class EmployeeManagementService {
 
 			cq.select(root);
 			cq.where(form.where(cb, root).toArray(Predicate[]::new));
-			cq.orderBy(cb.asc(root.get(Employee_.name)));
 
 			return cq;
 		}).stream().map(EmployeeListItem::from).toList();
@@ -62,6 +60,7 @@ public class EmployeeManagementService {
 		account.setEmail(form.email());
 		account.setPassword(UUID.randomUUID().toString().substring(0, 8));
 		account.setRoles(List.of(Role.Shopper));
+		account.setName(form.name());
 		accountRepo.save(account);
 
 		var entity = new Employee();

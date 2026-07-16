@@ -36,7 +36,7 @@ public record CustomerSearch(
 		if(StringUtils.hasLength(keyword)) {
 			var param = keyword.toLowerCase().concat("%");
 			prediates.add(cb.or(
-				cb.like(cb.lower(root.get(Customer_.name)), param),
+				cb.like(cb.lower(root.get(Customer_.account).get(Account_.name)), param),
 				cb.like(root.get(Customer_.phone), keyword.concat("%")),
 				cb.like(cb.lower(root.get(Customer_.account).get(Account_.email)), param)
 			));

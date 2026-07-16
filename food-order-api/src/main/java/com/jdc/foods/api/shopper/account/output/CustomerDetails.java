@@ -17,7 +17,7 @@ public record CustomerDetails(
 	public static CustomerDetails from(Customer entity, List<OrderStatusSummary> orderSummary) {
 		return new CustomerDetails(
 				entity.getId(),
-				entity.getName(),
+				entity.getAccount().getName(),
 				entity.getPhone(),
 				entity.getAccount().getEmail(),
 				entity.getRegisteredAt(),

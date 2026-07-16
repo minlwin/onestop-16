@@ -25,9 +25,6 @@ public class Customer extends AuditableEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 	
-	@Column(nullable = false)
-	private String name;
-	
 	@OneToOne(optional = false)
 	private Account account;
 	

@@ -23,7 +23,7 @@ public record EmployeeListItem(
 	public static EmployeeListItem from(Employee entity) {
 		return new EmployeeListItem(
 				entity.getId(),
-				entity.getName(),
+				entity.getAccount().getName(),
 				entity.getPhone(),
 				entity.getAccount().getEmail(),
 				entity.getEntryAt(),

@@ -19,7 +19,6 @@ public record EmployeeForm(
 		LocalDate retireAt) {
 
 	public void apply(Employee entity) {
-		entity.setName(name);
 		entity.setPhone(phone);
 		entity.setEntryAt(entryAt);
 		entity.setRetireAt(retireAt);

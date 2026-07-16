@@ -23,7 +23,7 @@ public class CustomerAccountService {
 		var customer = currentCustomer.get();
 
 		return new CustomerProfile(
-				customer.getName(),
+				customer.getAccount().getName(),
 				customer.getPhone(),
 				customer.getAccount().getEmail());
 	}
@@ -31,8 +31,8 @@ public class CustomerAccountService {
 	public ModificationResult<Integer> update(ProfileForm form) {
 		var customer = currentCustomer.get();
 
-		customer.setName(form.name());
 		customer.setPhone(form.phone());
+		customer.getAccount().setName(form.name());
 		customer.getAccount().setEmail(form.email());
 
 		return ModificationResult.ok(customer.getId());

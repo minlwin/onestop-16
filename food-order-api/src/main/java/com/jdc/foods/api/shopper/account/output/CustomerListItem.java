@@ -28,7 +28,7 @@ public record CustomerListItem(
 
 		cq.select(cb.construct(CustomerListItem.class,
 			root.get(Customer_.id),
-			root.get(Customer_.name),
+			root.get(Customer_.account).get(Account_.name),
 			root.get(Customer_.phone),
 			account.get(Account_.email),
 			root.get(Customer_.registeredAt),
@@ -37,7 +37,7 @@ public record CustomerListItem(
 
 		cq.groupBy(
 			root.get(Customer_.id),
-			root.get(Customer_.name),
+			root.get(Customer_.account).get(Account_.name),
 			root.get(Customer_.phone),
 			account.get(Account_.email),
 			root.get(Customer_.registeredAt)

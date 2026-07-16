@@ -33,7 +33,7 @@ public record EmployeeSearch(
 		if(StringUtils.hasLength(keyword)) {
 			var param = keyword.toLowerCase().concat("%");
 			prediates.add(cb.or(
-				cb.like(cb.lower(root.get(Employee_.name)), param),
+				cb.like(cb.lower(root.get(Employee_.account).get(Account_.name)), param),
 				cb.like(root.get(Employee_.phone), keyword.concat("%")),
 				cb.like(cb.lower(root.get(Employee_.account).get(Account_.email)), param)
 			));

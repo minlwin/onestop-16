@@ -23,6 +23,9 @@ public class Account extends AuditableEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 	
+	@Column(nullable = false)
+	private String name;
+	
 	@Column(nullable = false, unique = true)
 	private String email;
 	

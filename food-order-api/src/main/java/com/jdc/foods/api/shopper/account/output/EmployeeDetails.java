@@ -15,7 +15,7 @@ public record EmployeeDetails(
 	public static EmployeeDetails from(Employee entity) {
 		return new EmployeeDetails(
 				entity.getId(),
-				entity.getName(),
+				entity.getAccount().getName(),
 				entity.getPhone(),
 				entity.getAccount().getEmail(),
 				entity.getEntryAt(),
