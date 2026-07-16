@@ -42,7 +42,7 @@ public class PaymentInfoManagementService implements PaymentInfoSearchService {
 
 	public PaymentInfoDetails findById(int id) {
 		return safeCall(repo.findById(id).map(PaymentInfoDetails::from))
-				.apply("payment info", id);
+				.apply("payment info").apply("id").apply(id);
 	}
 
 	@Transactional
@@ -59,7 +59,7 @@ public class PaymentInfoManagementService implements PaymentInfoSearchService {
 	@Transactional
 	public ModificationResult<Integer> update(int id, PaymentInfoForm form) {
 		var entity = safeCall(repo.findById(id))
-				.apply("payment info", id);
+				.apply("payment info").apply("id").apply(id);
 
 		entity.setProvider(form.bank());
 		entity.setAccountNo(form.accountNo());

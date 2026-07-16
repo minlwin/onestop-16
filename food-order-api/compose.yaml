@@ -1,9 +1,14 @@
+volumes:
+  postgres_data:
 services:
   postgres:
     image: 'postgres:17.6-alpine'
+    container_name: foodorder-db
     environment:
-      - 'POSTGRES_DB=mydatabase'
-      - 'POSTGRES_PASSWORD=secret'
-      - 'POSTGRES_USER=myuser'
+      - 'POSTGRES_DB=fooddb'
+      - 'POSTGRES_PASSWORD=p@ssw0rd'
+      - 'POSTGRES_USER=fooddb'
     ports:
       - '5432'
+    volumes:
+      - 'postgres_data:/var/lib/postgresql/data'

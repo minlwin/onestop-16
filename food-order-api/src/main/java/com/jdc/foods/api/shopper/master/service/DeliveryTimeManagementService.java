@@ -42,7 +42,7 @@ public class DeliveryTimeManagementService implements DeliveryTimeSearchService 
 
 	public DeliTimeDetails findById(int id) {
 		return safeCall(repo.findById(id).map(DeliTimeDetails::from))
-				.apply("delivery time", id);
+				.apply("delivery time").apply("id").apply(id);
 	}
 
 	@Transactional
@@ -58,7 +58,7 @@ public class DeliveryTimeManagementService implements DeliveryTimeSearchService 
 	@Transactional
 	public ModificationResult<Integer> update(int id, DeliTimeForm form) {
 		var entity = safeCall(repo.findById(id))
-				.apply("delivery time", id);
+				.apply("delivery time").apply("id").apply(id);
 
 		entity.setTimeFrom(form.timeFrom().toString());
 		entity.setTimeTo(form.timeTo().toString());

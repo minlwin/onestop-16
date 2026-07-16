@@ -19,6 +19,7 @@ import com.jdc.foods.model.account.entity.Employee_;
 import com.jdc.foods.model.account.repo.AccountRepo;
 import com.jdc.foods.model.account.repo.EmployeeRepo;
 import com.jdc.foods.utils.dto.ModificationResult;
+import com.jdc.foods.utils.exceptions.BusinessRuleViolationException;
 
 import jakarta.persistence.criteria.Predicate;
 import lombok.RequiredArgsConstructor;
@@ -48,10 +49,15 @@ public class EmployeeManagementService {
 	@Transactional(readOnly = true)
 	public EmployeeDetails findById(int id) {
 		return safeCall(repo.findById(id).map(EmployeeDetails::from))
-				.apply("employee", id);
+				.apply("employee").apply("id").apply(id);
 	}
 
 	public ModificationResult<Integer> create(EmployeeForm form) {
+		
+		if(accountRepo.countByEmail(form.email()) > 0) {
+			throw new BusinessRuleViolationException("There is an account using employee email.");
+		}
+		
 		var account = new Account();
 		account.setEmail(form.email());
 		account.setPassword(UUID.randomUUID().toString().substring(0, 8));
@@ -60,25 +66,24 @@ public class EmployeeManagementService {
 
 		var entity = new Employee();
 		entity.setAccount(account);
-		apply(entity, form);
+		form.apply(entity);
 
 		return ModificationResult.ok(repo.save(entity).getId());
 	}
 
 	public ModificationResult<Integer> update(int id, EmployeeForm form) {
-		var entity = safeCall(repo.findById(id)).apply("employee", id);
+		
+		if(accountRepo.countByEmail(form.email()) > 0) {
+			throw new BusinessRuleViolationException("There is an account using employee email.");
+		}
 
-		apply(entity, form);
+		var entity = safeCall(repo.findById(id))
+				.apply("employee").apply("id").apply(id);
+
+		form.apply(entity);
 		entity.getAccount().setEmail(form.email());
 
 		return ModificationResult.ok(id);
-	}
-
-	private void apply(Employee entity, EmployeeForm form) {
-		entity.setName(form.name());
-		entity.setPhone(form.phone());
-		entity.setEntryAt(form.entryAt());
-		entity.setRetireAt(form.retireAt());
 	}
 
 }

@@ -2,6 +2,8 @@ package com.jdc.foods.api.shopper.account.input;
 
 import java.time.LocalDate;
 
+import com.jdc.foods.model.account.entity.Employee;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
@@ -15,5 +17,12 @@ public record EmployeeForm(
 		@NotNull(message = "Please enter entry date.")
 		LocalDate entryAt,
 		LocalDate retireAt) {
+
+	public void apply(Employee entity) {
+		entity.setName(name);
+		entity.setPhone(phone);
+		entity.setEntryAt(entryAt);
+		entity.setRetireAt(retireAt);
+	}
 
 }

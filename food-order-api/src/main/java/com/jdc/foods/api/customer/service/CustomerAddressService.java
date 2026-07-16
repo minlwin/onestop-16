@@ -1,8 +1,9 @@
 package com.jdc.foods.api.customer.service;
 
-import static com.jdc.foods.utils.EntityUtils.message;
+import static com.jdc.foods.utils.EntityUtils.safeCall;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,7 +31,7 @@ public class CustomerAddressService {
 				.toList();
 	}
 
-	public ModificationResult<Integer> createAddress(AddressForm form) {
+	public ModificationResult<UUID> createAddress(AddressForm form) {
 		var customer = currentCustomer.get();
 
 		if(Boolean.TRUE.equals(form.isDefault())) {
@@ -45,16 +46,21 @@ public class CustomerAddressService {
 		entity.setDefault(Boolean.TRUE.equals(form.isDefault()));
 		entity.setCustomer(customer);
 
-		return ModificationResult.ok(repo.save(entity).getId().hashCode());
+		return ModificationResult.ok(repo.save(entity).getId());
 	}
 
-	public void removeAddress(int id) {
-		var address = currentCustomer.get().getAddress().stream()
-				.filter(entity -> entity.getId().hashCode() == id)
-				.findFirst()
-				.orElseThrow(() -> new BusinessRuleViolationException(message("address", id)));
-
-		repo.delete(address);
+	public void removeAddress(String id) {
+		var customer = currentCustomer.get();
+		var address = safeCall(repo.findById(UUID.fromString(id)))
+				.apply("delivery address")
+				.apply("id")
+				.apply(id);
+		
+		if(address.getCustomer() == null || address.getCustomer().getId() != customer.getId()) {
+			throw new BusinessRuleViolationException("You can't remove other address.");
+		}
+				
+		address.setCustomer(null);
 	}
 
 }

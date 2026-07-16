@@ -6,7 +6,7 @@ import com.jdc.foods.model.management.InvoiceItemPk;
 import com.jdc.foods.model.master.entity.Cuisine;
 
 import jakarta.persistence.Column;
-import jakarta.persistence.Embedded;
+import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -16,7 +16,7 @@ import lombok.Data;
 @Entity
 public class InvoiceItem {
 	
-	@Embedded
+	@EmbeddedId
 	private InvoiceItemPk id;
 
 	@ManyToOne(optional = false)

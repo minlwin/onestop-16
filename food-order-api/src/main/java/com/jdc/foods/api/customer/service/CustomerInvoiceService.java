@@ -1,6 +1,5 @@
 package com.jdc.foods.api.customer.service;
 
-import static com.jdc.foods.utils.EntityUtils.message;
 import static com.jdc.foods.utils.EntityUtils.safeCall;
 
 import java.util.ArrayList;
@@ -65,12 +64,14 @@ public class CustomerInvoiceService {
 	@Transactional(readOnly = true)
 	public InvoiceDetails findById(String id) {
 		var customer = currentCustomer.get();
-		var entity = safeCall(repo.findById(InvoicePk.fromCode(id))).apply("invoice", id);
+		var entity = safeCall(repo.findById(InvoicePk.fromCode(id)))
+				.apply("invoice")
+				.apply("id").apply(id);
 
 		var owner = entity.getAddress().getCustomer();
 
 		if(null == owner || owner.getId() != customer.getId()) {
-			throw new BusinessRuleViolationException(message("invoice", id));
+			throw new BusinessRuleViolationException("You have no permission for invoice id %s.".formatted(id));
 		}
 
 		return InvoiceDetails.from(entity);

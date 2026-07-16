@@ -59,13 +59,13 @@ public class CuisineManagementService implements CuisineSearchService {
 	@Transactional(readOnly = true)
 	public CuisineDetails findById(int id) {
 		return safeCall(repo.findById(id).map(CuisineDetails::from))
-				.apply("cuisine", id);
+				.apply("cuisine").apply("id").apply(id);
 	}
 
 	@Transactional(readOnly = true)
 	public CuisineForEdit findForEdit(int id) {
 		return safeCall(repo.findById(id).map(CuisineForEdit::from))
-				.apply("cuisine", id);
+				.apply("cuisine").apply("id").apply(id);
 	}
 
 	public ModificationResult<Integer> create(CuisineForm form) {
@@ -77,7 +77,7 @@ public class CuisineManagementService implements CuisineSearchService {
 
 	public ModificationResult<Integer> update(int id, CuisineForm form) {
 		var entity = safeCall(repo.findById(id))
-				.apply("cuisine", id);
+				.apply("cuisine").apply("id").apply(id);
 
 		apply(entity, form);
 
@@ -86,7 +86,7 @@ public class CuisineManagementService implements CuisineSearchService {
 
 	private void apply(Cuisine entity, CuisineForm form) {
 		var category = safeCall(categoryRepo.findById(Integer.parseInt(form.category())))
-				.apply("category", form.category());
+				.apply("category").apply("id").apply(form.category());
 
 		entity.setName(form.name());
 		entity.setDescription(form.description());
@@ -105,7 +105,7 @@ public class CuisineManagementService implements CuisineSearchService {
 
 	public ModificationResult<Integer> update(int id, UpdateCoverPhotoForm form) {
 		var entity = safeCall(repo.findById(id))
-				.apply("cuisine", id);
+				.apply("cuisine").apply("id").apply(id);
 
 		entity.setCoverPhoto(form.photo());
 

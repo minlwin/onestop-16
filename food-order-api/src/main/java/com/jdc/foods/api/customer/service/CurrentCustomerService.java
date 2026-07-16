@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.jdc.foods.model.account.entity.Customer;
-import com.jdc.foods.model.account.repo.AccountRepo;
 import com.jdc.foods.model.account.repo.CustomerRepo;
 
 import lombok.RequiredArgsConstructor;
@@ -16,15 +15,15 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class CurrentCustomerService {
 
-	private final AccountRepo accountRepo;
 	private final CustomerRepo customerRepo;
 
 	@Transactional(readOnly = true)
 	public Customer get() {
 		var email = SecurityContextHolder.getContext().getAuthentication().getName();
-		var account = safeCall(accountRepo.findByEmail(email)).apply("account", email);
-
-		return safeCall(customerRepo.findByAccount(account)).apply("customer", account.getId());
+		return safeCall(customerRepo.findByAccountEmail(email))
+				.apply("customer")
+				.apply("email")
+				.apply(email);
 	}
 
 }

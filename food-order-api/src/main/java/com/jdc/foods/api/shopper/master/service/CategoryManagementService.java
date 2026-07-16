@@ -40,7 +40,7 @@ public class CategoryManagementService implements CategorySearchService {
 
 	public CategoryDetails findById(int id) {
 		return safeCall(repo.findById(id).map(CategoryDetails::from))
-				.apply("category", id);
+				.apply("category").apply("id").apply(id);
 	}
 
 	@Transactional
@@ -53,7 +53,7 @@ public class CategoryManagementService implements CategorySearchService {
 	@Transactional
 	public ModificationResult<Integer> update(int id, CategoryForm form) {
 		var entity =  safeCall(repo.findById(id))
-				.apply("category", id);
+				.apply("category").apply("id").apply(id);
 		
 		entity.setName(form.name());
 		

@@ -9,7 +9,7 @@ import com.jdc.foods.model.management.InvoicePk;
 import com.jdc.foods.model.master.entity.DeliveryTime;
 
 import jakarta.persistence.Column;
-import jakarta.persistence.Embedded;
+import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
@@ -22,7 +22,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 public class Invoice extends AuditableEntity {
 	
-	@Embedded
+	@EmbeddedId
 	private InvoicePk id;
 
 	@Column(nullable = false)

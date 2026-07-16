@@ -52,7 +52,8 @@ public class CustomerManagementService {
 
 	@Transactional(readOnly = true)
 	public CustomerDetails findById(int id) {
-		var customer = safeCall(repo.findById(id)).apply("customer", id);
+		var customer = safeCall(repo.findById(id))
+				.apply("customer").apply("id").apply(id);
 
 		var invoices = invoiceRepo.search(cb -> {
 			var cq = cb.createQuery(Invoice.class);

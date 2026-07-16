@@ -1,6 +1,7 @@
 package com.jdc.foods.api.customer;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -54,13 +55,13 @@ public class CustomerAccountApi {
 	}
 
 	@PostMapping("addresses")
-	ModificationResult<Integer> addAddress(
+	ModificationResult<UUID> addAddress(
 			@RequestBody @Validated AddressForm form) {
 		return addressService.createAddress(form);
 	}
 
 	@DeleteMapping("addresses/{id}")
-	void removeAddress(@PathVariable int id) {
+	void removeAddress(@PathVariable String id) {
 		addressService.removeAddress(id);
 	}
 

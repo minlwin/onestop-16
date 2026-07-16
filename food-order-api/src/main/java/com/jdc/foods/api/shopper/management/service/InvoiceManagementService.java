@@ -72,7 +72,7 @@ public class InvoiceManagementService {
 	@Transactional(readOnly = true)
 	public InvoiceDetails findById(String id) {
 		return safeCall(repo.findById(InvoicePk.fromCode(id)).map(InvoiceDetails::from))
-				.apply("invoice", id);
+				.apply("invoice").apply("id").apply(id);
 	}
 
 }
