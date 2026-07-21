@@ -12,6 +12,7 @@ import com.jdc.foods.api.anonymous.input.SignInForm;
 import com.jdc.foods.api.anonymous.input.TokenForm;
 import com.jdc.foods.api.anonymous.output.AuthResult;
 import com.jdc.foods.api.anonymous.service.AuthResultService;
+import com.jdc.foods.utils.security.JwtTokenProvider;
 
 import lombok.RequiredArgsConstructor;
 
@@ -22,11 +23,11 @@ public class AuthTokenApi {
 	
 	private final AuthenticationManager authenticationManager;
 	private final AuthResultService authResultService;
+	private final JwtTokenProvider jwtTokenProvider;
 
 	@PostMapping("generate")
 	AuthResult generate(@RequestBody @Validated SignInForm form) {
 		
-		// Authenticate
 		var authentication = authenticationManager.authenticate(form.autentication());	
 		SecurityContextHolder.getContext().setAuthentication(authentication);
 		
@@ -36,6 +37,9 @@ public class AuthTokenApi {
 	
 	@PostMapping("refresh")
 	AuthResult refresh(@RequestBody @Validated TokenForm form) {
-		return null;
+		var authentication = jwtTokenProvider.parseRefresh(form.token());	
+		SecurityContextHolder.getContext().setAuthentication(authentication);
+		
+		return authResultService.generate(authentication);
 	}
 }

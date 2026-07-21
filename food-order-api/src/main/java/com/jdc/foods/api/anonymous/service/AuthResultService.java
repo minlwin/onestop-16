@@ -3,6 +3,7 @@ package com.jdc.foods.api.anonymous.service;
 import static com.jdc.foods.utils.EntityUtils.safeCall;
 
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,10 +26,13 @@ public class AuthResultService {
 		var account = safeCall(accountRepo.findByEmail(authentication.getName()))
 				.apply("account").apply("email").apply(authentication.getName());
 		
-		return AuthResult.from(
-				account, 
-				tokenProvider.access(authentication),
-				tokenProvider.refresh(authentication));
+		return AuthResult.builder()
+				.name(account.getName())
+				.roles(authentication.getAuthorities()
+						.stream().map(GrantedAuthority::getAuthority).toList())
+				.accessToken(tokenProvider.access(authentication))
+				.refreshToken(tokenProvider.refresh(authentication))
+				.build();
 	}
 
 }

@@ -10,6 +10,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
+import com.jdc.foods.utils.security.JwtTokenFilter;
+import com.jdc.foods.utils.security.JwtTokenProvider;
+
 @Configuration
 public class SecurityConfig {
 
@@ -38,5 +41,10 @@ public class SecurityConfig {
 	@Bean
 	AuthenticationManager authenticationManager(AuthenticationConfiguration config) {
 		return config.getAuthenticationManager();
+	}
+	
+	@Bean
+	JwtTokenFilter jwtTokenFilter(JwtTokenProvider jwtTokenProvider) {
+		return new JwtTokenFilter(jwtTokenProvider);
 	}
 }
