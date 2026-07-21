@@ -11,11 +11,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.stereotype.Service;
 
 import io.jsonwebtoken.Jwts;
 
-@Service
 public class JwtTokenProvider {
 	
 	public enum Type {
@@ -56,7 +54,8 @@ public class JwtTokenProvider {
 			.verifyWith(securityKey)
 			.build().parseSignedClaims(token).getPayload();
 		
-		var tokenType = payload.get(TYPE, Type.class);
+		var tokenTypeClaim = payload.get(TYPE, String.class);
+		var tokenType = Type.valueOf(tokenTypeClaim);
 		
 		if(tokenType != type) {
 			// TODO Throw Exception

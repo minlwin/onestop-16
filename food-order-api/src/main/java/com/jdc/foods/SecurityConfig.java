@@ -9,6 +9,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.ExceptionTranslationFilter;
 
 import com.jdc.foods.utils.security.JwtTokenFilter;
 import com.jdc.foods.utils.security.JwtTokenProvider;
@@ -28,6 +29,7 @@ public class SecurityConfig {
 			request.anyRequest().denyAll();
 		});
 		
+		http.addFilterAfter(new JwtTokenFilter(jwtTokenProvider()), ExceptionTranslationFilter.class);
 		http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 		
 		return http.build();
@@ -44,7 +46,7 @@ public class SecurityConfig {
 	}
 	
 	@Bean
-	JwtTokenFilter jwtTokenFilter(JwtTokenProvider jwtTokenProvider) {
-		return new JwtTokenFilter(jwtTokenProvider);
+	JwtTokenProvider jwtTokenProvider() {
+		return new JwtTokenProvider();
 	}
 }

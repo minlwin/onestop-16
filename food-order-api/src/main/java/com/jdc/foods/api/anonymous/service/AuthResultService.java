@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.jdc.foods.api.anonymous.output.AuthResult;
+import com.jdc.foods.model.account.entity.Account.Role;
 import com.jdc.foods.model.account.repo.AccountRepo;
 import com.jdc.foods.utils.security.JwtTokenProvider;
 
@@ -29,7 +30,9 @@ public class AuthResultService {
 		return AuthResult.builder()
 				.name(account.getName())
 				.roles(authentication.getAuthorities()
-						.stream().map(GrantedAuthority::getAuthority).toList())
+						.stream().map(GrantedAuthority::getAuthority)
+						.filter(Role::contains)
+						.toList())
 				.accessToken(tokenProvider.access(authentication))
 				.refreshToken(tokenProvider.refresh(authentication))
 				.build();

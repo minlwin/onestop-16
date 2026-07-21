@@ -1,5 +1,6 @@
 package com.jdc.foods.model.account.entity;
 
+import java.util.Arrays;
 import java.util.List;
 
 import com.jdc.foods.model.AuditableEntity;
@@ -37,6 +38,12 @@ public class Account extends AuditableEntity {
 	private List<Role> roles;
 	
 	public enum Role {
-		Admin, Customer, Shopper
+		Admin, Customer, Shopper;
+
+		public static boolean contains(String role) {
+			return Arrays.stream(values())
+					.map(a -> a.name())
+					.toList().contains(role);
+		}
 	}
 }
