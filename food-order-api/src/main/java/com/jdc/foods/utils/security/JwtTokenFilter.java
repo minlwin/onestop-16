@@ -3,6 +3,7 @@ package com.jdc.foods.utils.security;
 import java.io.IOException;
 
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -12,6 +13,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 
+@Service
 @RequiredArgsConstructor
 public class JwtTokenFilter extends OncePerRequestFilter {
 	

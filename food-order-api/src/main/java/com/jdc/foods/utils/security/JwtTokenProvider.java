@@ -11,9 +11,16 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.stereotype.Service;
 
+import com.jdc.foods.utils.exceptions.JwtTokenAccessExpirationException;
+import com.jdc.foods.utils.exceptions.JwtTokenInvalidationException;
+
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 
+@Service
 public class JwtTokenProvider {
 	
 	public enum Type {
@@ -49,24 +56,34 @@ public class JwtTokenProvider {
 	}
 	
 	private Authentication parse(String token, Type type) {
-		var payload = Jwts.parser()
-			.requireIssuer(issuer)
-			.verifyWith(securityKey)
-			.build().parseSignedClaims(token).getPayload();
 		
-		var tokenTypeClaim = payload.get(TYPE, String.class);
-		var tokenType = Type.valueOf(tokenTypeClaim);
-		
-		if(tokenType != type) {
-			// TODO Throw Exception
-		}
-		
-		var username = payload.getSubject();
-		var authorities = Arrays.stream(payload.get(ROLES, String.class).split(","))
-				.map(SimpleGrantedAuthority::new)
-				.toList();
+		try {
+			var payload = Jwts.parser()
+					.requireIssuer(issuer)
+					.verifyWith(securityKey)
+					.build().parseSignedClaims(token).getPayload();
 				
-		return UsernamePasswordAuthenticationToken.authenticated(username, null, authorities);
+				var tokenTypeClaim = payload.get(TYPE, String.class);
+				var tokenType = Type.valueOf(tokenTypeClaim);
+				
+				if(tokenType != type) {
+					throw new JwtTokenInvalidationException("Invalid usage of token.");
+				}
+				
+				var username = payload.getSubject();
+				var authorities = Arrays.stream(payload.get(ROLES, String.class).split(","))
+						.map(SimpleGrantedAuthority::new)
+						.toList();
+						
+				return UsernamePasswordAuthenticationToken.authenticated(username, null, authorities);
+		} catch(JwtException e) {
+			
+			if(type == Type.Access && e instanceof ExpiredJwtException) {
+				throw new JwtTokenAccessExpirationException();
+			}
+			
+			throw new JwtTokenInvalidationException("Invalid token.", e);
+		}
 	}
 
 	private String generate(Authentication authentication, Type type) {

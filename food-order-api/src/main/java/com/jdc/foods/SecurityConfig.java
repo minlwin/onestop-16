@@ -11,14 +11,17 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.ExceptionTranslationFilter;
 
+import com.jdc.foods.utils.exceptions.SecurityExceptionResolver;
 import com.jdc.foods.utils.security.JwtTokenFilter;
-import com.jdc.foods.utils.security.JwtTokenProvider;
 
 @Configuration
 public class SecurityConfig {
 
 	@Bean
-	SecurityFilterChain securityFilterChain(HttpSecurity http) {
+	SecurityFilterChain securityFilterChain(
+			HttpSecurity http,
+			JwtTokenFilter jwtTokenFilter,
+			SecurityExceptionResolver securityExceptionResolver) {
 		
 		http.csrf(csrf -> csrf.disable());
 		
@@ -29,8 +32,13 @@ public class SecurityConfig {
 			request.anyRequest().denyAll();
 		});
 		
-		http.addFilterAfter(new JwtTokenFilter(jwtTokenProvider()), ExceptionTranslationFilter.class);
+		http.addFilterAfter(jwtTokenFilter, ExceptionTranslationFilter.class);
 		http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+		
+		http.exceptionHandling(exception -> {
+			exception.accessDeniedHandler(securityExceptionResolver);
+			exception.authenticationEntryPoint(securityExceptionResolver);
+		});
 		
 		return http.build();
 	}
@@ -44,9 +52,5 @@ public class SecurityConfig {
 	AuthenticationManager authenticationManager(AuthenticationConfiguration config) {
 		return config.getAuthenticationManager();
 	}
-	
-	@Bean
-	JwtTokenProvider jwtTokenProvider() {
-		return new JwtTokenProvider();
-	}
+
 }

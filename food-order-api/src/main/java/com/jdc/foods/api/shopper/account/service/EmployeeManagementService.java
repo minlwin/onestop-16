@@ -5,6 +5,8 @@ import static com.jdc.foods.utils.EntityUtils.safeCall;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,6 +21,7 @@ import com.jdc.foods.model.account.repo.AccountRepo;
 import com.jdc.foods.model.account.repo.EmployeeRepo;
 import com.jdc.foods.utils.dto.ModificationResult;
 import com.jdc.foods.utils.exceptions.BusinessRuleViolationException;
+import com.jdc.foods.utils.mails.EmployeeCreatedEvent;
 
 import jakarta.persistence.criteria.Predicate;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +33,8 @@ public class EmployeeManagementService {
 
 	private final EmployeeRepo repo;
 	private final AccountRepo accountRepo;
+	private final PasswordEncoder passwordEncoder;
+	private final ApplicationEventPublisher eventPublisher;
 
 	@Transactional(readOnly = true)
 	public List<EmployeeListItem> search(EmployeeSearch form) {
@@ -58,7 +63,8 @@ public class EmployeeManagementService {
 		
 		var account = new Account();
 		account.setEmail(form.email());
-		account.setPassword(UUID.randomUUID().toString().substring(0, 8));
+		var password = UUID.randomUUID().toString().substring(0, 8);
+		account.setPassword(passwordEncoder.encode(password));
 		account.setRoles(List.of(Role.Shopper));
 		account.setName(form.name());
 		accountRepo.save(account);
@@ -66,6 +72,8 @@ public class EmployeeManagementService {
 		var entity = new Employee();
 		entity.setAccount(account);
 		form.apply(entity);
+		
+		eventPublisher.publishEvent(new EmployeeCreatedEvent(form.name(), form.email(), password, form.entryAt()));
 
 		return ModificationResult.ok(repo.save(entity).getId());
 	}

@@ -1,3 +1,6 @@
+networks:
+  foodorder-network:
+
 volumes:
   postgres_data:
 services:
@@ -9,6 +12,17 @@ services:
       - 'POSTGRES_PASSWORD=p@ssw0rd'
       - 'POSTGRES_USER=fooddb'
     ports:
-      - '5432'
+      - '5432:5432'
     volumes:
       - 'postgres_data:/var/lib/postgresql/data'
+    networks:
+      - foodorder-network
+
+  mailhog:
+    image: jcalonso/mailhog:latest
+    container_name: foodorder-mailhog
+    ports:
+      - '8025:8025'
+      - '1025:1025'
+    networks:
+      - foodorder-network

@@ -29,8 +29,9 @@ public class AppUserDetailsService implements UserDetailsService {
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		
-		var account = safeCall(accountRepo.findByEmail(username).map(UserDetailsAdaptor::new))
-				.apply("account").apply("email").apply(username);
+		var account = accountRepo.findByEmail(username)
+				.map(UserDetailsAdaptor::new)
+				.orElseThrow(() -> new UsernameNotFoundException("There is no account with email %s.".formatted(username)));
 		
 		
 		return User.withUsername(username)
