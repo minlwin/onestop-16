@@ -29,3 +29,8 @@ export const NO_RESULT_PAGER: Pager = {
     totalPage: 0,
     links: [],
 }
+
+export type ClientError = {
+    status : 400 | 401 | 403 | 500
+    messages : string[]
+}

@@ -3,6 +3,7 @@ package com.jdc.foods.utils.exceptions;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AccountExpiredException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
@@ -36,13 +37,6 @@ public class ApplicationExceptionHandler {
 	}
 	
 	@ExceptionHandler
-	@ResponseStatus(code = HttpStatus.GONE)
-	List<String> handle(JwtTokenAccessExpirationException e) {
-		return List.of(e.getMessage());
-	}
-	
-	
-	@ExceptionHandler
 	@ResponseStatus(code = HttpStatus.UNAUTHORIZED)
 	List<String> handle(AuthenticationException e) {
 		return List.of(switch(e) {
@@ -54,12 +48,24 @@ public class ApplicationExceptionHandler {
 		});
 	}
 	
+	@ExceptionHandler
+	@ResponseStatus(code = HttpStatus.FORBIDDEN)
+	List<String> handle(AccessDeniedException e) {
+		log.error("Access Denied Error", e);
+		return List.of("You have no permission for this operation.");
+	}
 	
+	@ExceptionHandler
+	@ResponseStatus(code = HttpStatus.GONE)
+	List<String> handle(JwtTokenAccessExpirationException e) {
+		return List.of(e.getMessage());
+	}
+		
 	@ExceptionHandler
 	@ResponseStatus(code = HttpStatus.INTERNAL_SERVER_ERROR)
 	List<String> handle(Throwable e) {
 		log.error("Fatal Error", e);
-		return List.of(e.getMessage());
+		return List.of("There is an error. Please wait and try later.");
 	}
 	
 }

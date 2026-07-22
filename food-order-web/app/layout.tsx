@@ -1,7 +1,9 @@
 import type { Metadata } from "next"
-import { Geist, Geist_Mono, Inter, Roboto } from "next/font/google"
+import { Geist, Geist_Mono, Roboto } from "next/font/google"
 import "./globals.css"
 import { cn } from "@/lib/utils"
+import LoginUserProvider from "@/lib/state/login-user.provider"
+import { Toaster } from "sonner"
 
 const roboto = Roboto({ subsets: ["latin"], variable: "--font-sans" })
 
@@ -37,7 +39,12 @@ export default function RootLayout({
                 roboto.variable
             )}
         >
-            <body className="min-h-full flex flex-col">{children}</body>
+            <LoginUserProvider>
+                <body className="min-h-full flex flex-col">
+                    {children}
+                    <Toaster position="top-right" />
+                </body>
+            </LoginUserProvider>
         </html>
     )
 }

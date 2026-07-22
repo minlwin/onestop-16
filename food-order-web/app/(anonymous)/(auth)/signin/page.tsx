@@ -1,13 +1,12 @@
 "use client"
+
 import { Button } from "@/components/ui/button"
 import FormsInput from "@/components/widgets/forms/forms-input"
 import { SignInForm, SignInSchema } from "@/lib/model/form/security.schema"
 import { zodResolver } from "@hookform/resolvers/zod"
 import {
-    CheckCheck,
     CheckFreeIcons,
     Login02Icon,
-    LoginCircle02Icon,
     UserAdd02FreeIcons,
 } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
@@ -15,19 +14,29 @@ import Link from "next/link"
 import { useForm } from "react-hook-form"
 import AuthTitle from "../_widget/auth_title"
 import { useRouter } from "next/navigation"
+import * as authAction from "@/lib/action/anonymous/auth.action"
+import { useLoginUser } from "@/lib/state/login-user.context"
+import { homeForUser } from "@/lib/utils"
+import { safeCall } from "@/lib/action/safe-call"
 
 export default function SignInPage() {
     const router = useRouter()
+    const { setLoginUser } = useLoginUser()
+
     const form = useForm<SignInForm>({
         resolver: zodResolver(SignInSchema),
         defaultValues: {
-            email: "",
+            username: "",
             password: "",
         },
     })
 
-    const onSubmit = (data: SignInForm) => {
-        router.replace("/shopper")
+    const onSubmit = async (data: SignInForm) => {
+        safeCall(async () => {
+            const result = await authAction.signInAction(data)
+            setLoginUser(result)
+            router.replace(homeForUser(result))
+        })
     }
 
     return (
@@ -36,7 +45,7 @@ export default function SignInPage() {
             <form onSubmit={form.handleSubmit(onSubmit)}>
                 <FormsInput
                     control={form.control}
-                    path="email"
+                    path="username"
                     type="email"
                     label="Email"
                     placeholder="Please enter email for login"
