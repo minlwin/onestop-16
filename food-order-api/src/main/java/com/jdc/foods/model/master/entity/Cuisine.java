@@ -1,6 +1,7 @@
 package com.jdc.foods.model.master.entity;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.jdc.foods.model.AuditableEntity;
@@ -50,5 +51,12 @@ public class Cuisine extends AuditableEntity {
 
 	public enum SpiceLevel {
 		Low, Medium, Heigh
+	}
+
+	public void addPhotos(List<String> list) {
+		if(photos == null) {
+			photos = new ArrayList<>();
+		}
+		photos.addAll(list);
 	}
 }

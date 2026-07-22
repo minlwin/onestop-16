@@ -31,6 +31,7 @@ public class CuisineManagementService implements CuisineSearchService {
 
 	private final CuisineRepo repo;
 	private final CategoryRepo categoryRepo;
+	private final StorageService storageService;
 
 	@Override
 	@Transactional(readOnly = true)
@@ -83,6 +84,27 @@ public class CuisineManagementService implements CuisineSearchService {
 
 		return ModificationResult.ok(id);
 	}
+	
+	public ModificationResult<Integer> uploadPhotos(int id, MultipartFile[] files) {
+
+		var entity = safeCall(repo.findById(id))
+				.apply("cuisine").apply("id").apply(id);
+		
+		var photos = storageService.savePhotos(id, files);
+		
+		entity.addPhotos(photos);
+		
+		return ModificationResult.ok(id);
+	}
+
+	public ModificationResult<Integer> update(int id, UpdateCoverPhotoForm form) {
+		var entity = safeCall(repo.findById(id))
+				.apply("cuisine").apply("id").apply(id);
+
+		entity.setCoverPhoto(form.photo());
+
+		return ModificationResult.ok(id);
+	}	
 
 	private void apply(Cuisine entity, CuisineForm form) {
 		var category = safeCall(categoryRepo.findById(Integer.parseInt(form.category())))
@@ -96,20 +118,6 @@ public class CuisineManagementService implements CuisineSearchService {
 		entity.setPrice(form.price());
 		entity.setIngredients(form.ingredients());
 		entity.setDeletedAt(form.status() == Status.Enable ? null : LocalDateTime.now());
-	}
-
-	public ModificationResult<Integer> uploadPhotos(int id, MultipartFile[] files) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public ModificationResult<Integer> update(int id, UpdateCoverPhotoForm form) {
-		var entity = safeCall(repo.findById(id))
-				.apply("cuisine").apply("id").apply(id);
-
-		entity.setCoverPhoto(form.photo());
-
-		return ModificationResult.ok(id);
 	}
 
 }
