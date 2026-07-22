@@ -24,10 +24,7 @@ export default function CheckOutPage() {
     const router = useRouter()
     const cart = useCart()
 
-    const [deliveryTimes] = useFetch(
-        () => deliveryTimeService.search({ status: "Enable", time: "" }),
-        []
-    )
+    const [deliveryTimes] = useFetch(() => deliveryTimeService.search(), [])
 
     const form = useForm<CheckoutForm>({
         resolver: zodResolver(CheckoutSchema),

@@ -35,12 +35,9 @@ export default function ShoppingCartPage() {
     const router = useRouter()
     const cart = useCart()
 
-    const [categories] = useFetch(
-        () => categoryService.search({ keyword: "", status: "Enable" }),
-        []
-    )
+    const [categories] = useFetch(() => categoryService.search(), [] )
     const [cuisineResult] = useFetch(
-        () => cuisineService.search({ keyword: "", status: "Enable", page: 0 }),
+        () => cuisineService.search({ keyword: "", status: "Enable", page: 0 }), 
         []
     )
 

@@ -3,72 +3,37 @@ import "server-only"
 import { CategoryForm, CategorySearchForm } from "@/lib/model/form/master-data.schema"
 import { CategoryDetails, CategoryListItem } from "@/lib/model/output/master-data.model"
 import { ModificationResult } from "@/lib/model"
+import { POST_OPTION, PUT_OPTION, securedRequest } from "../.."
+
+const PATH = 'shopper/categories'
 
 export async function search(form: CategorySearchForm): Promise<CategoryListItem[]> {
-    return MOAK_CATEGORIES.filter((data) => {
-        if (form.status && data.status != form.status) {
-            return false
-        }
-
-        if (
-            form.keyword &&
-            !data.name.toLocaleLowerCase().startsWith(form.keyword.toLocaleLowerCase())
-        ) {
-            return false
-        }
-
-        return true
+    return await securedRequest({
+        path: PATH,
+        params: form
     })
 }
 
 export async function findById(id: any): Promise<CategoryDetails> {
-    return MOAK_DETAILS
+    return await securedRequest({path : `${PATH}/${id}`})
 }
 
 export async function create(form: CategoryForm): Promise<ModificationResult<number>> {
-    return {
-        id: 1,
-    }
+    return await securedRequest({
+        path: PATH,
+        options: {
+            ...POST_OPTION,
+            body : JSON.stringify(form)
+        }
+    })
 }
 
 export async function update(id: any, form: CategoryForm): Promise<ModificationResult<number>> {
-    return {
-        id: 1,
-    }
+    return await securedRequest({
+        path : `${PATH}/${id}`,
+        options: {
+            ...PUT_OPTION,
+            body : JSON.stringify(form)
+        }
+    })
 }
-
-const MOAK_DETAILS: CategoryDetails = {
-    id: 1,
-    name: "Curry",
-    cusines: [],
-    status: "Enable",
-    createdAt: "2026-01-01 10:00",
-    modifiedAt: "2026-01-01 10:00",
-}
-
-export const MOAK_CATEGORIES: CategoryListItem[] = [
-    {
-        id: 1,
-        name: "Curry",
-        cusines: 5,
-        status: "Enable",
-        createdAt: "2026-01-01 10:00",
-        modifiedAt: "2026-01-01 10:00",
-    },
-    {
-        id: 2,
-        name: "Soup",
-        cusines: 0,
-        status: "Pending",
-        createdAt: "2026-01-01 10:00",
-        modifiedAt: "2026-01-01 10:00",
-    },
-    {
-        id: 3,
-        name: "Noodle",
-        cusines: 3,
-        status: "Enable",
-        createdAt: "2026-01-01 10:00",
-        modifiedAt: "2026-01-01 10:00",
-    },
-]
