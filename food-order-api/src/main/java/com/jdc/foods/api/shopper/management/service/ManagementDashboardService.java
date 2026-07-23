@@ -12,8 +12,8 @@ import java.util.stream.Stream;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.jdc.foods.api.shopper.account.output.OrderStatusSummary;
 import com.jdc.foods.api.shopper.management.output.DashboardSummary;
-import com.jdc.foods.api.shopper.management.output.InvoiceListItem;
 import com.jdc.foods.api.shopper.management.output.OrderStatusCount;
 import com.jdc.foods.api.shopper.management.output.RevenueTrendPoint;
 import com.jdc.foods.model.account.repo.CustomerRepo;
@@ -48,7 +48,7 @@ public class ManagementDashboardService {
 		});
 
 		var todayRevenue = todayInvoices.stream()
-				.map(InvoiceListItem::amountOf)
+				.map(OrderStatusSummary::amountOf)
 				.reduce(BigDecimal.ZERO, BigDecimal::add);
 
 		var pendingInvoices = repo.search(cb -> {
@@ -85,7 +85,7 @@ public class ManagementDashboardService {
 
 		Map<LocalDate, BigDecimal> byDate = invoices.stream().collect(Collectors.groupingBy(
 				entity -> entity.getId().issueAt(),
-				Collectors.reducing(BigDecimal.ZERO, InvoiceListItem::amountOf, BigDecimal::add)));
+				Collectors.reducing(BigDecimal.ZERO, OrderStatusSummary::amountOf, BigDecimal::add)));
 
 		return Stream.iterate(from, date -> date.plusDays(1))
 				.limit(7)
@@ -97,7 +97,7 @@ public class ManagementDashboardService {
 
 	@Transactional(readOnly = true)
 	public List<OrderStatusCount> getOrdersByStatus() {
-		return repo.search(cb -> {
+		var list =  repo.search(cb -> {
 			var cq = cb.createQuery(OrderStatusCount.class);
 			var root = cq.from(Invoice.class);
 
@@ -105,6 +105,8 @@ public class ManagementDashboardService {
 
 			return cq;
 		});
+		
+		return list;
 	}
 
 }

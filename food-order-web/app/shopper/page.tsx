@@ -97,7 +97,7 @@ export default function ShopDashboardPage() {
         return <LoadingWidget />
     }
 
-    const recentInvoices = [...invoices]
+    const recentInvoices = [...invoices.contents]
         .sort((a, b) => (a.invoiceDate < b.invoiceDate ? 1 : -1))
         .slice(0, 4)
 

@@ -36,17 +36,17 @@ public class CustomerDashboardService {
 		var customer = currentCustomer.get();
 
 		return invoiceRepo.search(cb -> {
-			var cq = cb.createQuery(Invoice.class);
+			var cq = cb.createQuery(InvoiceListItem.class);
 			var root = cq.from(Invoice.class);
 
-			cq.select(root);
+			InvoiceListItem.select(cb, cq, root);
 			cq.where(cb.equal(root.get(Invoice_.address).get(DeliveryAddress_.customer), customer));
 			cq.orderBy(
 				cb.desc(root.get(Invoice_.id).get(InvoicePk_.issueAt)),
 				cb.desc(root.get(Invoice_.id).get(InvoicePk_.seqNumber)));
 
 			return cq;
-		}).stream().limit(RECENT_LIMIT).map(InvoiceListItem::from).toList();
+		}).stream().limit(RECENT_LIMIT).toList();
 	}
 
 	@Transactional(readOnly = true)

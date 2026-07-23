@@ -25,9 +25,14 @@ import {
 import { HugeiconsIcon } from "@hugeicons/react"
 import Link from "next/link"
 import React from "react"
+import { signOutAction } from "@/lib/action/anonymous/auth.action"
+import { useLoginUser } from "@/lib/state/login-user.context"
+import { useRouter } from "next/navigation"
 
 export default function CustomerLayout({ children }: { children: React.ReactNode }) {
     const [changingPassword, setChangingPassword] = useState(false)
+    const { setLoginUser } = useLoginUser()
+    const router = useRouter()
 
     const passwordForm = useForm<ChangePasswordForm>({
         resolver: zodResolver(ChangePasswordSchema),
@@ -49,6 +54,12 @@ export default function CustomerLayout({ children }: { children: React.ReactNode
         setChangingPassword(false)
     }
 
+    async function signOut() {
+        await signOutAction()
+        setLoginUser(undefined)
+        router.replace("/")
+    }
+
     return (
         <div>
             <PageTitle
@@ -68,7 +79,7 @@ export default function CustomerLayout({ children }: { children: React.ReactNode
                         <Button variant="outline" onClick={startChangePassword}>
                             <HugeiconsIcon icon={LockPasswordIcon} /> Change Password
                         </Button>
-                        <Button variant="outline">
+                        <Button variant="outline" onClick={signOut}>
                             <HugeiconsIcon icon={Logout02Icon} /> Sign Out
                         </Button>
                     </div>

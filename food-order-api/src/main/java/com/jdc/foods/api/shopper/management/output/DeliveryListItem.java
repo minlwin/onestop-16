@@ -2,6 +2,7 @@ package com.jdc.foods.api.shopper.management.output;
 
 import java.time.LocalDate;
 
+import com.jdc.foods.model.management.InvoicePk;
 import com.jdc.foods.model.management.entity.Invoice;
 
 public record DeliveryListItem(
@@ -10,6 +11,11 @@ public record DeliveryListItem(
 		LocalDate deliveryDate,
 		String timeRange,
 		String address) {
+	
+	public DeliveryListItem(LocalDate invoiceAt, int seqNumber, String customer, LocalDate deliveryDate, String timeRange,
+			String address) {
+		this(new InvoicePk(invoiceAt, seqNumber).getCode(), customer, deliveryDate, timeRange, address);
+	}
 
 	public static DeliveryListItem from(Invoice entity) {
 		var time = entity.getDeliveryTime();
@@ -18,7 +24,7 @@ public record DeliveryListItem(
 		return new DeliveryListItem(
 				entity.getId().getCode(),
 				entity.getName(),
-				entity.getDilveryDate(),
+				entity.getDeliveryDate(),
 				"%s - %s".formatted(time.getTimeFrom(), time.getTimeTo()),
 				"%s, %s".formatted(address.getAddress(), address.getTownship()));
 	}

@@ -37,7 +37,7 @@ public class InvoiceManagementService {
 
 			cq.select(root);
 			cq.where(form.where(cb, root).toArray(Predicate[]::new));
-			cq.orderBy(cb.asc(root.get(Invoice_.dilveryDate)));
+			cq.orderBy(cb.asc(root.get(Invoice_.deliveryDate)));
 
 			return cq;
 		}).stream().map(DeliveryListItem::from).toList();
@@ -46,10 +46,10 @@ public class InvoiceManagementService {
 	@Transactional(readOnly = true)
 	public PageResult<InvoiceListItem> search(InvoiceSearch form, Integer page, Integer size) {
 		var result = repo.search(cb -> {
-			var cq = cb.createQuery(Invoice.class);
+			var cq = cb.createQuery(InvoiceListItem.class);
 			var root = cq.from(Invoice.class);
 
-			cq.select(root);
+			InvoiceListItem.select(cb, cq, root);
 			cq.where(form.where(cb, root).toArray(Predicate[]::new));
 			cq.orderBy(
 				cb.desc(root.get(Invoice_.id).get(InvoicePk_.issueAt)),
@@ -65,8 +65,8 @@ public class InvoiceManagementService {
 
 			return cq;
 		}, page, size);
-
-		return new PageResult<>(result.contents().stream().map(InvoiceListItem::from).toList(), result.pager());
+		
+		return result;
 	}
 
 	@Transactional(readOnly = true)

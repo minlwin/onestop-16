@@ -24,11 +24,11 @@ public record DeliSearch(
 		var prediates = new ArrayList<Predicate>();
 
 		if(null != from) {
-			prediates.add(cb.greaterThanOrEqualTo(root.get(Invoice_.dilveryDate), from));
+			prediates.add(cb.greaterThanOrEqualTo(root.get(Invoice_.deliveryDate), from));
 		}
 
 		if(null != to) {
-			prediates.add(cb.lessThanOrEqualTo(root.get(Invoice_.dilveryDate), to));
+			prediates.add(cb.lessThanOrEqualTo(root.get(Invoice_.deliveryDate), to));
 		}
 
 		if(StringUtils.hasLength(keyword)) {

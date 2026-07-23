@@ -1,4 +1,5 @@
 import z from "zod"
+import { PageSearch } from ".."
 
 export const INVOICE_STATUS_OPTION: {
     value: string
@@ -17,7 +18,7 @@ export const InvoiceSearchSchema = z.object({
     keyword: z.string(),
 })
 
-export type InvoiceSearchForm = z.infer<typeof InvoiceSearchSchema>
+export type InvoiceSearchForm = z.infer<typeof InvoiceSearchSchema> & PageSearch
 
 export const DeliSearchSchema = z.object({
     from: z.string(),

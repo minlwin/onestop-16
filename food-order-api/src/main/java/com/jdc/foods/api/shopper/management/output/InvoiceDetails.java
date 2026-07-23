@@ -20,7 +20,7 @@ public record InvoiceDetails(
 				entity.getId().getCode(),
 				entity.getStatus().name(),
 				entity.getId().issueAt(),
-				InvoiceListItem.statusChangedAt(entity),
+				entity.getModifiedAt(),
 				entity.getItems().stream().map(InvoiceItem::from).toList(),
 				CustomerInfo.from(entity),
 				DeliveryInfo.from(entity));

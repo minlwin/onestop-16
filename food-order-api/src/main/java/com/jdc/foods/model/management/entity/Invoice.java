@@ -35,7 +35,7 @@ public class Invoice extends AuditableEntity {
 	private DeliveryAddress address;
 	
 	@Column(nullable = false)
-	private LocalDate dilveryDate;
+	private LocalDate deliveryDate;
 
 	@ManyToOne(optional = false)
 	private DeliveryTime deliveryTime;

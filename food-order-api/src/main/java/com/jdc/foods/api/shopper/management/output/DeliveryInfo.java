@@ -25,7 +25,7 @@ public record DeliveryInfo(
 				address.getAddress(),
 				address.getTownship(),
 				address.getDeliveryFee() == null ? BigDecimal.ZERO : address.getDeliveryFee(),
-				entity.getDilveryDate(),
+				entity.getDeliveryDate(),
 				LocalTime.parse(time.getTimeFrom()),
 				LocalTime.parse(time.getTimeTo()),
 				entity.getRemark());

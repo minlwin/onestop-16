@@ -6,7 +6,6 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.jdc.foods.api.shopper.management.output.InvoiceListItem;
 import com.jdc.foods.model.management.entity.Invoice;
 
 public record OrderStatusSummary(
@@ -22,9 +21,20 @@ public record OrderStatusSummary(
 						entry.getKey(),
 						entry.getValue().size(),
 						formatCurrency(entry.getValue().stream()
-								.map(InvoiceListItem::amountOf)
+								.map(OrderStatusSummary::amountOf)
 								.reduce(BigDecimal.ZERO, BigDecimal::add))))
 				.toList();
 	}
+	
+	public static BigDecimal amountOf(Invoice entity) {
+		var subtotal = entity.getItems().stream()
+				.map(item -> item.getUnitPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
+				.reduce(BigDecimal.ZERO, BigDecimal::add);
+	
+		var fees = entity.getAddress().getDeliveryFee();
+	
+		return subtotal.add(null == fees ? BigDecimal.ZERO : fees);
+	}
+	
 
 }
