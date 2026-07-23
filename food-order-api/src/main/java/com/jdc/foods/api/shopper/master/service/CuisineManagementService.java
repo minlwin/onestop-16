@@ -107,7 +107,7 @@ public class CuisineManagementService implements CuisineSearchService {
 	}	
 
 	private void apply(Cuisine entity, CuisineForm form) {
-		var category = safeCall(categoryRepo.findById(Integer.parseInt(form.category())))
+		var category = safeCall(categoryRepo.findById(form.category()))
 				.apply("category").apply("id").apply(form.category());
 
 		entity.setName(form.name());

@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 import com.jdc.foods.api.shopper.master.input.CategorySearch;
 import com.jdc.foods.api.shopper.master.output.CategoryListItem;
 import com.jdc.foods.api.shopper.master.service.CategorySearchService;
-import com.jdc.foods.utils.consts.Status;
 
 import lombok.RequiredArgsConstructor;
 
@@ -21,7 +20,7 @@ public class CategoryService {
 		var list = managementService.search(CategorySearch.getDefault());
 		return list.stream()
 				.filter(a -> a.cusines() > 0)
-				.filter(a -> a.status() == Status.Enable)
+				.filter(a -> a.deletedAt() == null)
 				.toList();
 	}
 

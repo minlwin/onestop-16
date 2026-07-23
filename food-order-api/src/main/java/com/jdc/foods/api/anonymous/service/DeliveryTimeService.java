@@ -8,7 +8,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.jdc.foods.api.shopper.master.input.DeliTimeSearch;
 import com.jdc.foods.api.shopper.master.output.DeliTimeListItem;
 import com.jdc.foods.api.shopper.master.service.DeliveryTimeSearchService;
-import com.jdc.foods.utils.consts.Status;
 
 import lombok.RequiredArgsConstructor;
 
@@ -22,7 +21,7 @@ public class DeliveryTimeService {
 	public List<DeliTimeListItem> findAll() {
 		return service.search(DeliTimeSearch.getDefault())
 				.stream()
-				.filter(a -> a.status() == Status.Enable)
+				.filter(a -> a.deletedAt() == null)
 				.toList();
 	}
 

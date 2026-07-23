@@ -16,8 +16,8 @@ public record CuisineForm(
 		String name,
 		@NotBlank(message = "Please enter description.")
 		String description,
-		@NotBlank(message = "Please select category.")
-		String category,
+		@NotNull(message = "Please select category.")
+		Integer category,
 		boolean isRegular,
 		@NotBlank(message = "Please select spice level.")
 		String spiceLevel,

@@ -8,7 +8,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.jdc.foods.api.shopper.master.input.PaymentInfoSearch;
 import com.jdc.foods.api.shopper.master.output.PaymentInfoListItem;
 import com.jdc.foods.api.shopper.master.service.PaymentInfoSearchService;
-import com.jdc.foods.utils.consts.Status;
 
 import lombok.RequiredArgsConstructor;
 
@@ -22,7 +21,7 @@ public class PaymentInfoService {
 	public List<PaymentInfoListItem> findAll() {
 		return service.search(PaymentInfoSearch.getDefault())
 				.stream()
-				.filter(a -> a.status() == Status.Enable)
+				.filter(a -> a.deletedAt() == null)
 				.toList();
 	}
 

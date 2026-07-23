@@ -11,7 +11,7 @@ type FormsSelectProps<T extends FieldValues> = {
     options: SelectOption[]
 }
 
-type SelectOption = {
+export type SelectOption = {
     value: string
     label: string
 }

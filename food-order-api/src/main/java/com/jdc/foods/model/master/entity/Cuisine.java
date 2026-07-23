@@ -37,15 +37,18 @@ public class Cuisine extends AuditableEntity {
 	@Column(nullable = false)
 	private BigDecimal price;
 	
+	@Column(columnDefinition = "TEXT")
 	private String description;
 	private SpiceLevel spiceLevel;
 	private boolean isRegular;
 	
 	private String coverPhoto;
 	
+	@Column(columnDefinition = "TEXT")
 	@Convert(converter = StringListConverter.class)
 	private List<String> photos;
 
+	@Column(columnDefinition = "TEXT")
 	@Convert(converter = IngredientsConverter.class)
 	private List<Ingredient> ingredients;
 

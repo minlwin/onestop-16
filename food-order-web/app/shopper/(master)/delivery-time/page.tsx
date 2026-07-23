@@ -94,6 +94,10 @@ export default function DeliveryTimeMasterPage() {
         } else {
             await service.create(form)
         }
+        
+        editForm.reset()
+        setId(undefined)
+
         setSearchForm({ status: "", time: "" })
         await search({ status: "", time: "" })
         setOpen(false)

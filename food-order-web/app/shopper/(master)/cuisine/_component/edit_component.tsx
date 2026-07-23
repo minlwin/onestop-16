@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react"
 import { usePageTitle } from "../../../_states/page-title-provider"
 import {
-    CATEGORY_OPTIONS,
     CuisineForm,
     CuisineSchema,
     MASTER_STATUS,
@@ -13,7 +12,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useFieldArray, useForm } from "react-hook-form"
 import Section from "@/components/widgets/section"
 import FormsInput from "@/components/widgets/forms/forms-input"
-import FormsSelect from "@/components/widgets/forms/forms-select"
+import FormsSelect, { SelectOption } from "@/components/widgets/forms/forms-select"
 import FormsTextarea from "@/components/widgets/forms/forms-textarea"
 import FormsSwitch from "@/components/widgets/forms/forms-switch"
 import AddNewBtn from "@/components/widgets/add-new-btn"
@@ -22,6 +21,8 @@ import { HugeiconsIcon } from "@hugeicons/react"
 import { Cancel, Delete02Icon, Save } from "@hugeicons/core-free-icons"
 import { useRouter, useSearchParams } from "next/navigation"
 import * as service from "@/lib/action/shopper/master/cuisine.action"
+import * as categoryService from "@/lib/action/shopper/master/category.action"
+
 
 export default function CuisineEditComponent() {
     const { setTitle } = usePageTitle()
@@ -91,6 +92,22 @@ function CuisineEditForm({
         fieldArray.remove(index)
     }
 
+    const [categories, setCategories] = useState<SelectOption[]>([])
+
+    useEffect(() => {
+        async function load() {
+            const list = await categoryService.search({status : "Enable", keyword : ""})
+            const options:SelectOption[] = list.map(a => ({
+                label: a.name,
+                value: a.id.toString()
+            }))
+
+            setCategories(options)
+        }
+
+        load()
+    }, [setCategories])
+
     return (
         <form onSubmit={form.handleSubmit(onSave)} className="space-y-6">
             <Section title="Cuisine Details">
@@ -105,7 +122,7 @@ function CuisineEditForm({
                         control={form.control}
                         path="category"
                         label="Category"
-                        options={CATEGORY_OPTIONS}
+                        options={categories}
                         className="col-start-1"
                     />
                     <FormsSelect
@@ -121,7 +138,9 @@ function CuisineEditForm({
                         label="Status"
                         options={MASTER_STATUS}
                     />
-                    <FormsSwitch control={form.control} path="isRegular" label="Regular" />
+                    <div className="flex items-end pb-2">
+                        <FormsSwitch control={form.control} path="isRegular" label="Regular" />
+                    </div>
                 </div>
 
                 <FormsTextarea

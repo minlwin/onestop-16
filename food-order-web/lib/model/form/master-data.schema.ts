@@ -28,16 +28,6 @@ export const CategorySchema = z
 
 export type CategoryForm = z.infer<typeof CategorySchema>
 
-export const CATEGORY_OPTIONS: {
-    value: string
-    label: string
-}[] = [
-    { value: "Curry", label: "Curry" },
-    { value: "Salad", label: "Salad" },
-    { value: "Soup", label: "Soup" },
-    { value: "Dessert", label: "Dessert" },
-]
-
 export const SPICE_LEVEL_OPTIONS: {
     value: string
     label: string

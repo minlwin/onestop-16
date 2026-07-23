@@ -101,6 +101,8 @@ export default function PaymentInfoMasterPage() {
         setSearchForm({ ...SEARCH_FORM })
         search({ ...SEARCH_FORM })
 
+        setId(undefined)
+        editForm.reset()
         setOpen(false)
     }
 

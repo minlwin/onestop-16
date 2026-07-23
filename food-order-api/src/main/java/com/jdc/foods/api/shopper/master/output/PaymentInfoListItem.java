@@ -16,9 +16,13 @@ public record PaymentInfoListItem(
 		String provider,
 		String accountNo,
 		String accountName,
-		Status status,
+		LocalDateTime deletedAt,
 		LocalDateTime createdAt,
 		LocalDateTime modifiedAt) {
+
+	public Status getStatus() {
+		return deletedAt == null ? Status.Enable : Status.Disable;
+	}
 
 	public static void select(CriteriaBuilder cb, CriteriaQuery<PaymentInfoListItem> cq, Root<PaymentInfo> root) {
 
@@ -28,9 +32,7 @@ public record PaymentInfoListItem(
 			root.get(PaymentInfo_.provider),
 			root.get(PaymentInfo_.accountNo),
 			root.get(PaymentInfo_.accountName),
-			cb.selectCase()
-				.when(cb.isNull(root.get(PaymentInfo_.deletedAt)), Status.Enable)
-				.otherwise(Status.Disable),
+			root.get(PaymentInfo_.deletedAt),
 			root.get(PaymentInfo_.createdAt),
 			root.get(PaymentInfo_.modifiedAt)
 		));

@@ -22,9 +22,13 @@ public record CuisineListItem(
 		BigDecimal price,
 		String description,
 		String coverPhoto,
-		Status status,
+		LocalDateTime deletedAt,
 		LocalDateTime createdAt,
 		LocalDateTime modifiedAt) {
+	
+	public Status getStatus() {
+		return deletedAt == null ? Status.Enable : Status.Disable;
+	}
 
 	public static void select(CriteriaBuilder cb, CriteriaQuery<CuisineListItem> cq, Root<Cuisine> root) {
 
@@ -41,9 +45,7 @@ public record CuisineListItem(
 			root.get(Cuisine_.price),
 			root.get(Cuisine_.description),
 			root.get(Cuisine_.coverPhoto),
-			cb.selectCase()
-				.when(cb.isNull(root.get(Cuisine_.deletedAt)), Status.Enable)
-				.otherwise(Status.Disable),
+			root.get(Cuisine_.deletedAt),
 			root.get(Cuisine_.createdAt),
 			root.get(Cuisine_.modifiedAt)
 		));
@@ -62,7 +64,7 @@ public record CuisineListItem(
 				entity.getPrice(),
 				entity.getDescription(),
 				entity.getCoverPhoto(),
-				entity.getDeletedAt() == null ? Status.Enable : Status.Disable,
+				entity.getDeletedAt(),
 				entity.getCreatedAt(),
 				entity.getModifiedAt());
 	}

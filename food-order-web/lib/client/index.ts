@@ -50,7 +50,7 @@ export async function securedRequest(request : ClientRequest) {
 
     if(response.status === 410) {
         const { accessToken, refreshToken } = await anonymousRequest({
-            path: '',
+            path: 'anonymous/token/refresh',
             options: {
                 ...POST_OPTION,
                 body: JSON.stringify({
