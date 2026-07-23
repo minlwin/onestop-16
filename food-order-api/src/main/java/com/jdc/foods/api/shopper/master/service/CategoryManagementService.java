@@ -2,6 +2,7 @@ package com.jdc.foods.api.shopper.master.service;
 
 import static com.jdc.foods.utils.EntityUtils.safeCall;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -13,6 +14,7 @@ import com.jdc.foods.api.shopper.master.output.CategoryDetails;
 import com.jdc.foods.api.shopper.master.output.CategoryListItem;
 import com.jdc.foods.model.master.entity.Category;
 import com.jdc.foods.model.master.repo.CategoryRepo;
+import com.jdc.foods.utils.consts.Status;
 import com.jdc.foods.utils.dto.ModificationResult;
 
 import lombok.RequiredArgsConstructor;
@@ -47,6 +49,10 @@ public class CategoryManagementService implements CategorySearchService {
 	public ModificationResult<Integer> create(CategoryForm form) {
 		var entity = new Category();
 		entity.setName(form.name());
+		
+		if(form.status() == Status.Disable) {
+			entity.setDeletedAt(LocalDateTime.now());
+		}
 		return ModificationResult.ok(repo.save(entity).getId());
 	}
 
@@ -56,6 +62,7 @@ public class CategoryManagementService implements CategorySearchService {
 				.apply("category").apply("id").apply(id);
 		
 		entity.setName(form.name());
+		entity.setDeletedAt(form.status() == Status.Disable ? LocalDateTime.now() : null);
 		
 		return ModificationResult.ok(id);
 	}

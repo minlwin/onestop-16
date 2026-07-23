@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 
 import com.jdc.foods.model.master.entity.Category_;
 import com.jdc.foods.model.master.entity.Cuisine;
+import com.jdc.foods.model.master.entity.Cuisine.SpiceLevel;
 import com.jdc.foods.model.master.entity.Cuisine_;
 import com.jdc.foods.utils.consts.Status;
 import com.jdc.foods.utils.dto.IdAndName;
@@ -17,7 +18,7 @@ public record CuisineListItem(
 		int id,
 		String name,
 		IdAndName category,
-		String spiceLevel,
+		SpiceLevel spiceLevel,
 		boolean isRegular,
 		BigDecimal price,
 		String description,
@@ -40,7 +41,7 @@ public record CuisineListItem(
 			cb.construct(IdAndName.class,
 				category.get(Category_.id),
 				category.get(Category_.name)),
-			root.get(Cuisine_.spiceLevel).as(String.class),
+			root.get(Cuisine_.spiceLevel),
 			root.get(Cuisine_.isRegular),
 			root.get(Cuisine_.price),
 			root.get(Cuisine_.description),
@@ -59,7 +60,7 @@ public record CuisineListItem(
 				entity.getId(),
 				entity.getName(),
 				new IdAndName(entity.getCategory().getId(), entity.getCategory().getName()),
-				entity.getSpiceLevel() == null ? null : entity.getSpiceLevel().name(),
+				entity.getSpiceLevel(),
 				entity.isRegular(),
 				entity.getPrice(),
 				entity.getDescription(),

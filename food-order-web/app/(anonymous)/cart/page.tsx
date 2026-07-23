@@ -25,11 +25,12 @@ import LoadingWidget from "@/components/widgets/loading-widget"
 import NoDataWidget from "@/components/widgets/no-data"
 import { useFetch } from "@/hooks/use-fetch"
 import { CuisineListItem } from "@/lib/model/output/master-data.model"
-import { foodPhotoUrl, formatCurrency } from "@/lib/utils"
+import { formatCurrency } from "@/lib/utils"
 import { useCart } from "./_states/cart-provider"
 
 import * as categoryService from "@/lib/action/anonymous/category.action"
 import * as cuisineService from "@/lib/action/anonymous/cuisine.action"
+import CuisinePhoto from "@/components/widgets/cuisine-photo"
 
 export default function ShoppingCartPage() {
     const router = useRouter()
@@ -220,12 +221,10 @@ export default function ShoppingCartPage() {
 
                                     return (
                                         coverPhoto && (
-                                            <Image
+                                            <CuisinePhoto
                                                 src={coverPhoto}
-                                                alt={cuisineDetails.name}
                                                 width={800}
                                                 height={400}
-                                                unoptimized
                                                 className="h-64 w-full rounded-lg object-cover"
                                             />
                                         )
@@ -246,12 +245,10 @@ export default function ShoppingCartPage() {
                                                     onClick={() => setSelectedPhoto(photo)}
                                                     className={`shrink-0 overflow-hidden rounded-md ${isSelected ? "ring-2 ring-primary" : "ring-1 ring-foreground/10"}`}
                                                 >
-                                                    <Image
+                                                    <CuisinePhoto
                                                         src={photo}
-                                                        alt={cuisineDetails.name}
                                                         width={160}
                                                         height={120}
-                                                        unoptimized
                                                         className="h-24 w-32 object-cover"
                                                     />
                                                 </button>
@@ -297,17 +294,10 @@ function CuisineCard({
 }) {
     return (
         <Card className="flex h-full flex-col gap-3">
-            <Image
-                src={foodPhotoUrl(
-                    cuisine.id,
-                    400,
-                    240,
-                    `food,${cuisine.category.name.toLowerCase()}`
-                )}
-                alt={cuisine.name}
+            <CuisinePhoto
+                src={cuisine.coverPhoto}
                 width={400}
                 height={240}
-                unoptimized
                 className="h-60 w-full object-cover"
             />
 

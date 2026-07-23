@@ -16,10 +16,6 @@ export function formatCurrency(amount: number) {
     })
 }
 
-export function foodPhotoUrl(seed: number, width: number, height: number, tag = "food") {
-    return `https://loremflickr.com/${width}/${height}/${tag}?lock=${seed}`
-}
-
 export function homeForUser(user: UserInfo) {
     const roles = user.roles;
 

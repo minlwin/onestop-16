@@ -50,7 +50,7 @@ export async function uploadPhoto(id: any, form: FormData): Promise<Modification
     return await securedRequest({
         path: `${PATH}/${id}/photos`,
         options: {
-            ...POST_OPTION,
+            method: "POST",
             body: form
         }
     })

@@ -2,17 +2,16 @@
 
 import { useEffect, useRef } from "react"
 import { useParams, useRouter } from "next/navigation"
-import Image from "next/image"
 import { usePageTitle } from "@/app/shopper/_states/page-title-provider"
 import Section from "@/components/widgets/section"
 import { Button } from "@/components/ui/button"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { Edit02Icon, ImageUploadIcon, StarIcon } from "@hugeicons/core-free-icons"
-import { CuisineDetails } from "@/lib/model/output/master-data.model"
 import LoadingWidget from "@/components/widgets/loading-widget"
 import { useFetch } from "@/hooks/use-fetch"
 
 import * as service from "@/lib/action/shopper/master/cuisine.action"
+import CuisinePhoto from "@/components/widgets/cuisine-photo"
 
 function StatusBadge({ status }: { status: string }) {
     const isEnabled = status === "Enable"
@@ -93,12 +92,10 @@ export default function CuisineDetailsPage() {
                     <div className="space-y-4">
                         <div className="overflow-hidden rounded-lg">
                             {coverPhoto ? (
-                                <Image
+                                <CuisinePhoto
                                     src={coverPhoto}
-                                    alt={cuisine.name}
                                     width={600}
                                     height={360}
-                                    unoptimized
                                     className="h-56 w-full object-cover"
                                 />
                             ) : (
@@ -116,12 +113,10 @@ export default function CuisineDetailsPage() {
                                         onClick={() => setCoverPhoto(photo)}
                                         className={`group relative h-18 w-24 shrink-0 cursor-pointer overflow-hidden rounded-md ${photo === coverPhoto ? "ring-2 ring-primary" : "ring-1 ring-foreground/10"}`}
                                     >
-                                        <Image
+                                        <CuisinePhoto
                                             src={photo}
-                                            alt={cuisine.name}
                                             width={96}
                                             height={72}
-                                            unoptimized
                                             className="h-full w-full object-cover"
                                         />
 

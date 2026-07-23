@@ -5,12 +5,12 @@ export const MASTER_STATUS: {
     value: string
     label: string
 }[] = [
-    { value: "Pending", label: "Pending" },
+    { value: "Disable", label: "Disable" },
     { value: "Enable", label: "Enable" },
 ]
 
 export const CategorySearchSchema = z.object({
-    status: z.enum(["Pending", "Enable", ""]),
+    status: z.enum(["Enable", "Disable", ""]),
     keyword: z.string(),
 })
 
@@ -19,7 +19,7 @@ export type CategorySearchForm = z.infer<typeof CategorySearchSchema>
 export const CategorySchema = z
     .object({
         name: z.string().nonempty("Please enter category name."),
-        status: z.enum(["Pending", "Enable", ""]).nonoptional("Please select status."),
+        status: z.enum(["Enable", "Disable", ""]).nonoptional("Please select status."),
     })
     .refine((data) => data.status !== "", {
         message: "Please select status.",
@@ -32,14 +32,13 @@ export const SPICE_LEVEL_OPTIONS: {
     value: string
     label: string
 }[] = [
-    { value: "Mild", label: "Mild" },
+    { value: "Low", label: "Low" },
     { value: "Medium", label: "Medium" },
     { value: "High", label: "High" },
-    { value: "So High", label: "So High" },
 ]
 
 export const CuisineSearchSchema = z.object({
-    status: z.enum(["Pending", "Enable", ""]),
+    status: z.enum(["Disable", "Enable", ""]),
     keyword: z.string(),
 })
 
@@ -51,9 +50,9 @@ export const CuisineSchema = z
         description: z.string().nonempty("Please enter description."),
         category: z.string().nonempty("Please select category."),
         isRegular: z.boolean().nonoptional(),
-        spiceLevel: z.enum(["", "Mild", "Medium", "High", "So High"]),
+        spiceLevel: z.enum(["", "Low", "Medium", "High"]),
         price: z.number().positive("Please enter a valid price."),
-        status: z.enum(["Pending", "Enable", ""]),
+        status: z.enum(["Enable", "Disable", ""]),
         ingredients: z.array(
             z.object({
                 name: z.string().nonempty("Please enter ingredient name."),
@@ -73,7 +72,7 @@ export const CuisineSchema = z
 export type CuisineForm = z.infer<typeof CuisineSchema>
 
 export const DeliTimeSearchSchema = z.object({
-    status: z.enum(["Pending", "Enable", ""]),
+    status: z.enum(["Enable", "Disable", ""]),
     time: z.string(),
 })
 
@@ -83,7 +82,7 @@ export const DeliTimeSchema = z
     .object({
         timeFrom: z.string().nonempty("Please enter start time."),
         timeTo: z.string().nonempty("Please enter end time."),
-        status: z.enum(["Pending", "Enable", ""]),
+        status: z.enum(["Enable", "Disable", ""]),
     })
     .refine((data) => data.status !== "", {
         message: "Please select status.",
@@ -93,7 +92,7 @@ export const DeliTimeSchema = z
 export type DeliTimeForm = z.infer<typeof DeliTimeSchema>
 
 export const PaymentInfoSearchSchema = z.object({
-    status: z.enum(["Pending", "Enable", ""]),
+    status: z.enum(["Enable", "Disable", ""]),
     bank: z.string(),
     account: z.string(),
 })
@@ -105,7 +104,7 @@ export const PaymentInfoSchema = z
         bank: z.string().nonempty("Please enter bank name."),
         accountNo: z.string().nonempty("Please enter account no."),
         accountName: z.string().nonempty("Please enter account name."),
-        status: z.enum(["Pending", "Enable", ""]),
+        status: z.enum(["Enable", "Disable", ""]),
     })
     .refine((data) => data.status !== "", {
         message: "Please select status.",

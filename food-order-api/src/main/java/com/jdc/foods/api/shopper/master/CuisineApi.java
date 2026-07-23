@@ -54,7 +54,7 @@ public class CuisineApi {
 		return service.create(form);
 	}
 
-	@PostMapping("{id}")
+	@PutMapping("{id}")
 	ModificationResult<Integer> update(
 			@PathVariable int id,
 			@RequestBody @Validated CuisineForm form) {

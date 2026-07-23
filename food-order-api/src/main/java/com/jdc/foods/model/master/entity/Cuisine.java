@@ -53,7 +53,7 @@ public class Cuisine extends AuditableEntity {
 	private List<Ingredient> ingredients;
 
 	public enum SpiceLevel {
-		Low, Medium, Heigh
+		Low, Medium, High
 	}
 
 	public void addPhotos(List<String> list) {

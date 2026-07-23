@@ -23,18 +23,21 @@ import { useRouter, useSearchParams } from "next/navigation"
 import * as service from "@/lib/action/shopper/master/cuisine.action"
 import * as categoryService from "@/lib/action/shopper/master/category.action"
 
-
 export default function CuisineEditComponent() {
+
     const { setTitle } = usePageTitle()
-    const [form, setForm] = useState<CuisineForm>({
-        category: "",
-        name: "",
-        description: "",
-        spiceLevel: "",
-        price: 0,
-        status: "",
-        isRegular: true,
-        ingredients: [],
+    const form = useForm<CuisineForm>({
+        resolver: zodResolver(CuisineSchema),
+        defaultValues: {
+            category: "",
+            name: "",
+            description: "",
+            spiceLevel: "",
+            price: 0,
+            status: "",
+            isRegular: true,
+            ingredients: [],
+        },
     })
 
     const params = useSearchParams()
@@ -42,55 +45,19 @@ export default function CuisineEditComponent() {
     const router = useRouter()
 
     useEffect(() => {
-        setTitle("Cuisine Details")
+        setTitle(cusineId ? "Edit Cuisine" : "Create Cuisine")
         if (cusineId) {
             const load = async () => {
                 const result = await service.findForEdit(cusineId)
                 const { id, ...editForm } = result
-                setForm(editForm)
+                form.reset({
+                    ...editForm,
+                    ingredients: editForm.ingredients || []
+                })
             }
             load()
         }
-    }, [cusineId])
-
-    const save = async (form: CuisineForm) => {
-        const result = await (cusineId ? service.update(cusineId, form) : service.create(form))
-        router.replace(`/shopper/cuisine/${result.id}`)
-    }
-
-    return <CuisineEditForm formData={form} onSave={save} />
-}
-
-function CuisineEditForm({
-    formData,
-    onSave,
-}: {
-    formData: CuisineForm
-    onSave: (form: CuisineForm) => void
-}) {
-    const router = useRouter()
-    const form = useForm<CuisineForm>({
-        resolver: zodResolver(CuisineSchema),
-        defaultValues: formData,
-    })
-
-    const fieldArray = useFieldArray({
-        control: form.control,
-        name: "ingredients",
-    })
-
-    const ingredientArray = form.watch("ingredients")
-
-    const addIngredient = () => {
-        fieldArray.append({
-            name: "",
-            value: "",
-        })
-    }
-
-    const removeIngredient = (index: number) => {
-        fieldArray.remove(index)
-    }
+    }, [cusineId, form])
 
     const [categories, setCategories] = useState<SelectOption[]>([])
 
@@ -108,8 +75,32 @@ function CuisineEditForm({
         load()
     }, [setCategories])
 
+
+    const save = async (form: CuisineForm) => {
+        const result = await (cusineId ? service.update(cusineId, form) : service.create(form))
+        router.replace(`/shopper/cuisine/${result.id}`)
+    }
+
+    const fieldArray = useFieldArray({
+        control: form.control,
+        name: "ingredients",
+    })
+
+    const ingredientArray = form.watch("ingredients")
+
+    const addIngredient = () => {
+        fieldArray.append({
+            name: "",
+            value: "",
+        })
+    }
+
+    const removeIngredient = (index: number) => {
+        fieldArray.remove(index)
+    }    
+
     return (
-        <form onSubmit={form.handleSubmit(onSave)} className="space-y-6">
+        <form onSubmit={form.handleSubmit(save)} className="space-y-6">
             <Section title="Cuisine Details">
                 <div className="grid grid-cols-3 gap-4">
                     <FormsInput
@@ -200,6 +191,6 @@ function CuisineEditForm({
                     <HugeiconsIcon icon={Save} /> Save
                 </Button>
             </div>
-        </form>
+        </form>        
     )
 }

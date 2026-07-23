@@ -3,6 +3,7 @@ package com.jdc.foods.api.shopper.master.input;
 import java.math.BigDecimal;
 import java.util.List;
 
+import com.jdc.foods.model.master.entity.Cuisine.SpiceLevel;
 import com.jdc.foods.utils.consts.Status;
 import com.jdc.foods.utils.dto.Ingredient;
 
@@ -19,8 +20,8 @@ public record CuisineForm(
 		@NotNull(message = "Please select category.")
 		Integer category,
 		boolean isRegular,
-		@NotBlank(message = "Please select spice level.")
-		String spiceLevel,
+		@NotNull(message = "Please select spice level.")
+		SpiceLevel spiceLevel,
 		@NotNull(message = "Please enter price.")
 		@Positive(message = "Please enter a valid price.")
 		BigDecimal price,

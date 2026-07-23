@@ -44,9 +44,9 @@ public class StorageService {
 			var storage = Path.of(storagePath);
 			var createdAt = LocalDateTime.now();
 			
-			for(var file : files) {
-				var name = getFileName(file, id, createdAt);
-				Files.copy(file.getInputStream(), storage.resolve(name), StandardCopyOption.REPLACE_EXISTING);
+			for(var i = 0; i < files.length ; i ++) {
+				var name = getFileName(files[i], id, createdAt, i + 1);
+				Files.copy(files[i].getInputStream(), storage.resolve(name), StandardCopyOption.REPLACE_EXISTING);
 				result.add(name);
 			}
 			
@@ -56,8 +56,8 @@ public class StorageService {
 		}
 	}
 
-	private String getFileName(MultipartFile file, int id, LocalDateTime createdAt) {
-		return "%04d-%s.%s".formatted(id, createdAt.format(DF), extension(file));
+	private String getFileName(MultipartFile file, int id, LocalDateTime createdAt, int seq) {
+		return "%04d-%s-%02d.%s".formatted(id, createdAt.format(DF), seq, extension(file));
 	}
 	
 	private String extension(MultipartFile file) {

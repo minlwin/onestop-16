@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.jdc.foods.api.shopper.master.input.CuisineForm;
@@ -15,7 +16,6 @@ import com.jdc.foods.api.shopper.master.output.CuisineDetails;
 import com.jdc.foods.api.shopper.master.output.CuisineForEdit;
 import com.jdc.foods.api.shopper.master.output.CuisineListItem;
 import com.jdc.foods.model.master.entity.Cuisine;
-import com.jdc.foods.model.master.entity.Cuisine.SpiceLevel;
 import com.jdc.foods.model.master.repo.CategoryRepo;
 import com.jdc.foods.model.master.repo.CuisineRepo;
 import com.jdc.foods.utils.consts.Status;
@@ -73,6 +73,10 @@ public class CuisineManagementService implements CuisineSearchService {
 		var entity = new Cuisine();
 		apply(entity, form);
 
+		if(form.status() == Status.Disable) {
+			entity.setDeletedAt(LocalDateTime.now());
+		}
+
 		return ModificationResult.ok(repo.save(entity).getId());
 	}
 
@@ -81,6 +85,7 @@ public class CuisineManagementService implements CuisineSearchService {
 				.apply("cuisine").apply("id").apply(id);
 
 		apply(entity, form);
+		entity.setDeletedAt(form.status() == Status.Disable ? LocalDateTime.now() : null);
 
 		return ModificationResult.ok(id);
 	}
@@ -93,6 +98,10 @@ public class CuisineManagementService implements CuisineSearchService {
 		var photos = storageService.savePhotos(id, files);
 		
 		entity.addPhotos(photos);
+		
+		if(!StringUtils.hasLength(entity.getCoverPhoto())) {
+			entity.setCoverPhoto(photos.getFirst());
+		}
 		
 		return ModificationResult.ok(id);
 	}
@@ -114,7 +123,7 @@ public class CuisineManagementService implements CuisineSearchService {
 		entity.setDescription(form.description());
 		entity.setCategory(category);
 		entity.setRegular(form.isRegular());
-		entity.setSpiceLevel(SpiceLevel.valueOf(form.spiceLevel()));
+		entity.setSpiceLevel(form.spiceLevel());
 		entity.setPrice(form.price());
 		entity.setIngredients(form.ingredients());
 		entity.setDeletedAt(form.status() == Status.Enable ? null : LocalDateTime.now());
