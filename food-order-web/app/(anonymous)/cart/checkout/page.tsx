@@ -41,7 +41,12 @@ export default function CheckOutPage() {
     })
 
     const save = async (values: CheckoutForm) => {
-        const result = await checkoutService.checkout(values, cart.items)
+        const request = {
+            items: cart.items,
+            ...values
+        }
+        console.log(JSON.stringify(request))
+        const result = await checkoutService.checkout(request)
         cart.clear()
         router.push(`/cart/checkout/${result.id}`)
     }

@@ -25,7 +25,6 @@ public record CheckoutForm(
 		Integer deliveryTimeId,
 		String remark,
 		@NotEmpty(message = "Cart must not be empty.")
-		@Valid
-		List<CartItem> items) {
+		List<@Valid CartItem> items) {
 
 }

@@ -7,10 +7,11 @@ import { CartItem } from "@/lib/model/output/cart.model"
 import { InvoiceDetails } from "@/lib/model/output/management.model"
 
 export async function checkout(
-    form: CheckoutForm,
-    items: CartItem[]
+    form: CheckoutForm & {
+        items: CartItem[]
+    }
 ): Promise<ModificationResult<string>> {
-    return await client.checkout(form, items)
+    return await client.checkout(form)
 }
 
 export async function findById(id: any): Promise<InvoiceDetails> {

@@ -9,19 +9,18 @@ import { anonymousRequest, POST_OPTION, securedRequest } from ".."
 const PATH = 'anonymous/invoices'
 
 export async function checkout(
-    form: CheckoutForm,
-    items: CartItem[]
+    form: CheckoutForm & {
+        items: Partial<CartItem>[]
+    } 
 ): Promise<ModificationResult<string>> {
+
     return await anonymousRequest({
         path: PATH,
         options: {
             ...POST_OPTION,
-            body: JSON.stringify({
-                ...form,
-                items: items
-            })
+            body: JSON.stringify(form)
         }
-    })
+    })  
 }
 
 export async function findById(id: any): Promise<InvoiceDetails> {
